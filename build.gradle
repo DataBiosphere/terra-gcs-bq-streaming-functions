@@ -1,6 +1,8 @@
 plugins {
     id 'java'
     id 'idea'
+    id 'com.diffplug.spotless' version '5.5.1'
+    id 'com.github.spotbugs' version '4.0.0'
 }
 
 group 'bio.terra'
@@ -11,5 +13,19 @@ repositories {
 }
 
 dependencies {
+    ext {
+        googleFunctions = '1.0.4'
+        slf4j = '1.7.30'
+    }
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4j}"
+    implementation group: 'com.google.cloud.functions', name: 'functions-framework-api', version: "${googleFunctions}"
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
+
+spotless {
+    java {
+        googleJavaFormat()
+    }
+}
+
+compileJava.dependsOn spotlessApply
