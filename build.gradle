@@ -3,13 +3,16 @@ plugins {
     id 'idea'
     id 'com.diffplug.spotless' version '5.5.1'
     id 'com.github.spotbugs' version '4.0.0'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
-
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 group 'bio.terra'
 version '0.0.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -21,13 +24,18 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4j}"
     implementation group: 'com.google.cloud.functions', name: 'functions-framework-api', version: "${googleFunctions}"
     implementation group: 'com.google.cloud', name: 'google-cloud-bigquery', version: "${googleBigQuery}"
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
 spotless {
     java {
         googleJavaFormat()
     }
+}
+
+shadowJar {
+    mergeServiceFiles()
 }
 
 compileJava.dependsOn spotlessApply
