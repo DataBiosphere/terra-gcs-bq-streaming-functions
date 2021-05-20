@@ -2,3 +2,7 @@ steps:
   - name: 'gradle:jdk11-openj9'
     entrypoint: 'gradle'
     args: ['shadowJar']
+artifacts:
+  objects:
+    location: 'gs://testrunner-files-source-1621203251/'
+    paths: ['build/libs/terra-gcs-bq-streaming-functions-0.0.1-SNAPSHOT-all.jar']
