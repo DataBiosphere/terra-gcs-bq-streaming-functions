@@ -1,4 +1,4 @@
 steps:
   - name: 'gradle:jdk11-openj9'
-    entrypoint: 'gradle:jdk11-openj9'
+    entrypoint: 'gradle'
     args: ['shadowJar']
