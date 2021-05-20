@@ -46,3 +46,7 @@ For more information on `deltalayer`, please refer to
 #### Under Development: terra-gcs-bq-streaming-functions
 
 `GcsBQ` is our skeleton code for `GCS` to `BQ` Streaming. 
+
+# terra-gcs-bq-streaming-functions
+This library is used for Gcs to BQ Streaming Cloud Functions.
+
