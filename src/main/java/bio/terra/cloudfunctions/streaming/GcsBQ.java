@@ -25,7 +25,7 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
   public static class GCSEvent {
     String bucket;
     String name;
-    String metageneration;
+    Long metageneration;
     Date timeCreated;
     Date updated;
 
@@ -41,11 +41,11 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
       this.name = name;
     }
 
-    public String getMetageneration() {
+    public Long getMetageneration() {
       return metageneration;
     }
 
-    public void setMetageneration(String metageneration) {
+    public void setMetageneration(Long metageneration) {
       this.metageneration = metageneration;
     }
 
