@@ -35,6 +35,7 @@ dependencies {
 
     // Gson for Java serialization/deserialization
     implementation group: 'com.google.code.gson', name: 'gson', version: "${gson}"
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4j}"
 
     // Every function needs this dependency to get the Functions Framework API.
     implementation group: 'com.google.cloud.functions', name: 'functions-framework-api', version: "${googleFunctions}"
@@ -56,9 +57,29 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.12'
     testImplementation "org.mockito:mockito-core:3.+"
 
+    // Google Cloud SDK needed for Streaming BQ
     implementation group: 'com.google.cloud', name: 'google-cloud-bigquery', version: "${googleBigQuery}"
 
+    // To run function locally using Functions Framework's local invoker
+    invoker group: 'com.google.cloud.functions.invoker', name: 'java-function-invoker', version: "${googleFunctionsInvoker}"
+
+    // These dependencies are only used by the tests.
     testImplementation group: 'junit', name: 'junit', version: '4.12'
+}
+
+// For more info, please refer to https://cloud.google.com/functions/docs/first-java#gradle_1
+// Register a "runFunction" task to run the function locally
+tasks.register("runFunction", JavaExec) {
+    main = 'com.google.cloud.functions.invoker.runner.Invoker'
+    classpath(configurations.invoker)
+    inputs.files(configurations.runtimeClasspath, sourceSets.main.output)
+    args(
+            '--target', project.findProperty('run.functionTarget') ?: '',
+            '--port', project.findProperty('run.port') ?: 8080
+    )
+    doFirst {
+        args('--classpath', files(configurations.runtimeClasspath, sourceSets.main.output).asPath)
+    }
 }
 
 spotless {
