@@ -31,20 +31,6 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Get Vault token
-        id: vault-token-step
-        env:
-          VAULT_ADDR: https://clotho.broadinstitute.org:8200
-        run: |
-          VAULT_TOKEN=$(docker run --rm --cap-add IPC_LOCK \
-            -e "VAULT_ADDR=${VAULT_ADDR}" \
-            vault:1.1.0 \
-            vault write -field token \
-              auth/approle/login role_id=${{ secrets.VAULT_APPROLE_ROLE_ID }} \
-              secret_id=${{ secrets.VAULT_APPROLE_SECRET_ID }})
-          echo ::set-output name=vault-token::$VAULT_TOKEN
-          echo ::add-mask::$VAULT_TOKEN
-
       - name: Build Cloud Function
         id: build-step
         run: |
