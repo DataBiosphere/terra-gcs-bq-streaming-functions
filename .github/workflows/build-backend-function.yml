@@ -37,7 +37,8 @@ jobs:
           ./gradlew shadowJar
           ls -l build/libs
 
-      - id: Deploy Cloud Function
+      - name: Deploy Cloud Function
+        id: deploy-step
         uses: google-github-actions/deploy-cloud-functions@main
         with:
           name: gcs-bq-function
