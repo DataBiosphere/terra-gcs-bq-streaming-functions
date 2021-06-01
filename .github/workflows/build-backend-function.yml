@@ -45,10 +45,6 @@ jobs:
       - name: Create BigQuery Schemas if needed
         id: create-schemas
         uses: ./.github/actions/create-bq-schemas
-        with:
-          schemas_dir: schemas
-          module: testrunner
-          dataset: simple_stream_dataset
 
       # Commented out as GcsBQ is removed.
       # This step will be replaced by deploying code from central dsp-artifact-registry
