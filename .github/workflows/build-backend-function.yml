@@ -63,4 +63,3 @@ jobs:
       #    bucket: testrunner-results
       #    trigger: google.storage.object.finalize
       #    dataset: simple_stream_dataset
-
