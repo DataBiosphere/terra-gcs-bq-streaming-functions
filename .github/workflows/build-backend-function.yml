@@ -29,10 +29,15 @@ jobs:
           key: v1-${{ runner.os }}-gradle-${{ hashfiles('**/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle') }}
           restore-keys: v1-${{ runner.os }}-gradle-${{ hashfiles('**/gradle-wrapper.properties') }}
 
+      - uses: google-github-actions/setup-gcloud@master # Set up ADC for credentials
+        with:
+          service_account_email: ${{ secrets.DEPLOY_CF_SA_EMAIL }}
+          service_account_key: ${{ secrets.DEPLOY_CF_SA_KEY_JSON }}
+          export_default_credentials: true
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-<<<<<<< HEAD
       # Set up ADC for credentials
       # Ideally this step should be part of action.yml but
       # GHA does not yet support action within action so we're stuck.
