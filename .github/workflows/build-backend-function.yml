@@ -54,5 +54,5 @@ jobs:
           region: us-central1
           source_dir: ./build/libs
           project_id: terra-kernel-k8s
-          event_trigger_type: google.storage.object.finalize
-          event_trigger_resource: terra-kernel-k8s-testrunner-results
+          event_trigger_type: providers/cloud.storage/eventTypes/object.finalize
+          event_trigger_resource: projects/_/buckets/terra-kernel-k8s-testrunner-results/objects/*
