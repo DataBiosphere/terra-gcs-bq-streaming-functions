@@ -36,7 +36,7 @@ jobs:
         run: |
           ./gradlew shadowJar
           ls -l build/libs
-          ls /opt
+          ls /opt/hostedtoolcache
 
       - uses: google-github-actions/setup-gcloud@master # Set up ADC for credentials
         with:
