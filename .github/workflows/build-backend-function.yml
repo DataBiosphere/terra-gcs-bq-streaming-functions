@@ -54,6 +54,5 @@ jobs:
           region: us-central1
           source_dir: ./build/libs
           project_id: terra-kernel-k8s
-          service_account_email: cloud-function-admin@terra-kernel-k8s.iam.gserviceaccount.com
           event_trigger_type: google.storage.object.finalize
           event_trigger_resource: terra-kernel-k8s-testrunner-results
