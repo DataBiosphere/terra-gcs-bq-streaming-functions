@@ -49,9 +49,8 @@ jobs:
         env:
           GCP_PROJECT: ${{ env.GCLOUD_PROJECT }}
         run: |
-          echo $GCLOUD_PROJECT
-          echo $GOOGLE_APPLICATION_CREDENTIALS
-          echo $GCP_PROJECT
+          gcloud config list core/project
+          gcloud auth list
           gcloud functions deploy gcs-bq-function \
           --runtime=java11 --entry-point=bio.terra.cloudfunctions.streaming.GcsBQ \
           --memory=512MB --region=us-central1 --source=./build/libs \
