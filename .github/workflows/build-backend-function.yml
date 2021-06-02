@@ -32,6 +32,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+<<<<<<< HEAD
       # Set up ADC for credentials
       # Ideally this step should be part of action.yml but
       # GHA does not yet support action within action so we're stuck.
