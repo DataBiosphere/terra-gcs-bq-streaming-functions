@@ -31,7 +31,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build Cloud Function test
+      - name: Build Cloud Function
         id: build-step
         run: |
           ./gradlew shadowJar
