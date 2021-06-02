@@ -46,9 +46,12 @@ jobs:
 
       - name: Deploy Cloud Function
         id: deploy-step
+        env:
+          GCP_PROJECT: ${{ env.GCLOUD_PROJECT }}
         run: |
           echo $GCLOUD_PROJECT
           echo $GOOGLE_APPLICATION_CREDENTIALS
+          echo $GCP_PROJECT
           gcloud functions deploy gcs-bq-function \
           --runtime=java11 --entry-point=bio.terra.cloudfunctions.streaming.GcsBQ \
           --memory=512MB --region=us-central1 --source=./build/libs \
