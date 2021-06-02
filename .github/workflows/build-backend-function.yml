@@ -46,13 +46,9 @@ jobs:
 
       - name: Deploy Cloud Function
         id: deploy-step
-        uses: google-github-actions/deploy-cloud-functions@main
-        with:
-          name: gcs-bq-function
-          runtime: java11
-          entry_point: bio.terra.cloudfunctions.streaming.GcsBQ
-          memory_mb: 512MB
-          source_dir: ./build/libs
-          project_id: terra-kernel-k8s
-          event_trigger_type: providers/cloud.storage/eventTypes/object.finalize
-          event_trigger_resource: projects/_/buckets/terra-kernel-k8s-testrunner-results/objects/*
+        run: |
+          /opt/hostedtoolcache/gcloud/342.0.0/x64/bin/gcloud functions deploy \
+          gcs-bq-function --runtime=java11 --entry-point=bio.terra.cloudfunctions.streaming.GcsBQ \
+          --memory=512MB --region=us-central1 --source=./build/libs \
+          --trigger-event=providers/cloud.storage/eventTypes/object.finalize \
+          --trigger-resource=terra-kernel-k8s-testrunner-results
