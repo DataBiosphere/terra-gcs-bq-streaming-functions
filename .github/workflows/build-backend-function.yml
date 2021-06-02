@@ -52,4 +52,4 @@ jobs:
           --runtime=java11 --entry-point=bio.terra.cloudfunctions.streaming.GcsBQ \
           --memory=512MB --region=us-central1 --source=./build/libs \
           --trigger-event=google.storage.object.finalize \
-          --trigger-resource=projects/_/buckets/terra-kernel-k8s-testrunner-results/objects/*
+          --trigger-resource=projects/terra-kernel-k8s/buckets/terra-kernel-k8s-testrunner-results
