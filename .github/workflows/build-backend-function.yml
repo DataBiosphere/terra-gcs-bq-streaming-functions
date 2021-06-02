@@ -51,7 +51,6 @@ jobs:
           runtime: java11
           entry_point: bio.terra.cloudfunctions.streaming.GcsBQ
           memory_mb: 512MB
-          region: us-central1
           source_dir: ./build/libs
           project_id: terra-kernel-k8s
           event_trigger_type: providers/cloud.storage/eventTypes/object.finalize
