@@ -48,7 +48,7 @@ jobs:
         id: deploy-step
         run: |
           which gcloud
-          gcloud functions deploy gcs-bq-function --project=terra-kernel-k8s \
+          gcloud functions deploy gcs-bq-function \
           --runtime=java11 --entry-point=bio.terra.cloudfunctions.streaming.GcsBQ \
           --memory=512MB --region=us-central1 --source=./build/libs \
           --trigger-event=google.storage.object.finalize \
