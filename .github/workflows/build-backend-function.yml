@@ -47,6 +47,7 @@ jobs:
       - name: Deploy Cloud Function
         id: deploy-step
         run: |
+          echo $GCLOUD_PROJECT
           ls /opt/hostedtoolcache
           /opt/hostedtoolcache/gcloud/342.0.0/x64/bin/gcloud functions deploy \
           gcs-bq-function --runtime=java11 --entry-point=bio.terra.cloudfunctions.streaming.GcsBQ \
