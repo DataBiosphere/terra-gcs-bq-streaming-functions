@@ -3,24 +3,24 @@ package bio.terra.cloudfunctions.streaming;
 import bio.terra.cloudfunctions.streaming.GcsBQ.GCSEvent;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
+
 import java.util.Date;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 
 public class GcsBQ implements BackgroundFunction<GCSEvent> {
-  private static final Logger logger = LoggerFactory.getLogger(GcsBQ.class);
+  private static final Logger logger = Logger.getLogger(GcsBQ.class.getName());
 
   @Override
   public void accept(GCSEvent event, Context context) throws Exception {
     System.out.println("Event: " + context.eventId());
-    logger.debug("Event: " + context.eventId());
-    logger.debug("Event Type: " + context.eventType());
-    logger.debug("Bucket: " + event.getBucket());
-    logger.debug("Processing File: " + event.getName());
-    logger.debug("Metageneration: " + event.getMetageneration());
-    logger.debug("Created: " + event.getTimeCreated());
-    logger.debug("Updated: " + event.getUpdated());
-    logger.debug("Media download link: " + event.getMediaLink());
+    logger.info("Event: " + context.eventId());
+    logger.info("Event Type: " + context.eventType());
+    logger.info("Bucket: " + event.getBucket());
+    logger.info("Processing File: " + event.getName());
+    logger.info("Metageneration: " + event.getMetageneration());
+    logger.info("Created: " + event.getTimeCreated());
+    logger.info("Updated: " + event.getUpdated());
+    logger.info("Media download link: " + event.getMediaLink());
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
