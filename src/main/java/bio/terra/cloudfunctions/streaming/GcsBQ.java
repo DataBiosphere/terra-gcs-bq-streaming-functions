@@ -12,6 +12,7 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
 
   @Override
   public void accept(GCSEvent event, Context context) throws Exception {
+    System.out.println("Event: " + context.eventId());
     logger.info("Event: " + context.eventId());
     logger.info("Event Type: " + context.eventType());
     logger.info("Bucket: " + event.getBucket());
