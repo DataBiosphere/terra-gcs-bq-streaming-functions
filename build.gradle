@@ -37,13 +37,11 @@ dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: "${gson}"
     // This lets you make logging calls to SLF4J’s org.slf4j.Logger in the code.
     implementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4j}"
-    // This is either slf4j-log4j12.jar (for log4j logging),
-    // slf4j-jdk14.jar (for Java logging),
-    // slf4j-jcl.jar (if you’re using Commons logging)
-    // or logback-classic.jar (for logback logging).
-    // With the correct binding jar, SLF4J is able to interface between slf4j-api
-    // and underlying logging implementation.
-    implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: "${slf4j}"
+    // According to https://cloud.google.com/functions/docs/concepts/java-logging,
+    // SLF4J can write logs to the Java Logging API by using the slf4j-jdk14 logging framework binding.
+    // See the SLF4J documentation (http://www.slf4j.org/docs.html) for details.
+    // Make sure you do not have the jul-to-slf4j bridge.
+    implementation group: 'org.slf4j', name: 'slf4j-jdk14', version: "${slf4j}"
 
     // Every function needs this dependency to get the Functions Framework API.
     implementation group: 'com.google.cloud.functions', name: 'functions-framework-api', version: "${googleFunctions}"
