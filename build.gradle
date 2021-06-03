@@ -25,7 +25,16 @@ dependencies {
         googleBigQuery = '1.131.1'
         slf4j = '1.7.30'
     }
+
+    // This lets you make logging calls to SLF4J’s org.slf4j.Logger in the code.
     implementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4j}"
+    // This is either slf4j-log4j12.jar (for log4j logging),
+    // slf4j-jdk14.jar (for Java logging),
+    // slf4j-jcl.jar (if you’re using Commons logging)
+    // or logback-classic.jar (for logback logging).
+    // With the correct binding jar, SLF4J is able to interface between slf4j-api
+    // and underlying logging implementation.
+    implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: "${slf4j}"
 
     // Every function needs this dependency to get the Functions Framework API.
     implementation group: 'com.google.cloud.functions', name: 'functions-framework-api', version: "${googleFunctions}"
