@@ -11,15 +11,9 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
 
   @Override
   public void accept(GCSEvent event, Context context) throws Exception {
-    System.out.println("Event: " + context.eventId());
     logger.info("Event: " + context.eventId());
     logger.info("Event Type: " + context.eventType());
-    logger.info("Bucket: " + event.getBucket());
-    logger.info("Processing File: " + event.getName());
-    logger.info("Metageneration: " + event.getMetageneration());
-    logger.info("Created: " + event.getTimeCreated());
-    logger.info("Updated: " + event.getUpdated());
-    logger.info("Media download link: " + event.getMediaLink());
+    logger.info(event.toString());
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
@@ -266,6 +260,39 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
 
     public void setKmsKeyName(String kmsKeyName) {
       this.kmsKeyName = kmsKeyName;
+    }
+
+    @Override
+    public String toString() {
+      return "GCSEvent{" +
+              "id='" + id + '\'' +
+              ", selfLink='" + selfLink + '\'' +
+              ", name='" + name + '\'' +
+              ", bucket='" + bucket + '\'' +
+              ", generation=" + generation +
+              ", metageneration=" + metageneration +
+              ", contentType='" + contentType + '\'' +
+              ", timeCreated=" + timeCreated +
+              ", updated=" + updated +
+              ", customTime=" + customTime +
+              ", timeDeleted=" + timeDeleted +
+              ", temporaryHold=" + temporaryHold +
+              ", eventBasedHold=" + eventBasedHold +
+              ", retentionExpirationTime=" + retentionExpirationTime +
+              ", storageClass='" + storageClass + '\'' +
+              ", timeStorageClassUpdated=" + timeStorageClassUpdated +
+              ", size=" + size +
+              ", md5Hash='" + md5Hash + '\'' +
+              ", mediaLink='" + mediaLink + '\'' +
+              ", contentEncoding='" + contentEncoding + '\'' +
+              ", contentDisposition='" + contentDisposition + '\'' +
+              ", contentLanguage='" + contentLanguage + '\'' +
+              ", cacheControl='" + cacheControl + '\'' +
+              ", crc32c='" + crc32c + '\'' +
+              ", componentCount=" + componentCount +
+              ", etag='" + etag + '\'' +
+              ", kmsKeyName='" + kmsKeyName + '\'' +
+              '}';
     }
   }
 }
