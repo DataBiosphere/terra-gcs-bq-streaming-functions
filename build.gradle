@@ -23,6 +23,7 @@ dependencies {
         googleFunctions = '1.0.4'
         googleFunctionsInvoker = '1.0.2'
         googleBigQuery = '1.131.1'
+        googleStorage = '1.115.0'
         apacheCompress = "1.20"
     }
 
@@ -31,6 +32,9 @@ dependencies {
 
     // Every function needs this dependency to get the Functions Framework API.
     implementation group: 'com.google.cloud.functions', name: 'functions-framework-api', version: "${googleFunctions}"
+
+    // Google Cloud SDK needed for Cloud Storage
+    implementation group: 'com.google.cloud', name: 'google-cloud-storage', version: "${googleStorage}"
 
     // Google Cloud SDK needed for Streaming BQ
     implementation group: 'com.google.cloud', name: 'google-cloud-bigquery', version: "${googleBigQuery}"
