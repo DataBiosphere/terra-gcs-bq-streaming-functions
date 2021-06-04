@@ -44,7 +44,7 @@ jobs:
           ls -l build/libs
           ls /opt/hostedtoolcache
 
-      - name: Deploy Cloud Function test
+      - name: Deploy Cloud Function
         id: deploy-step
         run: |
           gcloud config set project ${{ env.GCLOUD_PROJECT }}
