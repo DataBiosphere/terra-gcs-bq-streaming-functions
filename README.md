@@ -30,8 +30,7 @@ The UBER JAR contains the expected file structure for successful cloud functions
 This workflow made certain assumptions about the cloud function runtime service account that users should be familiar with.
 It also made certain custom parameters available to `java11` runtime as `envvar`'s that overcomes some limitations in the current Google Cloud Function `java11` binding.
 Ultimately all custom values will come from `deltalayer` as `tfvar`'s so that the cloud function code can be built once and deployed as various cloud functions across different environments.
-For more information on `deltalayer`, please refer to 
-* [Performance Testing Infrastructure Proposal](https://docs.google.com/document/d/11PZIXZwOyd394BFOlBsDjOGjZdC-jwTr_n92nTJvFxw)
+For more information on `deltalayer`, please refer to
 * [terraform-ap-modules](https://github.com/broadinstitute/terraform-ap-modules/tree/master/deltalayer) and
 * [terraform-ap-deployments](https://github.com/broadinstitute/terraform-ap-deployments/tree/master/deltalayer).
 
