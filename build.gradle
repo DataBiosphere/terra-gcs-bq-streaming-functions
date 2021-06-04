@@ -67,6 +67,9 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.12'
     testImplementation "org.mockito:mockito-core:3.+"
 
+    // Google Cloud SDK needed for Cloud Storage
+    implementation group: 'com.google.cloud', name: 'google-cloud-storage', version: "${googleStorage}"
+
     // Google Cloud SDK needed for Streaming BQ
     implementation group: 'com.google.cloud', name: 'google-cloud-bigquery', version: "${googleBigQuery}"
 
