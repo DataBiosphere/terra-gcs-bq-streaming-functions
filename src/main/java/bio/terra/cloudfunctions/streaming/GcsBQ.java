@@ -32,6 +32,11 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     for (Map.Entry<String, String> entry : System.getenv().entrySet())
       logger.info("Key = " + entry.getKey() + ", Value = " + entry.getValue());
 
+    String projectId = System.getenv("GCLOUD_PROJECT");
+    String bucketName = event.getBucket();
+    String objectName = event.getName();
+    generateV4GetObjectSignedUrl(projectId, bucketName, objectName);
+
     InputStream in = new URL(event.getMediaLink()).openStream();
     CompressorStreamFactory compressor = CompressorStreamFactory.getSingleton();
     CompressorInputStream uncompressedInputStream =
@@ -67,10 +72,6 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
    */
   private void generateV4GetObjectSignedUrl(String projectId, String bucketName, String objectName)
       throws StorageException {
-    // String projectId = "my-project-id";
-    // String bucketName = "my-bucket";
-    // String objectName = "my-object";
-
     Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
 
     // Define resource
