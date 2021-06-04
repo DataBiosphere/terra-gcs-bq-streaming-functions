@@ -22,7 +22,16 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
 
 public class GcsBQ implements BackgroundFunction<GCSEvent> {
   private static final Logger logger = Logger.getLogger(GcsBQ.class.getName());
+  private static final long SIGNED_URL_DURATION_MINUTES = 5;
+  private static volatile URL shortLivedUrl;
 
+  /**
+   * Cloud Function Event Handler
+   *
+   * @param event Native Google Storage PUB/SUB Event
+   * @param context Gloud Function Context
+   * @throws Exception
+   */
   @Override
   public void accept(GCSEvent event, Context context) throws Exception {
     logger.info("Event: " + context.eventId());
@@ -35,9 +44,9 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     String projectId = System.getenv("GCLOUD_PROJECT");
     String bucketName = event.getBucket();
     String objectName = event.getName();
-    generateV4GetObjectSignedUrl(projectId, bucketName, objectName);
+    shortLivedUrl = generateV4GetObjectSignedUrl(projectId, bucketName, objectName);
 
-    InputStream in = new URL(event.getMediaLink()).openStream();
+    InputStream in = shortLivedUrl.openStream();
     CompressorStreamFactory compressor = CompressorStreamFactory.getSingleton();
     CompressorInputStream uncompressedInputStream =
         in.markSupported()
@@ -69,20 +78,41 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
    * credentials are defined via the environment variable GOOGLE_APPLICATION_CREDENTIALS, and those
    * credentials are authorized to sign a URL. See the documentation for Storage.signUrl for more
    * details.
+   *
+   * <p>If a Service Account has not been specified for Google Cloud Function deployment, then the
+   * Cloud Function will assume the roles of the default IAM Service Account
+   * PROJECT_ID@appspot.gserviceaccount.com at runtime.
+   *
+   * <p>The Service Account for any Java 11 runtime (Compute Engine, App Engine, or GKE) must have
+   * iam.serviceAccounts.signBlob permission. This permission is granted by the Service Account
+   * Token Creator Role. Please refer to
+   *
+   * <p>gcloud iam roles describe roles/iam.serviceAccountTokenCreator
+   *
+   * <p>Generate a short-lived public URL for the Google Storage File Object
+   *
+   * @param projectId the Google Project ID
+   * @param bucketName the Google Storage Bucket
+   * @param objectName the Google Storage Bucket File Object
    */
-  private void generateV4GetObjectSignedUrl(String projectId, String bucketName, String objectName)
+  private URL generateV4GetObjectSignedUrl(String projectId, String bucketName, String objectName)
       throws StorageException {
     Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
 
-    // Define resource
+    // Define resource to sign
     BlobInfo blobInfo = BlobInfo.newBuilder(BlobId.of(bucketName, objectName)).build();
 
     URL url =
-        storage.signUrl(blobInfo, 5, TimeUnit.MINUTES, Storage.SignUrlOption.withV4Signature());
+        storage.signUrl(
+            blobInfo,
+            SIGNED_URL_DURATION_MINUTES,
+            TimeUnit.MINUTES,
+            Storage.SignUrlOption.withV4Signature());
 
     logger.info("Generated GET signed URL:");
-    logger.info(url.toString());
     logger.info("You can use this URL with any user agent, for example:");
     logger.info("curl '" + url + "'");
+
+    return url;
   }
 }
