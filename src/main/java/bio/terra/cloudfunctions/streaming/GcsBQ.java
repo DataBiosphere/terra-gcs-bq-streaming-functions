@@ -45,14 +45,18 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     String bucketName = event.getBucket();
     String objectName = event.getName();
     shortLivedUrl = generateV4GetObjectSignedUrl(projectId, bucketName, objectName);
+    logger.info("Short lived URL" + shortLivedUrl);
 
     InputStream in = shortLivedUrl.openStream();
+
+    // Uncompress .gz as CompressorInputStream
     CompressorStreamFactory compressor = CompressorStreamFactory.getSingleton();
     CompressorInputStream uncompressedInputStream =
         in.markSupported()
             ? compressor.createCompressorInputStream(in)
             : compressor.createCompressorInputStream(new BufferedInputStream(in));
 
+    // Untar .tar as ArchiveInputStream
     ArchiveStreamFactory archiver = new ArchiveStreamFactory();
     ArchiveInputStream archiveInputStream =
         uncompressedInputStream.markSupported()
@@ -91,9 +95,12 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
    *
    * <p>Generate a short-lived public URL for the Google Storage File Object
    *
+   * <p>You can use this URL with any user agent, for example: curl url
+   *
    * @param projectId the Google Project ID
    * @param bucketName the Google Storage Bucket
    * @param objectName the Google Storage Bucket File Object
+   * @return URL object
    */
   private URL generateV4GetObjectSignedUrl(String projectId, String bucketName, String objectName)
       throws StorageException {
@@ -102,17 +109,10 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     // Define resource to sign
     BlobInfo blobInfo = BlobInfo.newBuilder(BlobId.of(bucketName, objectName)).build();
 
-    URL url =
-        storage.signUrl(
-            blobInfo,
-            SIGNED_URL_DURATION_MINUTES,
-            TimeUnit.MINUTES,
-            Storage.SignUrlOption.withV4Signature());
-
-    logger.info("Generated GET signed URL:");
-    logger.info("You can use this URL with any user agent, for example:");
-    logger.info("curl '" + url + "'");
-
-    return url;
+    return storage.signUrl(
+        blobInfo,
+        SIGNED_URL_DURATION_MINUTES,
+        TimeUnit.MINUTES,
+        Storage.SignUrlOption.withV4Signature());
   }
 }
