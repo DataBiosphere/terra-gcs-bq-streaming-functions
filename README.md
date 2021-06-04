@@ -11,21 +11,37 @@ There are a number of Java Deployment options for deploying cloud functions. For
 
 For more details, please refer to the following articles
 
+https://cloud.google.com/blog/topics/developers-practitioners/deploying-serverless-platforms-github-actions
+
 https://cloud.google.com/functions/docs/first-java#gradle_1
 
 https://cloud.google.com/functions/docs/concepts/java-deploy#gradle
 
-Although there is only one cloud function (GcsBQ.java) at the moment. Both `build.gradle` and `cloudbuild.yaml` can easily be extended to build and package multiple Uber JARs for different cloud functions.
+There is only one cloud function (GcsBQ.java) at the moment. Both `build.gradle` and `cloudbuild.yaml` can easily be extended to build and package multiple Uber JARs for different cloud functions.
 
-## Current CI/CD Pipeline
+## Deploying to serverless platforms with GitHub Actions
 
-The current pipeline is to mirror this repository into Google Project Cloud Repository.
+We focus on GitHub Actions that automate the build and deployment of cloud functions to `java11` runtime.
 
-When a push request occurs, it triggers the steps defined in `cloudbuild.yaml` to build the cloud function artifacts (this will be the Uber JARs mentioned earlier).
+The name of the GitHub Actions workflow is `build-backend-function.yml`. 
+The Gradle task `shadowJar` builds the Uber JAR in the local default `build/libs` directory.
+The UBER JAR contains the expected file structure for successful cloud functions deployment.
 
-The artifacts can be zipped and sent to Google Storage Bucket for cloud function deployment.
+This workflow made certain assumptions about the cloud function runtime service account that users should be familiar with.
+It also made certain custom parameters available to `java11` runtime as `envvar`'s that overcomes some limitations in the current Google Cloud Function `java11` binding.
+Ultimately all custom values will come from `deltalayer` as `tfvar`'s so that the cloud function code can be built once and deployed as various cloud functions across different environments.
+For more information on `deltalayer`, please refer to `deltalayer` here[!https://github.com/broadinstitute/terraform-ap-modules/tree/master/deltalayer] and here[!https://github.com/broadinstitute/terraform-ap-deployments/tree/master/deltalayer].
 
-We can also use GitHub Action Workflows to build the artifacts and use `gcloud` command to deploy the cloud functions.
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| `GCLOUD_PROJECT` | Specify the Google Project ID that the Cloud Function deploys to. | `string` | n/a | yes |
+| `service-account` | The runtime Service Account email assumed by Cloud Function | `string` | `PROJECT_ID@appspot.gserviceaccount.com` | no |
+| `GOOGLE_APPLICATION_CREDENTIALS` | The Application Default Credentials that possess `cloudfunction.admin` role | `string` | n/a | yes |
+| `NAME` | The ID of the function or fully qualified identifier for the function | `string` | n/a | yes |
+| `trigger-resource` | The name of the google storage bucket (the string after gs://) that triggers cloud function for consumption. | `string` | n/a | yes |
+| `trigger-event` | Specifies which action should trigger the function. For a list of acceptable values, call `gcloud functions event-types list`. | `string` | n/a | yes |
+| `entry-point` | The fully qualified Java class name of the function. | `string` | n/a | yes |
+| `set-env-vars` | List of comma-separated key-value pairs to set as environment variables. All existing environment variables will be removed first. | `string` | n/a | no |
 
 #### Under Development: terra-gcs-bq-streaming-functions
 
