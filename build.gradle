@@ -28,6 +28,7 @@ dependencies {
         googleFunctionsInvoker = '1.0.2'
         googleBigQuery = '1.131.1'
         googleStorage = '1.115.0'
+        apacheCompress = "1.20"
         gson = "2.8.7"
         googleBigQuery = '1.131.1'
         slf4j = '1.7.30'
@@ -42,6 +43,9 @@ dependencies {
     // See the SLF4J documentation (http://www.slf4j.org/docs.html) for details.
     // Make sure you do not have the jul-to-slf4j bridge.
     implementation group: 'org.slf4j', name: 'slf4j-jdk14', version: "${slf4j}"
+
+    // To decompress .gz, .tar.gz
+    implementation group: 'org.apache.commons', name: 'commons-compress', version: "${apacheCompress}"
 
     // Every function needs this dependency to get the Functions Framework API.
     implementation group: 'com.google.cloud.functions', name: 'functions-framework-api', version: "${googleFunctions}"
