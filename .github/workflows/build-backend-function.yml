@@ -41,8 +41,6 @@ jobs:
         id: build-step
         run: |
           ./gradlew shadowJar
-          ls -l build/libs
-          ls /opt/hostedtoolcache
 
       - name: Deploy Cloud Function
         id: deploy-step
