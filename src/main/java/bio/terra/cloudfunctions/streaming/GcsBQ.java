@@ -4,17 +4,13 @@ import bio.terra.cloudevents.GCSEvent;
 import com.google.cloud.ReadChannel;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageException;
 import com.google.cloud.storage.StorageOptions;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.channels.Channels;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
@@ -24,8 +20,6 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
 
 public class GcsBQ implements BackgroundFunction<GCSEvent> {
   private static final Logger logger = Logger.getLogger(GcsBQ.class.getName());
-  private static final long SIGNED_URL_DURATION_MINUTES = 5;
-  private static volatile URL shortLivedUrl;
 
   /**
    * Cloud Function Event Handler
@@ -46,10 +40,6 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     String projectId = System.getenv("GCLOUD_PROJECT");
     String bucketName = event.getBucket();
     String objectName = event.getName();
-
-    // shortLivedUrl = generateV4GetObjectSignedUrl(projectId, bucketName, objectName);
-    // logger.info("Short lived URL" + shortLivedUrl);
-    // InputStream in = shortLivedUrl.openStream();
 
     InputStream in = getObjectAsInputStream(projectId, bucketName, objectName);
 
@@ -78,48 +68,20 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
   }
 
   /**
-   * Signing a URL requires Credentials which implement ServiceAccountSigner. These can be set
-   * explicitly using the Storage.SignUrlOption.signWith(ServiceAccountSigner) option. If you don't,
-   * you could also pass a service account signer to StorageOptions, i.e.
-   * StorageOptions().newBuilder().setCredentials(ServiceAccountSignerCredentials). In this example,
-   * neither of these options are used, which means the following code only works when the
-   * credentials are defined via the environment variable GOOGLE_APPLICATION_CREDENTIALS, and those
-   * credentials are authorized to sign a URL. See the documentation for Storage.signUrl for more
-   * details.
-   *
-   * <p>If a Service Account has not been specified for Google Cloud Function deployment, then the
+   * If a Service Account has not been specified for Google Cloud Function deployment, then the
    * Cloud Function will assume the roles of the default IAM Service Account
    * PROJECT_ID@appspot.gserviceaccount.com at runtime.
    *
    * <p>The Service Account for any Java 11 runtime (Compute Engine, App Engine, or GKE) must have
-   * iam.serviceAccounts.signBlob permission. This permission is granted by the Service Account
-   * Token Creator Role. Please refer to
+   * appropriate GCS read permissions.
    *
-   * <p>gcloud iam roles describe roles/iam.serviceAccountTokenCreator
-   *
-   * <p>Generate a short-lived public URL for the Google Storage File Object
-   *
-   * <p>You can use this URL with any user agent, for example: curl url
+   * <p>Opens an input stream to GCS Object.
    *
    * @param projectId the Google Project ID
    * @param bucketName the Google Storage Bucket
    * @param objectName the Google Storage Bucket File Object
    * @return URL object
    */
-  private URL generateV4GetObjectSignedUrl(String projectId, String bucketName, String objectName)
-      throws StorageException {
-    Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
-
-    // Define resource to sign
-    BlobInfo blobInfo = BlobInfo.newBuilder(BlobId.of(bucketName, objectName)).build();
-
-    return storage.signUrl(
-        blobInfo,
-        SIGNED_URL_DURATION_MINUTES,
-        TimeUnit.MINUTES,
-        Storage.SignUrlOption.withV4Signature());
-  }
-
   private InputStream getObjectAsInputStream(String projectId, String bucketName, String objectName)
       throws StorageException {
     Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
