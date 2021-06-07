@@ -1,6 +1,7 @@
 package bio.terra.cloudfunctions.streaming;
 
 import bio.terra.cloudevents.GCSEvent;
+import com.google.cloud.ReadChannel;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import com.google.cloud.storage.BlobId;
@@ -11,6 +12,7 @@ import com.google.cloud.storage.StorageOptions;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.channels.Channels;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -44,10 +46,12 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     String projectId = System.getenv("GCLOUD_PROJECT");
     String bucketName = event.getBucket();
     String objectName = event.getName();
-    shortLivedUrl = generateV4GetObjectSignedUrl(projectId, bucketName, objectName);
-    logger.info("Short lived URL" + shortLivedUrl);
 
-    InputStream in = shortLivedUrl.openStream();
+    // shortLivedUrl = generateV4GetObjectSignedUrl(projectId, bucketName, objectName);
+    // logger.info("Short lived URL" + shortLivedUrl);
+    // InputStream in = shortLivedUrl.openStream();
+
+    InputStream in = getObjectAsInputStream(projectId, bucketName, objectName);
 
     // Uncompress .gz as CompressorInputStream
     CompressorStreamFactory compressor = CompressorStreamFactory.getSingleton();
@@ -114,5 +118,12 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
         SIGNED_URL_DURATION_MINUTES,
         TimeUnit.MINUTES,
         Storage.SignUrlOption.withV4Signature());
+  }
+
+  private InputStream getObjectAsInputStream(String projectId, String bucketName, String objectName)
+      throws StorageException {
+    Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
+    ReadChannel reader = storage.reader(bucketName, objectName);
+    return Channels.newInputStream(reader);
   }
 }
