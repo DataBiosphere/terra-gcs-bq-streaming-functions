@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -120,9 +121,7 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
 
     try {
       JsonElement element = JsonParser.parseString(new String(json));
-      logger.info("json parsed");
-      logger.info(element.toString());
-      channel.write(ByteBuffer.wrap(json));
+      channel.write(ByteBuffer.wrap(element.toString().getBytes(StandardCharsets.UTF_8)));
     } catch (Exception e) {
       logger.info("msg:" + e.getMessage());
     } finally {
