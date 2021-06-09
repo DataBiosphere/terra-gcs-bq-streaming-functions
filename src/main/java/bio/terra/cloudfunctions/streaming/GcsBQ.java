@@ -75,7 +75,7 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     ArchiveEntry archiveEntry;
     while ((archiveEntry = archiveInputStream.getNextEntry()) != null) {
       logger.info(archiveEntry.getName() + " " + archiveEntry.getSize() + " bytes");
-      if (archiveEntry.getName().equals("SUMMARY_testRun.json")) {
+      if (archiveEntry.getName().contains("SUMMARY_testRun.json")) {
         logger.info("Processing " + archiveEntry.getName());
         byte[] json = readEntry(archiveInputStream, archiveEntry.getSize());
         logger.info(new String(json));
