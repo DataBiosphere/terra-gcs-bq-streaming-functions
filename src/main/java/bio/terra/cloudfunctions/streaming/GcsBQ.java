@@ -121,6 +121,7 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     try {
       JsonElement element = JsonParser.parseString(new String(json));
       logger.info("json parsed");
+      logger.info(element.toString());
       channel.write(ByteBuffer.wrap(json));
     } catch (Exception e) {
       logger.info("msg:" + e.getMessage());
