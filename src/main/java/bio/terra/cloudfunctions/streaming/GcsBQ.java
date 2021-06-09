@@ -2,13 +2,22 @@ package bio.terra.cloudfunctions.streaming;
 
 import bio.terra.cloudevents.GCSEvent;
 import com.google.cloud.ReadChannel;
+import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.bigquery.FormatOptions;
+import com.google.cloud.bigquery.TableDataWriteChannel;
+import com.google.cloud.bigquery.TableId;
+import com.google.cloud.bigquery.WriteChannelConfiguration;
+import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageException;
 import com.google.cloud.storage.StorageOptions;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -20,6 +29,8 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
 
 public class GcsBQ implements BackgroundFunction<GCSEvent> {
   private static final Logger logger = Logger.getLogger(GcsBQ.class.getName());
+  private static final String DATASET = "stream_dataset";
+  private static final String TABLE = "streamtable";
 
   /**
    * Cloud Function Event Handler
@@ -64,6 +75,27 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     ArchiveEntry archiveEntry;
     while ((archiveEntry = archiveInputStream.getNextEntry()) != null) {
       logger.info(archiveEntry.getName() + " " + archiveEntry.getSize() + " bytes");
+      if (archiveEntry.getName().equals("SUMMARY_testRun.json")) {
+        byte[] json = readEntry(archiveInputStream, archiveEntry.getSize());
+        logger.info(new String(json));
+        streamToBQ(projectId, DATASET, TABLE, json);
+      }
+    }
+  }
+
+  private void streamToBQ(String projectId, String dataset, String table, byte[] json)
+      throws IOException {
+    TableId tableId = TableId.of(projectId, dataset, table);
+    WriteChannelConfiguration configuration =
+        WriteChannelConfiguration.newBuilder(tableId)
+            .setFormatOptions(FormatOptions.json())
+            .build();
+    BigQuery bigquery = RemoteBigQueryHelper.create().getOptions().getService();
+    TableDataWriteChannel channel = bigquery.writer(configuration);
+    try {
+      channel.write(ByteBuffer.wrap(json));
+    } finally {
+      channel.close();
     }
   }
 
@@ -87,5 +119,19 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
     ReadChannel reader = storage.reader(bucketName, objectName);
     return Channels.newInputStream(reader);
+  }
+
+  private byte[] readEntry(InputStream input, final long size) throws IOException {
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    int bufferSize = 1024;
+    byte[] buffer = new byte[bufferSize + 1];
+    long remaining = size;
+    while (remaining > 0) {
+      int len = (int) Math.min(remaining, bufferSize);
+      int read = input.read(buffer, 0, len);
+      remaining -= read;
+      output.write(buffer, 0, read);
+    }
+    return output.toByteArray();
   }
 }
