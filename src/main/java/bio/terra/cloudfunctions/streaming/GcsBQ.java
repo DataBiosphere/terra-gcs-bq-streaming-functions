@@ -96,6 +96,8 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     TableDataWriteChannel channel = bigquery.writer(configuration);
     try {
       channel.write(ByteBuffer.wrap(json));
+    } catch (Exception e) {
+      logger.info(e.getMessage());
     } finally {
       channel.close();
     }
