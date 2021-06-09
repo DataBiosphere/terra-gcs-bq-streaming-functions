@@ -29,8 +29,8 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
 
 public class GcsBQ implements BackgroundFunction<GCSEvent> {
   private static final Logger logger = Logger.getLogger(GcsBQ.class.getName());
-  private static final String DATASET = "stream_dataset";
-  private static final String TABLE = "streamtable";
+  private static final String DATASET = "simple_stream_dataset";
+  private static final String TABLE = "simple_streamtable";
 
   /**
    * Cloud Function Event Handler
