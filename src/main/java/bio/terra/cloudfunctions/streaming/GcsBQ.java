@@ -36,9 +36,13 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
   private static final String TABLE = "simple_streamtable";
   private static final Schema schema =
       Schema.of(
-          Field.of("id", StandardSQLTypeName.STRING),
-          Field.of("first_name", StandardSQLTypeName.STRING),
-          Field.of("last_name", StandardSQLTypeName.STRING));
+          Field.newBuilder("id", StandardSQLTypeName.STRING).setMode(Field.Mode.REQUIRED).build(),
+          Field.newBuilder("first_name", StandardSQLTypeName.STRING)
+              .setMode(Field.Mode.REQUIRED)
+              .build(),
+          Field.newBuilder("last_name", StandardSQLTypeName.STRING)
+              .setMode(Field.Mode.REQUIRED)
+              .build());
 
   /**
    * Cloud Function Event Handler
