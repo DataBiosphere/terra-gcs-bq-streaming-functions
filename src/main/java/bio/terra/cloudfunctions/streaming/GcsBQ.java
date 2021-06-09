@@ -6,6 +6,7 @@ import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.FormatOptions;
 import com.google.cloud.bigquery.JobInfo;
+import com.google.cloud.bigquery.LegacySQLTypeName;
 import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.StandardSQLTypeName;
 import com.google.cloud.bigquery.TableDataWriteChannel;
@@ -40,7 +41,7 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
   private static final String TABLE = "simple_streamtable";
   private static final String TABLE1 = "us_states_streamtable";
   private static final String TABLE2 = "SUMMARY_testRun";
-  private static final Schema schema =
+  private static final Schema SCHEMA =
       Schema.of(
           Field.newBuilder("id", StandardSQLTypeName.STRING).setMode(Field.Mode.REQUIRED).build(),
           Field.newBuilder("first_name", StandardSQLTypeName.STRING)
@@ -49,10 +50,86 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
           Field.newBuilder("last_name", StandardSQLTypeName.STRING)
               .setMode(Field.Mode.REQUIRED)
               .build());
-  private static final Schema schema1 =
+  private static final Schema SCHEMA1 =
       Schema.of(
           Field.of("name", StandardSQLTypeName.STRING),
           Field.of("post_abbr", StandardSQLTypeName.STRING));
+  private static final Schema SCHEMA2 =
+      Schema.of(
+          Field.newBuilder("id", StandardSQLTypeName.STRING).setMode(Field.Mode.REQUIRED).build(),
+          Field.newBuilder("startTime", StandardSQLTypeName.INT64)
+              .setMode(Field.Mode.REQUIRED)
+              .build(),
+          Field.newBuilder("endTime", StandardSQLTypeName.INT64)
+              .setMode(Field.Mode.REQUIRED)
+              .build(),
+          Field.newBuilder("startUserJourneyTime", StandardSQLTypeName.INT64)
+              .setMode(Field.Mode.REQUIRED)
+              .build(),
+          Field.newBuilder("endUserJourneyTime", StandardSQLTypeName.INT64)
+              .setMode(Field.Mode.REQUIRED)
+              .build(),
+          Field.newBuilder("startTimestamp", StandardSQLTypeName.TIMESTAMP)
+              .setMode(Field.Mode.REQUIRED)
+              .build(),
+          Field.newBuilder("endTimestamp", StandardSQLTypeName.TIMESTAMP)
+              .setMode(Field.Mode.REQUIRED)
+              .build(),
+          Field.newBuilder("startUserJourneyTimestamp", StandardSQLTypeName.TIMESTAMP)
+              .setMode(Field.Mode.REQUIRED)
+              .build(),
+          Field.newBuilder("endUserJourneyTimestamp", StandardSQLTypeName.TIMESTAMP)
+              .setMode(Field.Mode.REQUIRED)
+              .build(),
+          Field.newBuilder(
+                  "testScriptResultSummaries",
+                  LegacySQLTypeName.RECORD,
+                  Field.newBuilder("testScriptDescription", StandardSQLTypeName.STRING)
+                      .setMode(Field.Mode.NULLABLE)
+                      .build(),
+                  Field.newBuilder(
+                          "elapsedTimeStatistics",
+                          LegacySQLTypeName.RECORD,
+                          Field.newBuilder("min", StandardSQLTypeName.FLOAT64)
+                              .setMode(Field.Mode.REQUIRED)
+                              .build(),
+                          Field.newBuilder("max", StandardSQLTypeName.FLOAT64)
+                              .setMode(Field.Mode.REQUIRED)
+                              .build(),
+                          Field.newBuilder("mean", StandardSQLTypeName.FLOAT64)
+                              .setMode(Field.Mode.REQUIRED)
+                              .build(),
+                          Field.newBuilder("standardDeviation", StandardSQLTypeName.FLOAT64)
+                              .setMode(Field.Mode.REQUIRED)
+                              .build(),
+                          Field.newBuilder("median", StandardSQLTypeName.FLOAT64)
+                              .setMode(Field.Mode.REQUIRED)
+                              .build(),
+                          Field.newBuilder("percentile95", StandardSQLTypeName.FLOAT64)
+                              .setMode(Field.Mode.REQUIRED)
+                              .build(),
+                          Field.newBuilder("percentile99", StandardSQLTypeName.FLOAT64)
+                              .setMode(Field.Mode.REQUIRED)
+                              .build(),
+                          Field.newBuilder("sum", StandardSQLTypeName.FLOAT64)
+                              .setMode(Field.Mode.REQUIRED)
+                              .build())
+                      .setMode(Field.Mode.REQUIRED)
+                      .build(),
+                  Field.newBuilder("totalRun", StandardSQLTypeName.INT64)
+                      .setMode(Field.Mode.NULLABLE)
+                      .build(),
+                  Field.newBuilder("numCompleted", StandardSQLTypeName.INT64)
+                      .setMode(Field.Mode.NULLABLE)
+                      .build(),
+                  Field.newBuilder("numExceptionsThrown", StandardSQLTypeName.INT64)
+                      .setMode(Field.Mode.NULLABLE)
+                      .build(),
+                  Field.newBuilder("isFailure", StandardSQLTypeName.BOOL)
+                      .setMode(Field.Mode.NULLABLE)
+                      .build())
+              .setMode(Field.Mode.REPEATED)
+              .build());
 
   /**
    * Cloud Function Event Handler
@@ -101,13 +178,14 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
         logger.info("Processing " + archiveEntry.getName());
         byte[] json = readEntry(archiveInputStream, archiveEntry.getSize());
         logger.info(new String(json));
-        streamToBQ(projectId, DATASET, TABLE2, json);
+        streamToBQ(projectId, DATASET, TABLE2, SCHEMA2, json);
       }
     }
   }
 
   // Open a channel to stream json string to BigQuery
-  private void streamToBQ(String projectId, String dataset, String table, byte[] json)
+  private void streamToBQ(
+      String projectId, String dataset, String table, Schema schema, byte[] json)
       throws IOException {
     TableId tableId = TableId.of(projectId, dataset, table);
     logger.info(tableId.getProject() + ":" + tableId.getDataset() + ":" + tableId.getTable());
@@ -115,7 +193,7 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
         WriteChannelConfiguration.newBuilder(tableId)
             .setFormatOptions(FormatOptions.json())
             .setCreateDisposition(JobInfo.CreateDisposition.CREATE_IF_NEEDED)
-            // .setSchema(schema)
+            .setSchema(schema)
             .build();
     BigQuery bigquery = RemoteBigQueryHelper.create().getOptions().getService();
     TableDataWriteChannel channel = bigquery.writer(configuration);
