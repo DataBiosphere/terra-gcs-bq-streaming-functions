@@ -88,12 +88,14 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
   private void streamToBQ(String projectId, String dataset, String table, byte[] json)
       throws IOException {
     TableId tableId = TableId.of(projectId, dataset, table);
+    logger.info(tableId.getProject() + ":" + tableId.getDataset() + ":" + tableId.getTable());
     WriteChannelConfiguration configuration =
         WriteChannelConfiguration.newBuilder(tableId)
             .setFormatOptions(FormatOptions.json())
             .build();
     BigQuery bigquery = RemoteBigQueryHelper.create().getOptions().getService();
     TableDataWriteChannel channel = bigquery.writer(configuration);
+    logger.info(channel.toString());
     try {
       channel.write(ByteBuffer.wrap(json));
     } catch (Exception e) {
