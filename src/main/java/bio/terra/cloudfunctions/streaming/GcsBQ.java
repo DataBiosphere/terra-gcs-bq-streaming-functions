@@ -5,6 +5,7 @@ import com.google.cloud.ReadChannel;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.FormatOptions;
+import com.google.cloud.bigquery.JobInfo;
 import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.StandardSQLTypeName;
 import com.google.cloud.bigquery.TableDataWriteChannel;
@@ -43,6 +44,10 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
           Field.newBuilder("last_name", StandardSQLTypeName.STRING)
               .setMode(Field.Mode.REQUIRED)
               .build());
+  private static final Schema schema1 =
+      Schema.of(
+          Field.of("name", StandardSQLTypeName.STRING),
+          Field.of("post_abbr", StandardSQLTypeName.STRING));
 
   /**
    * Cloud Function Event Handler
@@ -104,7 +109,8 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     WriteChannelConfiguration configuration =
         WriteChannelConfiguration.newBuilder(tableId)
             .setFormatOptions(FormatOptions.json())
-            .setSchema(schema)
+            .setCreateDisposition(JobInfo.CreateDisposition.CREATE_IF_NEEDED)
+            .setSchema(schema1)
             .build();
     BigQuery bigquery = RemoteBigQueryHelper.create().getOptions().getService();
     TableDataWriteChannel channel = bigquery.writer(configuration);
