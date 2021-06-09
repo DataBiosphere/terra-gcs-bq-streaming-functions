@@ -5,6 +5,7 @@ import com.google.cloud.ReadChannel;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.FormatOptions;
+import com.google.cloud.bigquery.JobInfo;
 import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.StandardSQLTypeName;
 import com.google.cloud.bigquery.TableDataWriteChannel;
@@ -38,6 +39,7 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
   private static final String DATASET = "simple_stream_dataset";
   private static final String TABLE = "simple_streamtable";
   private static final String TABLE1 = "us_states_streamtable";
+  private static final String TABLE2 = "SUMMARY_testRun";
   private static final Schema schema =
       Schema.of(
           Field.newBuilder("id", StandardSQLTypeName.STRING).setMode(Field.Mode.REQUIRED).build(),
@@ -99,7 +101,7 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
         logger.info("Processing " + archiveEntry.getName());
         byte[] json = readEntry(archiveInputStream, archiveEntry.getSize());
         logger.info(new String(json));
-        streamToBQ(projectId, DATASET, TABLE, json);
+        streamToBQ(projectId, DATASET, TABLE2, json);
       }
     }
   }
@@ -112,7 +114,7 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     WriteChannelConfiguration configuration =
         WriteChannelConfiguration.newBuilder(tableId)
             .setFormatOptions(FormatOptions.json())
-            // .setCreateDisposition(JobInfo.CreateDisposition.CREATE_IF_NEEDED)
+            .setCreateDisposition(JobInfo.CreateDisposition.CREATE_IF_NEEDED)
             // .setSchema(schema)
             .build();
     BigQuery bigquery = RemoteBigQueryHelper.create().getOptions().getService();
