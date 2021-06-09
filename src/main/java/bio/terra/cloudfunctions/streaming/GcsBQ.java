@@ -38,23 +38,8 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
 public class GcsBQ implements BackgroundFunction<GCSEvent> {
   private static final Logger logger = Logger.getLogger(GcsBQ.class.getName());
   private static final String DATASET = "simple_stream_dataset";
-  private static final String TABLE = "simple_streamtable";
-  private static final String TABLE1 = "us_states_streamtable";
-  private static final String TABLE2 = "SUMMARY_testRun";
+  private static final String TABLE = "SUMMARY_testRun";
   private static final Schema SCHEMA =
-      Schema.of(
-          Field.newBuilder("id", StandardSQLTypeName.STRING).setMode(Field.Mode.REQUIRED).build(),
-          Field.newBuilder("first_name", StandardSQLTypeName.STRING)
-              .setMode(Field.Mode.REQUIRED)
-              .build(),
-          Field.newBuilder("last_name", StandardSQLTypeName.STRING)
-              .setMode(Field.Mode.REQUIRED)
-              .build());
-  private static final Schema SCHEMA1 =
-      Schema.of(
-          Field.of("name", StandardSQLTypeName.STRING),
-          Field.of("post_abbr", StandardSQLTypeName.STRING));
-  private static final Schema SCHEMA2 =
       Schema.of(
           Field.newBuilder("id", StandardSQLTypeName.STRING).setMode(Field.Mode.REQUIRED).build(),
           Field.newBuilder("startTime", StandardSQLTypeName.INT64)
@@ -173,12 +158,11 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     // When getNextEntry returns null, you’re at the end of the archive.
     ArchiveEntry archiveEntry;
     while ((archiveEntry = archiveInputStream.getNextEntry()) != null) {
-      logger.info(archiveEntry.getName() + " " + archiveEntry.getSize() + " bytes");
-      if (archiveEntry.getName().contains("SUMMARY_testRun.json")) {
-        logger.info("Processing " + archiveEntry.getName());
+      if (archiveEntry.getName().contains(TABLE)) {
+        logger.info(
+            "Processing " + archiveEntry.getName() + " " + archiveEntry.getSize() + " bytes");
         byte[] json = readEntry(archiveInputStream, archiveEntry.getSize());
-        logger.info(new String(json));
-        streamToBQ(projectId, DATASET, TABLE2, SCHEMA2, json);
+        streamToBQ(projectId, DATASET, TABLE, SCHEMA, json);
       }
     }
   }
@@ -188,7 +172,6 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
       String projectId, String dataset, String table, Schema schema, byte[] json)
       throws IOException {
     TableId tableId = TableId.of(projectId, dataset, table);
-    logger.info(tableId.getProject() + ":" + tableId.getDataset() + ":" + tableId.getTable());
     WriteChannelConfiguration configuration =
         WriteChannelConfiguration.newBuilder(tableId)
             .setFormatOptions(FormatOptions.json())
@@ -197,14 +180,10 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
             .build();
     BigQuery bigquery = RemoteBigQueryHelper.create().getOptions().getService();
     TableDataWriteChannel channel = bigquery.writer(configuration);
-    logger.info(channel.toString());
 
     try {
       JsonElement element = JsonParser.parseString(new String(json));
-      logger.info(element.toString());
       channel.write(ByteBuffer.wrap(element.toString().getBytes(StandardCharsets.UTF_8)));
-    } catch (Exception e) {
-      logger.info("msg:" + e.getMessage());
     } finally {
       channel.close();
     }
