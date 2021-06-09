@@ -16,6 +16,8 @@ import com.google.cloud.functions.Context;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageException;
 import com.google.cloud.storage.StorageOptions;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -115,7 +117,11 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     BigQuery bigquery = RemoteBigQueryHelper.create().getOptions().getService();
     TableDataWriteChannel channel = bigquery.writer(configuration);
     logger.info(channel.toString());
+
     try {
+      JsonParser parser = new JsonParser();
+      JsonElement element = parser.parseString(new String(json));
+      logger.info(element.getAsString());
       channel.write(ByteBuffer.wrap(json));
     } catch (Exception e) {
       logger.info(e.getMessage());
