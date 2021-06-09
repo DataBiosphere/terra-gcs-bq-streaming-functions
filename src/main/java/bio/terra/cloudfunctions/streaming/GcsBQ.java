@@ -83,6 +83,7 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     }
   }
 
+  // Open a channel to stream json string to BigQuery
   private void streamToBQ(String projectId, String dataset, String table, byte[] json)
       throws IOException {
     TableId tableId = TableId.of(projectId, dataset, table);
