@@ -3,7 +3,10 @@ package bio.terra.cloudfunctions.streaming;
 import bio.terra.cloudevents.GCSEvent;
 import com.google.cloud.ReadChannel;
 import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.FormatOptions;
+import com.google.cloud.bigquery.Schema;
+import com.google.cloud.bigquery.StandardSQLTypeName;
 import com.google.cloud.bigquery.TableDataWriteChannel;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.WriteChannelConfiguration;
@@ -31,6 +34,11 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
   private static final Logger logger = Logger.getLogger(GcsBQ.class.getName());
   private static final String DATASET = "simple_stream_dataset";
   private static final String TABLE = "simple_streamtable";
+  private static final Schema schema =
+      Schema.of(
+          Field.of("id", StandardSQLTypeName.STRING),
+          Field.of("first_name", StandardSQLTypeName.STRING),
+          Field.of("last_name", StandardSQLTypeName.STRING));
 
   /**
    * Cloud Function Event Handler
@@ -92,6 +100,7 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     WriteChannelConfiguration configuration =
         WriteChannelConfiguration.newBuilder(tableId)
             .setFormatOptions(FormatOptions.json())
+            .setSchema(schema)
             .build();
     BigQuery bigquery = RemoteBigQueryHelper.create().getOptions().getService();
     TableDataWriteChannel channel = bigquery.writer(configuration);
