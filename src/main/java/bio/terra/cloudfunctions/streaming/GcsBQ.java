@@ -72,6 +72,9 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
                   Field.newBuilder("testScriptDescription", StandardSQLTypeName.STRING)
                       .setMode(Field.Mode.NULLABLE)
                       .build(),
+                  Field.newBuilder("testScriptName", StandardSQLTypeName.STRING)
+                      .setMode(Field.Mode.REQUIRED)
+                      .build(),
                   Field.newBuilder(
                           "elapsedTimeStatistics",
                           LegacySQLTypeName.RECORD,
