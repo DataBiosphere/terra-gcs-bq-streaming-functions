@@ -31,5 +31,9 @@ runs:
             echo $i
             json=${i##*/}
             echo $json
+            JSON=${i%.json}
+            TBL=${JSON##*/}
+            echo $JSON
+            echo $TBL
         done
       shell: bash
