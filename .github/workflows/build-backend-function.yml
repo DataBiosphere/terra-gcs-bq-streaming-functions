@@ -97,7 +97,6 @@ jobs:
 
       - name: Build and deploy the backend function
         id: build-and-deploy
-        if: always()
         uses: ./.github/actions/build-and-deploy-backend-function
         with:
           func: gcs-bq-function
