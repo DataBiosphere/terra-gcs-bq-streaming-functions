@@ -30,10 +30,6 @@ inputs:
     description: 'The Cloud region for the function. Overrides the default functions/region property value for this command invocation'
     required: false
     default: 'us-central1'
-  bucket:
-    description: 'Name of the Google storage bucket'
-    required: true
-    default: 'testrunner-results'
   dataset:
     description: 'Name of the BigQuery dataset'
     required: true
@@ -45,10 +41,15 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Build Cloud Function
+      id: build-step
+      run: |
+        ./gradlew shadowJar
+      shell: bash
+
     - name: Deploy Cloud Function
       id: deploy-step
       run: |
-        ./gradlew shadowJar
         cat src/main/resources/${{ inputs.module }}/envvars.yml | \
             sed "s|_GCLOUD_PROJECT_|${{ env.GCLOUD_PROJECT }}|g" | \
             sed "s|_DATASET_|${{ inputs.dataset }}|g" > ${{ inputs.envvars_yml }}
@@ -84,6 +85,6 @@ runs:
           --runtime=java11 --entry-point=bio.terra.cloudfunctions.streaming.GcsBQ \
           --memory=512MB --region=us-central1 --source=./build/libs \
           --env-vars-file=${{ inputs.envvars_yml }} \
-          --trigger-event=google.storage.object.finalize \
+          --trigger-event=${{ inputs.trigger }}  \
           --trigger-resource=${{ env.GCLOUD_PROJECT }}-${{ inputs.bucket }}
       shell: bash

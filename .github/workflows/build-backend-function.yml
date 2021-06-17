@@ -91,5 +91,9 @@ jobs:
         with:
           func: gcs-bq-function
           module: testrunner
+          entry_point: bio.terra.cloudfunctions.streaming.GcsBQ
+          runtime_memory: 512MB
           bucket: testrunner-results
+          trigger: google.storage.object.finalize
           dataset: simple_stream_dataset
+
