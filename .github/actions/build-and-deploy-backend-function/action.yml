@@ -25,15 +25,10 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Build Cloud Function
-      id: build-step
-      run: |
-        ./gradlew shadowJar
-      shell: bash
-
     - name: Deploy Cloud Function
         id: deploy-step
         run: |
+          ./gradlew shadowJar
           cat src/main/resources/${{ inputs.module }}/envvars.yml | \
               sed "s|_GCLOUD_PROJECT_|${{ env.GCLOUD_PROJECT }}|g" | \
               sed "s|_DATASET_|${{ inputs.dataset }}|g" > ${{ inputs.envvars_yml }}
