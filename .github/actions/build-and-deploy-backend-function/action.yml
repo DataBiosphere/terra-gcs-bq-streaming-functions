@@ -82,3 +82,4 @@ runs:
           --env-vars-file=${{ inputs.envvars_yml }} \
           --trigger-event=google.storage.object.finalize \
           --trigger-resource=${{ env.GCLOUD_PROJECT }}-${{ inputs.bucket }}
+        shell: bash
