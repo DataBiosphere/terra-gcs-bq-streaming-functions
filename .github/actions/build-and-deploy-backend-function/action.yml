@@ -25,13 +25,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # Set up ADC for credentials
-    - uses: google-github-actions/setup-gcloud@master
-      with:
-        service_account_email: ${{ secrets.DEPLOY_CF_SA_EMAIL }}
-        service_account_key: ${{ secrets.DEPLOY_CF_SA_KEY_JSON }}
-        export_default_credentials: true
-
     - name: Build Cloud Function
       id: build-step
       run: |
