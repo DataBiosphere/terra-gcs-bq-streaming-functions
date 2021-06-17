@@ -45,12 +45,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Build Cloud Function
-      id: build-step
-      run: |
-        ./gradlew shadowJar
-      shell: bash
-
     - name: Deploy Cloud Function
       id: deploy-step
       run: |
@@ -77,6 +71,15 @@ runs:
         more ${{ inputs.envvars_yml }}
         gcloud config set project ${{ env.GCLOUD_PROJECT }}
         gcloud functions deploy ${{ inputs.func }} \
+        id: deploy-step
+        run: |
+          ./gradlew shadowJar
+          cat src/main/resources/${{ inputs.module }}/envvars.yml | \
+              sed "s|_GCLOUD_PROJECT_|${{ env.GCLOUD_PROJECT }}|g" | \
+              sed "s|_DATASET_|${{ inputs.dataset }}|g" > ${{ inputs.envvars_yml }}
+          more ${{ inputs.envvars_yml }}
+          gcloud config set project ${{ env.GCLOUD_PROJECT }}
+          gcloud functions deploy ${{ inputs.func }} \
           --runtime=java11 --entry-point=bio.terra.cloudfunctions.streaming.GcsBQ \
           --memory=512MB --region=us-central1 --source=./build/libs \
           --env-vars-file=${{ inputs.envvars_yml }} \
