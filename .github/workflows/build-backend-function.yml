@@ -45,10 +45,14 @@ jobs:
       - name: Deploy Cloud Function
         id: deploy-step
         run: |
+          cat src/main/resources/testrunner/envvars.yml | \
+              sed "s|_GCLOUD_PROJECT_|${{ env.GCLOUD_PROJECT }}|g" | \
+              sed "s|_DATASET_|simple_stream_dataset|g" > /tmp/_envvars_.yml
+          more /tmp/_envvars_.yml
           gcloud config set project ${{ env.GCLOUD_PROJECT }}
           gcloud functions deploy gcs-bq-function \
           --runtime=java11 --entry-point=bio.terra.cloudfunctions.streaming.GcsBQ \
           --memory=512MB --region=us-central1 --source=./build/libs \
-          --set-env-vars=GCLOUD_PROJECT=${{ env.GCLOUD_PROJECT }} \
+          --env-vars-file=/tmp/_envvars_.yml
           --trigger-event=google.storage.object.finalize \
           --trigger-resource=terra-kernel-k8s-testrunner-results
