@@ -43,7 +43,6 @@ jobs:
 
       - name: Create BigQuery Schemas if needed
         id: create-schemas
-        if: always()
         uses: ./.github/actions/create-bq-schemas
         with:
           schemas_dir: schemas
@@ -52,7 +51,6 @@ jobs:
 
       - name: Build and deploy the backend function
         id: build-and-deploy
-        if: always()
         uses: ./.github/actions/build-and-deploy-backend-function
         with:
           func: gcs-bq-function
