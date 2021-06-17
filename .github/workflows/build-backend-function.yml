@@ -91,8 +91,7 @@ jobs:
         if: always()
         uses: ./.github/actions/create-bq-schemas
         with:
-          schema_dir: schemas
+          schemas_dir: schemas
           module: testrunner
           dataset: simple_stream_dataset
-
 
