@@ -25,5 +25,8 @@ runs:
             NOEXT=${i%.json}
             TBL=${NOEXT##*/}
             echo ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL}
+            echo $i
+            bq show --schema ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL} || \
+                bq mk --table ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL} $i
         done
       shell: bash
