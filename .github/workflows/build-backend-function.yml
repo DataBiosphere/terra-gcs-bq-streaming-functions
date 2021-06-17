@@ -50,3 +50,15 @@ jobs:
           module: testrunner
           dataset: simple_stream_dataset
 
+      - name: Build and deploy the backend function
+        id: build-and-deploy
+        if: always()
+        uses: ./.github/actions/build-and-deploy-backend-function
+        with:
+          func: gcs-bq-function
+          module: testrunner
+          entry_point: bio.terra.cloudfunctions.streaming.GcsBQ
+          runtime_memory: 512MB
+          bucket: testrunner-results
+          trigger: google.storage.object.finalize
+          dataset: simple_stream_dataset
