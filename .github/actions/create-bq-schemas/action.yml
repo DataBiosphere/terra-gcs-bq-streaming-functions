@@ -28,5 +28,6 @@ runs:
             echo $i
             bq show --schema ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL} || \
                 bq mk --table ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL} $i
+            echo $i
         done
       shell: bash

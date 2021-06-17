@@ -86,14 +86,13 @@ jobs:
 
       - name: Build and deploy the backend function
         id: build-and-deploy
+      - name: Create BigQuery Schemas
+        id: create-schemas
         if: always()
-        uses: ./.github/actions/build-and-deploy-backend-function
+        uses: ./.github/actions/create-bq-schemas
         with:
-          func: gcs-bq-function
+          schema_dir: schemas
           module: testrunner
-          entry_point: bio.terra.cloudfunctions.streaming.GcsBQ
-          runtime_memory: 512MB
-          bucket: testrunner-results
-          trigger: google.storage.object.finalize
           dataset: simple_stream_dataset
+
 
