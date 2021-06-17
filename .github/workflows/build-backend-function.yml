@@ -53,6 +53,6 @@ jobs:
           gcloud functions deploy gcs-bq-function \
           --runtime=java11 --entry-point=bio.terra.cloudfunctions.streaming.GcsBQ \
           --memory=512MB --region=us-central1 --source=./build/libs \
-          --env-vars-file=/tmp/_envvars_.yml
+          --env-vars-file=/tmp/_envvars_.yml \
           --trigger-event=google.storage.object.finalize \
           --trigger-resource=terra-kernel-k8s-testrunner-results
