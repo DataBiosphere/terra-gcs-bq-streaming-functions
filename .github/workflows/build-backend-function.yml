@@ -32,6 +32,9 @@ jobs:
         run: chmod +x gradlew
 
       # Set up ADC for credentials
+      # Ideally this step should be part of action.yml but
+      # GHA does not yet support action within action so we're stuck.
+      # Please refer to https://github.com/actions/runner/pull/612 for updates.
       - uses: google-github-actions/setup-gcloud@master
         with:
           service_account_email: ${{ secrets.DEPLOY_CF_SA_EMAIL }}
@@ -45,7 +48,9 @@ jobs:
         with:
           func: gcs-bq-function
           module: testrunner
+          entry_point: bio.terra.cloudfunctions.streaming.GcsBQ
+          runtime_memory: 512MB
           bucket: testrunner-results
+          trigger: google.storage.object.finalize
           dataset: simple_stream_dataset
-
 
