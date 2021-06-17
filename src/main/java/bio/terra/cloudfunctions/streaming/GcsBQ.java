@@ -37,8 +37,10 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
 
 public class GcsBQ implements BackgroundFunction<GCSEvent> {
   private static final Logger logger = Logger.getLogger(GcsBQ.class.getName());
-  //private static final String DATASET = "simple_stream_dataset";
-  //private static final String TABLE = "SUMMARY_testRun";
+  // This SCHEMA code is now replaced by the json representation in resources/<module>/schemas.
+  // The creation of the table is delegated to the bq cli rather than in code here.
+  // BigQuery Java API does not yet support instantiating Schema object from Json.
+  // We will keep this SCHEMA code here in case we need it in the future.
   private static final Schema SCHEMA =
       Schema.of(
           Field.newBuilder("id", StandardSQLTypeName.STRING).setMode(Field.Mode.REQUIRED).build(),
@@ -166,28 +168,26 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
       if (archiveEntry.getName().contains(table)) {
         logger.info(
             "Processing " + archiveEntry.getName() + " " + archiveEntry.getSize() + " bytes");
-        byte[] json = readEntry(archiveInputStream, archiveEntry.getSize());
-        streamToBQ(projectId, dataSet, table, SCHEMA, json);
+        byte[] datajson = readEntry(archiveInputStream, archiveEntry.getSize());
+        streamToBQ(projectId, dataSet, table, datajson);
       }
     }
   }
 
   // Open a channel to stream json string to BigQuery
-  private void streamToBQ(
-      String projectId, String dataset, String table, Schema schema, byte[] json)
+  private void streamToBQ(String projectId, String dataset, String table, byte[] data)
       throws IOException {
     TableId tableId = TableId.of(projectId, dataset, table);
     WriteChannelConfiguration configuration =
         WriteChannelConfiguration.newBuilder(tableId)
             .setFormatOptions(FormatOptions.json())
             .setCreateDisposition(JobInfo.CreateDisposition.CREATE_NEVER)
-            //setSchema(schema)
             .build();
     BigQuery bigquery = RemoteBigQueryHelper.create().getOptions().getService();
     TableDataWriteChannel channel = bigquery.writer(configuration);
 
     try {
-      JsonElement element = JsonParser.parseString(new String(json));
+      JsonElement element = JsonParser.parseString(new String(data));
       channel.write(ByteBuffer.wrap(element.toString().getBytes(StandardCharsets.UTF_8)));
     } finally {
       channel.close();
