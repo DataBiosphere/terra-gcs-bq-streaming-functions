@@ -1,0 +1,53 @@
+name: 'build-and-deploy-backend-function'
+description: 'Build and deploy a backend function to Java 11 runtime'
+author: ''
+inputs:
+  func:
+    description: 'The fully specified name of the cloud function'
+    required: true
+    default: 'backend-function'
+  module:
+    description: 'Name of the module deployment'
+    required: true
+    default: 'testrunner'
+  bucket:
+    description: 'Name of the Google storage bucket'
+    required: true
+    default: 'testrunner-results'
+  dataset:
+    description: 'Name of the BigQuery dataset'
+    required: true
+    default: 'simple_stream_dataset'
+  envvars_yml:
+    description: 'Full path to a local YAML file with definitions for all environment variables'
+    required: false
+    default: '/tmp/_envvars_.yml'
+runs:
+  using: "composite"
+  steps:
+    # Set up ADC for credentials
+    - uses: google-github-actions/setup-gcloud@master
+      with:
+        service_account_email: ${{ secrets.DEPLOY_CF_SA_EMAIL }}
+        service_account_key: ${{ secrets.DEPLOY_CF_SA_KEY_JSON }}
+        export_default_credentials: true
+
+    - name: Build Cloud Function
+      id: build-step
+      run: |
+        ./gradlew shadowJar
+
+    - name: Deploy Cloud Function
+        id: deploy-step
+        run: |
+          cat src/main/resources/${{ inputs.module }}/envvars.yml | \
+              sed "s|_GCLOUD_PROJECT_|${{ env.GCLOUD_PROJECT }}|g" | \
+              sed "s|_DATASET_|${{ inputs.dataset }}|g" > ${{ inputs.envvars_yml }}
+          more ${{ inputs.envvars_yml }}
+          gcloud config set project ${{ env.GCLOUD_PROJECT }}
+          gcloud functions deploy ${{ inputs.func }} \
+          --runtime=java11 --entry-point=bio.terra.cloudfunctions.streaming.GcsBQ \
+          --memory=512MB --region=us-central1 --source=./build/libs \
+          --env-vars-file=${{ inputs.envvars_yml }} \
+          --trigger-event=google.storage.object.finalize \
+          --trigger-resource=${{ env.GCLOUD_PROJECT }}-${{ inputs.bucket }}
