@@ -22,9 +22,8 @@ runs:
       run: |
         for i in src/main/resources/${{ inputs.module }}/${{ inputs.schemas_dir }}/*.json; do
             [ -f "$i" ] || break
-            JSON=${i%.json}
-            TBL=${JSON##*/}
-            echo $JSON
-            echo $TBL
+            NOEXT=${i%.json}
+            TBL=${NOEXT##*/}
+            echo ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL}
         done
       shell: bash
