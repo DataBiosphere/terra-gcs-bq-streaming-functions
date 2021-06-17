@@ -29,6 +29,7 @@ runs:
       id: build-step
       run: |
         ./gradlew shadowJar
+      shell: bash
 
     - name: Deploy Cloud Function
         id: deploy-step
