@@ -37,8 +37,8 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
 
 public class GcsBQ implements BackgroundFunction<GCSEvent> {
   private static final Logger logger = Logger.getLogger(GcsBQ.class.getName());
-  private static final String DATASET = "simple_stream_dataset";
-  private static final String TABLE = "SUMMARY_testRun";
+  //private static final String DATASET = "simple_stream_dataset";
+  //private static final String TABLE = "SUMMARY_testRun";
   private static final Schema SCHEMA =
       Schema.of(
           Field.newBuilder("id", StandardSQLTypeName.STRING).setMode(Field.Mode.REQUIRED).build(),
@@ -136,6 +136,8 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
       logger.info("Key = " + entry.getKey() + ", Value = " + entry.getValue());
 
     String projectId = System.getenv("GCLOUD_PROJECT");
+    String dataSet = System.getenv("DATASET");
+    String table = System.getenv("TABLE");
     String bucketName = event.getBucket();
     String objectName = event.getName();
 
@@ -161,11 +163,11 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     // When getNextEntry returns null, you’re at the end of the archive.
     ArchiveEntry archiveEntry;
     while ((archiveEntry = archiveInputStream.getNextEntry()) != null) {
-      if (archiveEntry.getName().contains(TABLE)) {
+      if (archiveEntry.getName().contains(table)) {
         logger.info(
             "Processing " + archiveEntry.getName() + " " + archiveEntry.getSize() + " bytes");
         byte[] json = readEntry(archiveInputStream, archiveEntry.getSize());
-        streamToBQ(projectId, DATASET, TABLE, SCHEMA, json);
+        streamToBQ(projectId, dataSet, table, SCHEMA, json);
       }
     }
   }
@@ -178,8 +180,8 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     WriteChannelConfiguration configuration =
         WriteChannelConfiguration.newBuilder(tableId)
             .setFormatOptions(FormatOptions.json())
-            .setCreateDisposition(JobInfo.CreateDisposition.CREATE_IF_NEEDED)
-            .setSchema(schema)
+            .setCreateDisposition(JobInfo.CreateDisposition.CREATE_NEVER)
+            //setSchema(schema)
             .build();
     BigQuery bigquery = RemoteBigQueryHelper.create().getOptions().getService();
     TableDataWriteChannel channel = bigquery.writer(configuration);
