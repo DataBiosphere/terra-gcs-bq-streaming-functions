@@ -1,6 +1,5 @@
 package bio.terra.cloudfunctions.streaming;
 
-import bio.terra.cloudevents.GCSEvent;
 import com.google.cloud.ReadChannel;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.Field;
@@ -18,6 +17,7 @@ import com.google.cloud.functions.RawBackgroundFunction;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageException;
 import com.google.cloud.storage.StorageOptions;
+import com.google.events.cloud.storage.v1.StorageObjectData;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -135,7 +135,7 @@ public class GcsBQ implements RawBackgroundFunction {
     logger.info("Event: " + context.eventId());
     logger.info("Event Type: " + context.eventType());
     logger.info("Event String: " + event1.toString());
-    GCSEvent event = gson.fromJson(event1, GCSEvent.class);
+    StorageObjectData event = gson.fromJson(event1, StorageObjectData.class);
     logger.info("Event Json String: " + event.toString());
 
     for (Map.Entry<String, String> entry : System.getenv().entrySet())
