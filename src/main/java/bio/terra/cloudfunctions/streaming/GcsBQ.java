@@ -136,7 +136,7 @@ public class GcsBQ implements RawBackgroundFunction {
     logger.info("Event: " + context.eventId());
     logger.info("Event Type: " + context.eventType());
     logger.info("Event String: " + event1.toString());
-    /*GCSEvent event = gson.fromJson(event1, GCSEvent.class);
+    GCSEvent event = gson.fromJson(event1, GCSEvent.class);
     logger.info("Event Json String: " + event.toString());
 
     for (Map.Entry<String, String> entry : System.getenv().entrySet())
@@ -176,7 +176,7 @@ public class GcsBQ implements RawBackgroundFunction {
         byte[] datajson = readEntry(archiveInputStream, archiveEntry.getSize());
         streamToBQ(projectId, dataSet, table, datajson);
       }
-    }*/
+    }
   }
 
   // Open a channel to stream json string to BigQuery
