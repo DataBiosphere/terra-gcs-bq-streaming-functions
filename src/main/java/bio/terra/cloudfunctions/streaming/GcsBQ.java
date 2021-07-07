@@ -130,8 +130,9 @@ public class GcsBQ implements BackgroundFunction<StorageObjectData> {
    */
   @Override
   public void accept(StorageObjectData event, Context context) throws Exception {
-    logger.info("Event: " + context.eventId());
-    logger.info("Event Type: " + context.eventType());
+    logger.info("Accept event");
+    // logger.info("Event: " + context.eventId());
+    // logger.info("Event Type: " + context.eventType());
     // logger.info(event.toString());
 
     for (Map.Entry<String, String> entry : System.getenv().entrySet())
