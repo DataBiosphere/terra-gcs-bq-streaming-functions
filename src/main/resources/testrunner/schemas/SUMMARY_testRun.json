@@ -1,0 +1,131 @@
+[
+  {
+    "mode": "REQUIRED",
+    "name": "id",
+    "type": "STRING"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "startTime",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "endTime",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "startUserJourneyTime",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "endUserJourneyTime",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "startTimestamp",
+    "type": "TIMESTAMP"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "endTimestamp",
+    "type": "TIMESTAMP"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "startUserJourneyTimestamp",
+    "type": "TIMESTAMP"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "endUserJourneyTimestamp",
+    "type": "TIMESTAMP"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "testScriptDescription",
+        "type": "STRING"
+      },
+      {
+        "mode": "REQUIRED",
+        "name": "testScriptName",
+        "type": "STRING"
+      },
+      {
+        "fields": [
+          {
+            "mode": "REQUIRED",
+            "name": "min",
+            "type": "FLOAT"
+          },
+          {
+            "mode": "REQUIRED",
+            "name": "max",
+            "type": "FLOAT"
+          },
+          {
+            "mode": "REQUIRED",
+            "name": "mean",
+            "type": "FLOAT"
+          },
+          {
+            "mode": "REQUIRED",
+            "name": "standardDeviation",
+            "type": "FLOAT"
+          },
+          {
+            "mode": "REQUIRED",
+            "name": "median",
+            "type": "FLOAT"
+          },
+          {
+            "mode": "REQUIRED",
+            "name": "percentile95",
+            "type": "FLOAT"
+          },
+          {
+            "mode": "REQUIRED",
+            "name": "percentile99",
+            "type": "FLOAT"
+          },
+          {
+            "mode": "REQUIRED",
+            "name": "sum",
+            "type": "FLOAT"
+          }
+        ],
+        "mode": "REQUIRED",
+        "name": "elapsedTimeStatistics",
+        "type": "RECORD"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "totalRun",
+        "type": "INTEGER"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "numCompleted",
+        "type": "INTEGER"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "numExceptionsThrown",
+        "type": "INTEGER"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "isFailure",
+        "type": "BOOLEAN"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "testScriptResultSummaries",
+    "type": "RECORD"
+  }
+]
