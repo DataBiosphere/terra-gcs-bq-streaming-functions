@@ -1,5 +1,6 @@
 package bio.terra.cloudfunctions.streaming;
 
+import bio.terra.cloudevents.GCSEvent;
 import com.google.cloud.ReadChannel;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.Field;
@@ -17,7 +18,7 @@ import com.google.cloud.functions.Context;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageException;
 import com.google.cloud.storage.StorageOptions;
-import com.google.events.cloud.storage.v1.StorageObjectData;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import java.io.BufferedInputStream;
@@ -35,7 +36,7 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 
-public class GcsBQ implements BackgroundFunction<StorageObjectData> {
+public class GcsBQ implements BackgroundFunction<String> {
   private static final Logger logger = Logger.getLogger(GcsBQ.class.getName());
   // This SCHEMA code is now replaced by the json representation in resources/<module>/schemas.
   // The creation of the table is delegated to the bq cli rather than in code here.
@@ -121,19 +122,21 @@ public class GcsBQ implements BackgroundFunction<StorageObjectData> {
               .setMode(Field.Mode.REPEATED)
               .build());
 
+  private static final Gson gson = new Gson();
   /**
    * Cloud Function Event Handler
    *
-   * @param event Native Google Storage PUB/SUB Event
+   * @param event1 Native Google Storage PUB/SUB Event
    * @param context Gloud Function Context
    * @throws Exception
    */
   @Override
-  public void accept(StorageObjectData event, Context context) throws Exception {
-    logger.info("Accept event");
-    // logger.info("Event: " + context.eventId());
-    // logger.info("Event Type: " + context.eventType());
-    // logger.info(event.toString());
+  public void accept(String event1, Context context) throws Exception {
+    logger.info("Event: " + context.eventId());
+    logger.info("Event Type: " + context.eventType());
+    logger.info("Event String: " + event1.toString());
+    GCSEvent event = gson.fromJson(event1, GCSEvent.class);
+    logger.info("Event Json String: " + event.toString());
 
     for (Map.Entry<String, String> entry : System.getenv().entrySet())
       logger.info("Key = " + entry.getKey() + ", Value = " + entry.getValue());
