@@ -18,7 +18,10 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageException;
 import com.google.cloud.storage.StorageOptions;
 import com.google.events.cloud.storage.v1.StorageObjectData;
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import java.io.BufferedInputStream;
@@ -28,6 +31,9 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -122,7 +128,19 @@ public class GcsBQ implements RawBackgroundFunction {
               .setMode(Field.Mode.REPEATED)
               .build());
 
-  private static final Gson gson = new Gson();
+  private static final Gson gson =
+      new GsonBuilder()
+          .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+          .setPrettyPrinting()
+          .registerTypeAdapter(
+              OffsetDateTime.class,
+              (JsonDeserializer<OffsetDateTime>)
+                  (json, type, jsonDeserializationContext) -> {
+                    return new Date(json.getAsJsonPrimitive().getAsLong())
+                        .toInstant()
+                        .atOffset(ZoneOffset.UTC);
+                  })
+          .create();
   /**
    * Cloud Function Event Handler
    *
