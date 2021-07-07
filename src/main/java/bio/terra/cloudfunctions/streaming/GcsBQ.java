@@ -15,6 +15,7 @@ import com.google.cloud.bigquery.WriteChannelConfiguration;
 import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
+import com.google.cloud.functions.RawBackgroundFunction;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageException;
 import com.google.cloud.storage.StorageOptions;
@@ -36,7 +37,7 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 
-public class GcsBQ implements BackgroundFunction<String> {
+public class GcsBQ implements RawBackgroundFunction {
   private static final Logger logger = Logger.getLogger(GcsBQ.class.getName());
   // This SCHEMA code is now replaced by the json representation in resources/<module>/schemas.
   // The creation of the table is delegated to the bq cli rather than in code here.
