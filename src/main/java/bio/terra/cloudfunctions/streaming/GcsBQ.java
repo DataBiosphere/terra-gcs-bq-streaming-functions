@@ -137,9 +137,11 @@ public class GcsBQ implements RawBackgroundFunction {
                   (json, type, jsonDeserializationContext) -> {
                     // logger.info(
                     //    "Json time string: " + json.toString() + ": " + type.getTypeName());
-                    return ZonedDateTime.parse(
-                            json.getAsString(), DateTimeFormatter.ISO_ZONED_DATE_TIME)
-                        .toOffsetDateTime();
+                    return json.getAsString().length() > 0 && json.getAsString() != null
+                        ? ZonedDateTime.parse(
+                                json.getAsString(), DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                            .toOffsetDateTime()
+                        : OffsetDateTime.now();
                     // return OffsetDateTime.parse("2021-07-07T22:57:14.257Z",
                     // DateTimeFormatter.ISO_INSTANT);
                   })
