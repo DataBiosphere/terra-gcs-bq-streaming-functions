@@ -1,5 +1,6 @@
 package bio.terra.cloudfunctions.streaming;
 
+import bio.terra.cloudevents.GCSEvent;
 import com.google.cloud.ReadChannel;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.Field;
@@ -17,11 +18,7 @@ import com.google.cloud.functions.RawBackgroundFunction;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageException;
 import com.google.cloud.storage.StorageOptions;
-import com.google.events.cloud.storage.v1.StorageObjectData;
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import java.io.BufferedInputStream;
@@ -32,7 +29,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -128,24 +124,24 @@ public class GcsBQ implements RawBackgroundFunction {
               .setMode(Field.Mode.REPEATED)
               .build());
 
-  private static final Gson gson =
-      new GsonBuilder()
-          .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
-          .registerTypeAdapter(
-              OffsetDateTime.class,
-              (JsonDeserializer<OffsetDateTime>)
-                  (json, type, jsonDeserializationContext) -> {
-                    // logger.info(
-                    //    "Json time string: " + json.toString() + ": " + type.getTypeName());
-                    return json.getAsString().length() > 0 && json.getAsString() != null
-                        ? ZonedDateTime.parse(
-                                json.getAsString(), DateTimeFormatter.ISO_ZONED_DATE_TIME)
-                            .toOffsetDateTime()
-                        : OffsetDateTime.now();
-                    // return OffsetDateTime.parse("2021-07-07T22:57:14.257Z",
-                    // DateTimeFormatter.ISO_INSTANT);
-                  })
-          .create();
+  private static final Gson gson = new Gson();
+  /*    new GsonBuilder()
+  .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
+  .registerTypeAdapter(
+      OffsetDateTime.class,
+      (JsonDeserializer<OffsetDateTime>)
+          (json, type, jsonDeserializationContext) -> {
+            // logger.info(
+            //    "Json time string: " + json.toString() + ": " + type.getTypeName());
+            return json.getAsString().length() > 0 && json.getAsString() != null
+                ? ZonedDateTime.parse(
+                        json.getAsString(), DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                    .toOffsetDateTime()
+                : OffsetDateTime.now();
+            // return OffsetDateTime.parse("2021-07-07T22:57:14.257Z",
+            // DateTimeFormatter.ISO_INSTANT);
+          })
+  .create();*/
   /**
    * Cloud Function Event Handler
    *
@@ -158,9 +154,9 @@ public class GcsBQ implements RawBackgroundFunction {
     OffsetDateTime.parse("", DateTimeFormatter.ISO_INSTANT);
     logger.info("Event: " + context.eventId());
     logger.info("Event Type: " + context.eventType());
-    logger.info("Event String: " + event1.toString());
-    StorageObjectData event = gson.fromJson(event1, StorageObjectData.class);
-    logger.info("Event Json String: " + event.toString());
+    // logger.info("Event String: " + event1.toString());
+    GCSEvent event = gson.fromJson(event1, GCSEvent.class);
+    // logger.info("Event Json String: " + event.toString());
 
     for (Map.Entry<String, String> entry : System.getenv().entrySet())
       logger.info("Key = " + entry.getKey() + ", Value = " + entry.getValue());
