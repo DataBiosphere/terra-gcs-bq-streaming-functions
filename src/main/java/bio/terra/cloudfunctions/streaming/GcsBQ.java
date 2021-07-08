@@ -129,15 +129,14 @@ public class GcsBQ implements RawBackgroundFunction {
 
   private static final Gson gson =
       new GsonBuilder()
-          .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-          .setPrettyPrinting()
+          .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
           .registerTypeAdapter(
               OffsetDateTime.class,
               (JsonDeserializer<OffsetDateTime>)
                   (json, type, jsonDeserializationContext) -> {
                     logger.info(
-                        "Json time string: " + json.getAsString() + ": " + type.getTypeName());
-                    return OffsetDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_INSTANT);
+                        "Json time string: " + json.toString() + ": " + type.getTypeName());
+                    return OffsetDateTime.parse("2021-07-07T22:57:14.257Z", DateTimeFormatter.ISO_INSTANT);
                   })
           .create();
   /**
