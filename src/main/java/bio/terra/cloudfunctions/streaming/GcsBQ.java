@@ -32,6 +32,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -134,9 +135,13 @@ public class GcsBQ implements RawBackgroundFunction {
               OffsetDateTime.class,
               (JsonDeserializer<OffsetDateTime>)
                   (json, type, jsonDeserializationContext) -> {
-                    logger.info(
-                        "Json time string: " + json.toString() + ": " + type.getTypeName());
-                    return OffsetDateTime.parse("2021-07-07T22:57:14.257Z", DateTimeFormatter.ISO_INSTANT);
+                    // logger.info(
+                    //    "Json time string: " + json.toString() + ": " + type.getTypeName());
+                    return ZonedDateTime.parse(
+                            json.getAsString(), DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                        .toOffsetDateTime();
+                    // return OffsetDateTime.parse("2021-07-07T22:57:14.257Z",
+                    // DateTimeFormatter.ISO_INSTANT);
                   })
           .create();
   /**
