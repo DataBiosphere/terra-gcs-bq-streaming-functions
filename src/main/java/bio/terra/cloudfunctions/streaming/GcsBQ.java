@@ -28,8 +28,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -151,7 +149,6 @@ public class GcsBQ implements RawBackgroundFunction {
    */
   @Override
   public void accept(String event1, Context context) throws Exception {
-    OffsetDateTime.parse("", DateTimeFormatter.ISO_INSTANT);
     logger.info("Event: " + context.eventId());
     logger.info("Event Type: " + context.eventType());
     // logger.info("Event String: " + event1.toString());
