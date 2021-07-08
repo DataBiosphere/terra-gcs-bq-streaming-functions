@@ -134,36 +134,27 @@ public class GcsBQ implements RawBackgroundFunction {
               OffsetDateTime.class,
               (JsonDeserializer<OffsetDateTime>)
                   (json, type, jsonDeserializationContext) -> {
-                    logger.info(
-                        "Json time string: " + json.getAsString() + ": " + type.getTypeName());
                     try {
                       return OffsetDateTime.parse(
                           json.getAsString(), DateTimeFormatter.ISO_INSTANT);
                     } catch (Exception e) {
                       return null;
                     }
-                    /*return json.getAsString().length() > 0 && json.getAsString() != null
-                    ? ZonedDateTime.parse(
-                            json.getAsString(), DateTimeFormatter.ISO_INSTANT)
-                        .toOffsetDateTime()
-                    : OffsetDateTime.now();*/
-                    // return OffsetDateTime.parse("2021-07-07T22:57:14.257Z",
-                    // DateTimeFormatter.ISO_INSTANT);
                   })
           .create();
   /**
    * Cloud Function Event Handler
    *
-   * @param event1 Native Google Storage PUB/SUB Event
+   * @param json Native Google Storage PUB/SUB Event
    * @param context Gloud Function Context
    * @throws Exception
    */
   @Override
-  public void accept(String event1, Context context) throws Exception {
+  public void accept(String json, Context context) throws Exception {
     logger.info("Event: " + context.eventId());
     logger.info("Event Type: " + context.eventType());
-    StorageObjectData event = gson.fromJson(event1, StorageObjectData.class);
-    logger.info("Event Json String: " + event.toString());
+    StorageObjectData event = gson.fromJson(json, StorageObjectData.class);
+    logger.info("Event timeCreated: " + event.getTimeCreated().toString());
 
     for (Map.Entry<String, String> entry : System.getenv().entrySet())
       logger.info("Key = " + entry.getKey() + ", Value = " + entry.getValue());
