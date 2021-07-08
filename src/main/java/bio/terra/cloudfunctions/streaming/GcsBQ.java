@@ -32,7 +32,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -135,13 +134,19 @@ public class GcsBQ implements RawBackgroundFunction {
               OffsetDateTime.class,
               (JsonDeserializer<OffsetDateTime>)
                   (json, type, jsonDeserializationContext) -> {
-                    // logger.info(
-                    //    "Json time string: " + json.toString() + ": " + type.getTypeName());
-                    return json.getAsString().length() > 0 && json.getAsString() != null
-                        ? ZonedDateTime.parse(
-                                json.getAsString(), DateTimeFormatter.ISO_ZONED_DATE_TIME)
-                            .toOffsetDateTime()
-                        : OffsetDateTime.now();
+                    logger.info(
+                        "Json time string: " + json.getAsString() + ": " + type.getTypeName());
+                    try {
+                      return OffsetDateTime.parse(
+                          json.getAsString(), DateTimeFormatter.ISO_INSTANT);
+                    } catch (Exception e) {
+                      return null;
+                    }
+                    /*return json.getAsString().length() > 0 && json.getAsString() != null
+                    ? ZonedDateTime.parse(
+                            json.getAsString(), DateTimeFormatter.ISO_INSTANT)
+                        .toOffsetDateTime()
+                    : OffsetDateTime.now();*/
                     // return OffsetDateTime.parse("2021-07-07T22:57:14.257Z",
                     // DateTimeFormatter.ISO_INSTANT);
                   })
@@ -157,9 +162,8 @@ public class GcsBQ implements RawBackgroundFunction {
   public void accept(String event1, Context context) throws Exception {
     logger.info("Event: " + context.eventId());
     logger.info("Event Type: " + context.eventType());
-    // logger.info("Event String: " + event1.toString());
     StorageObjectData event = gson.fromJson(event1, StorageObjectData.class);
-    // logger.info("Event Json String: " + event.toString());
+    logger.info("Event Json String: " + event.toString());
 
     for (Map.Entry<String, String> entry : System.getenv().entrySet())
       logger.info("Key = " + entry.getKey() + ", Value = " + entry.getValue());
