@@ -10,19 +10,40 @@ public class MediaTypeWrapper {
 
   private MediaType mediaType;
 
+  /**
+   * MediaTypeWrapper constructor.
+   *
+   * @param input the Content-Type represented by the wrapper object, e.g. application/json
+   * @return MediaTypeWrapper object
+   */
   public MediaTypeWrapper(String input) {
     this.mediaType = MediaType.parse(input);
   }
 
+  /**
+   * Check whether the MediaType represented by the wrapper object is equivalent to the provided
+   * parameter.
+   *
+   * @param mediaTypeRange Guava MediaType to compare to
+   * @return true/false
+   */
   public boolean is(MediaType mediaTypeRange) {
     assert (mediaTypeRange != null);
     return mediaType.is(mediaTypeRange);
   }
-
+  /**
+   * Check whether the MediaType represented by the wrapper object is equivalent to GZIP type.
+   *
+   * @return true/false
+   */
   public boolean isApplicationGzip() {
     return is(MediaType.GZIP) || is(MediaTypeWrapper.APPLICATION_GZIP);
   }
-
+  /**
+   * Check whether the MediaType represented by the wrapper object is equivalent to JSON type.
+   *
+   * @return true/false
+   */
   public boolean isApplicationJson() {
     return is(MediaType.JSON_UTF_8) || is(MediaTypeWrapper.APPLICATION_JSON);
   }

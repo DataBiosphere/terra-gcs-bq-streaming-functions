@@ -9,7 +9,11 @@ import java.time.ZonedDateTime;
 
 public class GsonWrapper {
   private static Gson _instance;
-
+  /**
+   * Returns a Gson instance capable of parsing a string that represents OffsetDateTime object.
+   *
+   * @return Gson object
+   */
   public static Gson getInstance() {
     if (_instance == null)
       _instance =
