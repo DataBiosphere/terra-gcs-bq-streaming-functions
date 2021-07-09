@@ -137,9 +137,6 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     for (Map.Entry<String, String> entry : System.getenv().entrySet())
       logger.info("Key = " + entry.getKey() + ", Value = " + entry.getValue());
 
-    logger.info("Content Type: " + event.getContentType());
-    logger.info("Content Encoding: " + event.getContentEncoding());
-
     String projectId = System.getenv("GCLOUD_PROJECT");
     String dataSet = System.getenv("DATASET");
     String table = System.getenv("TABLE");
