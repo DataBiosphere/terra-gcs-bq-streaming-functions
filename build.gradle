@@ -32,10 +32,14 @@ dependencies {
         gson = "2.8.7"
         googleBigQuery = '1.131.1'
         slf4j = '1.7.30'
+        apacheLang3 = "3.12.0"
+        gson = "2.8.7"
+        guava = "30.1.1-jre"
     }
 
     // Gson for Java serialization/deserialization
     implementation group: 'com.google.code.gson', name: 'gson', version: "${gson}"
+
     // This lets you make logging calls to SLF4J’s org.slf4j.Logger in the code.
     implementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4j}"
     // According to https://cloud.google.com/functions/docs/concepts/java-logging,
@@ -44,8 +48,14 @@ dependencies {
     // Make sure you do not have the jul-to-slf4j bridge.
     implementation group: 'org.slf4j', name: 'slf4j-jdk14', version: "${slf4j}"
 
+    // Apache Commons Lang3
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: "${apacheLang3}"
+
     // To decompress .gz, .tar.gz
     implementation group: 'org.apache.commons', name: 'commons-compress', version: "${apacheCompress}"
+
+    // Google Core Libraries For Java
+    implementation group: 'com.google.guava', name: 'guava', version: "${guava}"
 
     // Every function needs this dependency to get the Functions Framework API.
     implementation group: 'com.google.cloud.functions', name: 'functions-framework-api', version: "${googleFunctions}"
