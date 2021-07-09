@@ -33,7 +33,15 @@ public abstract class FileTypeDetector<E extends StorageObjectData>
   public void setInputStream(InputStream inputStream) {
     this.inputStream = inputStream;
   }
-
+  /**
+   * Override the base method in RawBackgroundFunction.
+   *
+   * <p>This is the endpoint triggered by the GCS event. It captures the content type of the object
+   * triggering this method and delegate the file type handling to the handleMediaType() method.
+   *
+   * @param json the String representation of the GCS event
+   * @param context the Cloud Function context
+   */
   @Override
   public final void accept(String json, Context context) throws Exception {
     this.eventContext = context;
@@ -44,7 +52,12 @@ public abstract class FileTypeDetector<E extends StorageObjectData>
     this.mediaType = new MediaTypeWrapper(this.event.getContentType());
     handleMediaType();
   }
-
+  /**
+   * Obtain an input stream from the GCS object and convert it to a typed input stream. It supports
+   * GZIP and JSON file types. For GZIP, the method returns the ArchiveInputStream or
+   * BufferedInputStream to dataStream property, depending on whether the GZIp is a TAR archive or
+   * not. If the file type is JSON, then BufferedInputStream will be returned to dataStream.
+   */
   public void handleMediaType() throws Exception {
     String projectId = System.getenv("GCLOUD_PROJECT");
     if (inputStream == null)
