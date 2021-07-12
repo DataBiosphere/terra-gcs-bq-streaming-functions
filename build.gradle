@@ -93,7 +93,7 @@ dependencies {
 // For more info, please refer to https://cloud.google.com/functions/docs/first-java#gradle_1
 // Register a "runFunction" task to run the function locally
 tasks.register("runFunction", JavaExec) {
-    main = 'com.google.cloud.functions.invoker.runner.Invoker'
+    mainClass = 'com.google.cloud.functions.invoker.runner.Invoker'
     classpath(configurations.invoker)
     inputs.files(configurations.runtimeClasspath, sourceSets.main.output)
     args(
