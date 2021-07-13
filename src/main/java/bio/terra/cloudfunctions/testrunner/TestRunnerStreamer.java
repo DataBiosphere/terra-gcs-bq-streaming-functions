@@ -1,11 +1,10 @@
 package bio.terra.cloudfunctions.testrunner;
 
 import bio.terra.cloudfunctions.common.ContentHandler;
-import com.google.events.cloud.storage.v1.StorageObjectData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestRunnerStreamer extends ContentHandler<StorageObjectData> {
+public class TestRunnerStreamer extends ContentHandler<TestRunnerStorageObjectEvent> {
   private static final Logger logger = LoggerFactory.getLogger(TestRunnerStreamer.class);
 
   @Override

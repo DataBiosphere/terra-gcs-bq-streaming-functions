@@ -5,6 +5,8 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageException;
 import com.google.cloud.storage.StorageOptions;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.Channels;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -64,5 +66,25 @@ public class MediaTypeUtils {
     return in.markSupported()
         ? archiver.createArchiveInputStream(in)
         : archiver.createArchiveInputStream(new BufferedInputStream(in));
+  }
+  /**
+   * Read up to a certain number of bytes given by the size parameter from the input stream.
+   *
+   * @param in the InputStream
+   * @param size number of bytes to read from the input stream
+   * @return byte[] read
+   */
+  public static byte[] readEntry(InputStream in, final long size) throws IOException {
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    int bufferSize = 1024;
+    byte[] buffer = new byte[bufferSize + 1];
+    long remaining = size;
+    while (remaining > 0) {
+      int len = (int) Math.min(remaining, bufferSize);
+      int read = in.read(buffer, 0, len);
+      remaining -= read;
+      output.write(buffer, 0, read);
+    }
+    return output.toByteArray();
   }
 }

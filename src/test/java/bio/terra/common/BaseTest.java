@@ -6,6 +6,8 @@ import bio.terra.cloudfunctions.common.MediaTypeWrapper;
 import com.google.cloud.functions.Context;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 
 public class BaseTest {
@@ -18,6 +20,9 @@ public class BaseTest {
   protected static InputStream MOCK_TGZ;
   protected static InputStream MOCK_GZ;
   protected static InputStream MOCK_JSON;
+  protected static InputStream MOCK_TGZ_DYNAMIC_BQ;
+  protected static String FAKE_DATASET;
+  protected static List<String> FAKE_TABLES;
 
   @Before
   public void setUp() {
@@ -32,6 +37,12 @@ public class BaseTest {
     MOCK_TGZ = getClass().getClassLoader().getResourceAsStream("testfiles/mock_results.tar.gz");
     MOCK_GZ = getClass().getClassLoader().getResourceAsStream("testfiles/SUMMARY_testRun.json.gz");
     MOCK_JSON = getClass().getClassLoader().getResourceAsStream("testfiles/SUMMARY_testRun.json");
+    MOCK_TGZ_DYNAMIC_BQ =
+        getClass().getClassLoader().getResourceAsStream("testfiles/dynamic_dataset.tar.gz");
+    FAKE_DATASET = "bqds";
+    FAKE_TABLES = new ArrayList<>();
+    FAKE_TABLES.add("table1");
+    FAKE_TABLES.add("table2");
   }
 
   public void assertEvent(StorageObjectData event) {
@@ -46,6 +57,12 @@ public class BaseTest {
     // Check Map deserialization
     assertTrue("value1".equals(event.getMetadata().get("key1")));
     assertTrue("value2".equals(event.getMetadata().get("key2")));
+  }
+
+  public void assertCustomEvent(CustomEventData event) {
+    assertEvent(event);
+    assertTrue(event.getDataset().equals("bq_dataset"));
+    assertTrue(event.getTables().size() == 2);
   }
 
   public void verifyMockTGZArchiveEntry(String filename, long bytes) {
@@ -79,6 +96,29 @@ public class BaseTest {
     @Override
     public String resource() {
       return null;
+    }
+  }
+
+  public class CustomEventData extends StorageObjectData {
+    private String dataset;
+    private List<String> tables;
+
+    /** The name of the BigQuery dataset for streaming data. */
+    public String getDataset() {
+      return dataset;
+    }
+
+    public void setDataset(String dataset) {
+      this.dataset = dataset;
+    }
+
+    /** A list of table names associated with the BigQuery dataset. */
+    public List<String> getTables() {
+      return tables;
+    }
+
+    public void setTables(List<String> tables) {
+      this.tables = tables;
     }
   }
 }
