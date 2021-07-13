@@ -21,7 +21,7 @@ public abstract class ContentHandler<E extends StorageObjectData> extends FileTy
     translate();
   }
   /** This insert method is used for inserting the translated data into BigQuery. */
-  public void insert() throws Exception {
+  public void insert(String table, byte[] data) throws Exception {
     throw new UnsupportedOperationException("insert method must be overridden by sub-classes");
   }
 }

@@ -42,8 +42,8 @@ public class ChildContentHandlerTest extends BaseTest {
     }
 
     @Override
-    public void insert() throws Exception {
-      super.insert();
+    public void insert(String table, byte[] data) throws Exception {
+      super.insert(table, data);
     }
   }
 
@@ -64,8 +64,8 @@ public class ChildContentHandlerTest extends BaseTest {
     }
 
     @Override
-    public void insert() throws Exception {
-      super.insert();
+    public void insert(String table, byte[] data) throws Exception {
+      super.insert(table, data);
     }
   }
 }

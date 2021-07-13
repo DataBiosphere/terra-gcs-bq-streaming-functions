@@ -28,7 +28,10 @@ def app = project.hasProperty("application") ? application : "testrunner"
 sourceSets {
     main {
         java {
-            includes = ["bio/terra/cloudevents/**", "bio/terra/cloudfunctions/common/**", "bio/terra/cloudfunctions/utils/**", "bio/terra/cloudfunctions/$app/**"]
+            includes = ["bio/terra/cloudevents/**",
+                        "bio/terra/cloudfunctions/common/**",
+                        "bio/terra/cloudfunctions/utils/**",
+                        "bio/terra/cloudfunctions/$app/**"]
         }
     }
 }
@@ -123,7 +126,9 @@ spotless {
 // USAGE: .gradlew -Papplication=$app shadowJar
 // $app = testrunner, deltalayer etc
 shadowJar {
+    archiveBaseName.set("$app")
     mergeServiceFiles()
+    minimize()
 }
 
 compileJava.dependsOn spotlessApply

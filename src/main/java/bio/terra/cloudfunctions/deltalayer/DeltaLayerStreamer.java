@@ -15,8 +15,8 @@ public class DeltaLayerStreamer extends ContentHandler<StorageObjectData> {
   }
 
   @Override
-  public void insert() throws Exception {
+  public void insert(String table, byte[] data) throws Exception {
     logger.debug("insert");
-    super.insert();
+    super.insert(table, data);
   }
 }
