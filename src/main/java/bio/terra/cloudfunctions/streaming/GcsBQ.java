@@ -16,6 +16,7 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 
+@Deprecated
 public class GcsBQ implements BackgroundFunction<GCSEvent> {
   private static final Logger logger = Logger.getLogger(GcsBQ.class.getName());
   // This SCHEMA code is now replaced by the json representation in resources/<module>/schemas.
@@ -129,21 +130,11 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
 
     // Uncompress .gz as CompressorInputStream
     CompressorInputStream uncompressedInputStream = MediaTypeUtils.createCompressorInputStream(in);
-    /*CompressorStreamFactory compressor = CompressorStreamFactory.getSingleton();
-    CompressorInputStream uncompressedInputStream =
-        in.markSupported()
-            ? compressor.createCompressorInputStream(in)
-            : compressor.createCompressorInputStream(new BufferedInputStream(in));*/
 
     // Untar .tar as ArchiveInputStream
     ArchiveInputStream archiveInputStream =
         MediaTypeUtils.createArchiveInputStream(uncompressedInputStream);
-    /*ArchiveStreamFactory archiver = new ArchiveStreamFactory();
-    ArchiveInputStream archiveInputStream =
-        uncompressedInputStream.markSupported()
-            ? archiver.createArchiveInputStream(uncompressedInputStream)
-            : archiver.createArchiveInputStream(new BufferedInputStream(uncompressedInputStream));
-     */
+
     // ArchiveInputStream is a special type of InputStream that emits an EOF when it gets to the end
     // of a file in the archive.
     // Once it’s done, call getNextEntry to reset the stream and start reading the next file.
@@ -158,60 +149,4 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
       }
     }
   }
-
-  // Open a channel to stream json string to BigQuery
-  /*private void streamToBQ(String projectId, String dataset, String table, byte[] data)
-      throws IOException {
-    TableId tableId = TableId.of(projectId, dataset, table);
-    WriteChannelConfiguration configuration =
-        WriteChannelConfiguration.newBuilder(tableId)
-            .setFormatOptions(FormatOptions.json())
-            .setCreateDisposition(JobInfo.CreateDisposition.CREATE_NEVER)
-            .build();
-    BigQuery bigquery = RemoteBigQueryHelper.create().getOptions().getService();
-    TableDataWriteChannel channel = bigquery.writer(configuration);
-
-    try {
-      JsonElement element = JsonParser.parseString(new String(data));
-      channel.write(ByteBuffer.wrap(element.toString().getBytes(StandardCharsets.UTF_8)));
-    } finally {
-      channel.close();
-    }
-  }*/
-
-  /**
-   * If a Service Account has not been specified for Google Cloud Function deployment, then the
-   * Cloud Function will assume the roles of the default IAM Service Account
-   * PROJECT_ID@appspot.gserviceaccount.com at runtime.
-   *
-   * <p>The Service Account for any Java 11 runtime (Compute Engine, App Engine, or GKE) must have
-   * appropriate GCS read permissions.
-   *
-   * <p>Opens an input stream to GCS Object.
-   *
-   * <p>//@param projectId the Google Project ID //@param bucketName the Google Storage Bucket
-   * //@param objectName the Google Storage Bucket File Object
-   *
-   * @return URL object
-   */
-  /*private InputStream getObjectAsInputStream(String projectId, String bucketName, String objectName)
-      throws StorageException {
-    Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
-    ReadChannel reader = storage.reader(bucketName, objectName);
-    return Channels.newInputStream(reader);
-  }*/
-
-  /*private byte[] readEntry(InputStream input, final long size) throws IOException {
-    ByteArrayOutputStream output = new ByteArrayOutputStream();
-    int bufferSize = 1024;
-    byte[] buffer = new byte[bufferSize + 1];
-    long remaining = size;
-    while (remaining > 0) {
-      int len = (int) Math.min(remaining, bufferSize);
-      int read = input.read(buffer, 0, len);
-      remaining -= read;
-      output.write(buffer, 0, read);
-    }
-    return output.toByteArray();
-  }*/
 }
