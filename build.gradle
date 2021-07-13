@@ -31,6 +31,7 @@ sourceSets {
             includes = ["bio/terra/cloudevents/**",
                         "bio/terra/cloudfunctions/common/**",
                         "bio/terra/cloudfunctions/utils/**",
+                        "bio/terra/cloudfunctions/streaming/**",
                         "bio/terra/cloudfunctions/$app/**"]
         }
     }

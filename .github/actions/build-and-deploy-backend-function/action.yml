@@ -44,7 +44,7 @@ runs:
     - name: Build Cloud Function
       id: build-step
       run: |
-        ./gradlew shadowJar
+        ./gradlew -Papplication=${{ inputs.module }} shadowJar
       shell: bash
 
     - name: Deploy Cloud Function

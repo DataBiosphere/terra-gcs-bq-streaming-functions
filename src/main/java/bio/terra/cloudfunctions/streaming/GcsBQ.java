@@ -1,39 +1,20 @@
 package bio.terra.cloudfunctions.streaming;
 
 import bio.terra.cloudevents.GCSEvent;
-import com.google.cloud.ReadChannel;
-import com.google.cloud.bigquery.BigQuery;
+import bio.terra.cloudfunctions.utils.BigQueryUtils;
+import bio.terra.cloudfunctions.utils.MediaTypeUtils;
 import com.google.cloud.bigquery.Field;
-import com.google.cloud.bigquery.FormatOptions;
-import com.google.cloud.bigquery.JobInfo;
 import com.google.cloud.bigquery.LegacySQLTypeName;
 import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.StandardSQLTypeName;
-import com.google.cloud.bigquery.TableDataWriteChannel;
-import com.google.cloud.bigquery.TableId;
-import com.google.cloud.bigquery.WriteChannelConfiguration;
-import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageException;
-import com.google.cloud.storage.StorageOptions;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
-import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.compressors.CompressorInputStream;
-import org.apache.commons.compress.compressors.CompressorStreamFactory;
 
 public class GcsBQ implements BackgroundFunction<GCSEvent> {
   private static final Logger logger = Logger.getLogger(GcsBQ.class.getName());
@@ -143,22 +124,26 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     String bucketName = event.getBucket();
     String objectName = event.getName();
 
-    InputStream in = getObjectAsInputStream(projectId, bucketName, objectName);
+    InputStream in =
+        MediaTypeUtils.getStorageObjectDataAsInputStream(projectId, bucketName, objectName);
 
     // Uncompress .gz as CompressorInputStream
-    CompressorStreamFactory compressor = CompressorStreamFactory.getSingleton();
+    CompressorInputStream uncompressedInputStream = MediaTypeUtils.createCompressorInputStream(in);
+    /*CompressorStreamFactory compressor = CompressorStreamFactory.getSingleton();
     CompressorInputStream uncompressedInputStream =
         in.markSupported()
             ? compressor.createCompressorInputStream(in)
-            : compressor.createCompressorInputStream(new BufferedInputStream(in));
+            : compressor.createCompressorInputStream(new BufferedInputStream(in));*/
 
     // Untar .tar as ArchiveInputStream
-    ArchiveStreamFactory archiver = new ArchiveStreamFactory();
+    ArchiveInputStream archiveInputStream =
+        MediaTypeUtils.createArchiveInputStream(uncompressedInputStream);
+    /*ArchiveStreamFactory archiver = new ArchiveStreamFactory();
     ArchiveInputStream archiveInputStream =
         uncompressedInputStream.markSupported()
             ? archiver.createArchiveInputStream(uncompressedInputStream)
             : archiver.createArchiveInputStream(new BufferedInputStream(uncompressedInputStream));
-
+     */
     // ArchiveInputStream is a special type of InputStream that emits an EOF when it gets to the end
     // of a file in the archive.
     // Once it’s done, call getNextEntry to reset the stream and start reading the next file.
@@ -168,14 +153,14 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
       if (archiveEntry.getName().contains(table)) {
         logger.info(
             "Processing " + archiveEntry.getName() + " " + archiveEntry.getSize() + " bytes");
-        byte[] datajson = readEntry(archiveInputStream, archiveEntry.getSize());
-        streamToBQ(projectId, dataSet, table, datajson);
+        byte[] datajson = MediaTypeUtils.readEntry(archiveInputStream, archiveEntry.getSize());
+        BigQueryUtils.streamToBQ(projectId, dataSet, table, datajson);
       }
     }
   }
 
   // Open a channel to stream json string to BigQuery
-  private void streamToBQ(String projectId, String dataset, String table, byte[] data)
+  /*private void streamToBQ(String projectId, String dataset, String table, byte[] data)
       throws IOException {
     TableId tableId = TableId.of(projectId, dataset, table);
     WriteChannelConfiguration configuration =
@@ -192,7 +177,7 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
     } finally {
       channel.close();
     }
-  }
+  }*/
 
   /**
    * If a Service Account has not been specified for Google Cloud Function deployment, then the
@@ -204,19 +189,19 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
    *
    * <p>Opens an input stream to GCS Object.
    *
-   * @param projectId the Google Project ID
-   * @param bucketName the Google Storage Bucket
-   * @param objectName the Google Storage Bucket File Object
+   * <p>//@param projectId the Google Project ID //@param bucketName the Google Storage Bucket
+   * //@param objectName the Google Storage Bucket File Object
+   *
    * @return URL object
    */
-  private InputStream getObjectAsInputStream(String projectId, String bucketName, String objectName)
+  /*private InputStream getObjectAsInputStream(String projectId, String bucketName, String objectName)
       throws StorageException {
     Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
     ReadChannel reader = storage.reader(bucketName, objectName);
     return Channels.newInputStream(reader);
-  }
+  }*/
 
-  private byte[] readEntry(InputStream input, final long size) throws IOException {
+  /*private byte[] readEntry(InputStream input, final long size) throws IOException {
     ByteArrayOutputStream output = new ByteArrayOutputStream();
     int bufferSize = 1024;
     byte[] buffer = new byte[bufferSize + 1];
@@ -228,5 +213,5 @@ public class GcsBQ implements BackgroundFunction<GCSEvent> {
       output.write(buffer, 0, read);
     }
     return output.toByteArray();
-  }
+  }*/
 }
