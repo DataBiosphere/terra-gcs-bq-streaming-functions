@@ -6,7 +6,6 @@ import bio.terra.cloudfunctions.common.MediaTypeWrapper;
 import com.google.cloud.functions.Context;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
 
@@ -21,8 +20,6 @@ public class BaseTest {
   protected static InputStream MOCK_GZ;
   protected static InputStream MOCK_JSON;
   protected static InputStream MOCK_TGZ_DYNAMIC_BQ;
-  protected static String FAKE_DATASET;
-  protected static List<String> FAKE_TABLES;
 
   @Before
   public void setUp() {
@@ -39,10 +36,6 @@ public class BaseTest {
     MOCK_JSON = getClass().getClassLoader().getResourceAsStream("testfiles/SUMMARY_testRun.json");
     MOCK_TGZ_DYNAMIC_BQ =
         getClass().getClassLoader().getResourceAsStream("testfiles/dynamic_dataset.tar.gz");
-    FAKE_DATASET = "bqds";
-    FAKE_TABLES = new ArrayList<>();
-    FAKE_TABLES.add("table1");
-    FAKE_TABLES.add("table2");
   }
 
   public void assertEvent(StorageObjectData event) {
