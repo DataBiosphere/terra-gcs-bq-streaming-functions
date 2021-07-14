@@ -1,0 +1,22 @@
+name: 'build-and-stage-backend-function'
+description: 'Build and Stage Cloud Function archive in Google Bucket'
+author: ''
+inputs:
+  archive_bucket:
+    description: 'Google Bucket for staging the Cloud Function archive'
+    required: true
+    default: 'cloudfunctions-dsp-artifact-registry'
+runs:
+  using: "composite"
+  steps:
+    - name: Build Cloud Function Archive
+      id: build-archive-step
+      run: |
+        ./gradlew buildCloudFunctionArchive
+      shell: bash
+
+    - name: Stage Cloud Function Archive
+      id: stage-archive-step
+      run: |
+        gsutil cp build/libs/*.zip gs://${{ inputs.archive_bucket }}
+      shell: bash
