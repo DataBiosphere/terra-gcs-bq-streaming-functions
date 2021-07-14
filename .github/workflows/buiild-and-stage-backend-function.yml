@@ -4,7 +4,8 @@
 name: Build and stage backend cloud function
 
 on:
-  push
+  push:
+    branches: [ master ]
 
 jobs:
   build-and-stage:
