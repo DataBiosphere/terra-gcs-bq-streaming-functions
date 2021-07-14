@@ -9,6 +9,8 @@ inputs:
 runs:
   using: "composite"
   steps:
+    # Build the Cloud Function Jar and create a Zip archive
+    # TODO: Modify the gradlew cmdline arguments based on pending QA-1518 and QA-1524 reviews.
     - name: Build Cloud Function Archive
       id: build-archive-step
       run: |

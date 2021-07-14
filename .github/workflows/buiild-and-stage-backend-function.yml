@@ -41,6 +41,8 @@ jobs:
           service_account_key: ${{ secrets.DSP_CF_STAGE_SA_KEY }}
           export_default_credentials: true
 
+      # Call the uild-and-stage-backend-function action
+      # inputs: archive_bucket represents the Google Bucket for staging the Cloud Function archive
       - name: Build and stage the backend cloud function
         id: build-and-stage
         uses: ./.github/actions/build-and-stage-backend-function
