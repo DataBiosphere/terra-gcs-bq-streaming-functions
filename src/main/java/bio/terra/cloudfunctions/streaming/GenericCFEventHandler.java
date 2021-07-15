@@ -15,6 +15,7 @@ public class GenericCFEventHandler extends CloudEventsHarness {
     logger.info("DataContentType: " + event.getDataContentType());
     logger.info("Source: " + event.getSource().toString());
     logger.info("TypeName: " + event.getClass().getTypeName());
+    logger.info("Event: " + event);
     if (event instanceof CloudEventV1) {
       if (event.getType().equals("google.cloud.storage.object.v1.finalized")) {
         logger.info("Data TypeName: " + event.getData().getClass().getTypeName());
