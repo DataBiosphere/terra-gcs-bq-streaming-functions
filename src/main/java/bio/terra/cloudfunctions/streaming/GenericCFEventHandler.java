@@ -14,5 +14,6 @@ public class GenericCFEventHandler extends CloudEventsHarness {
     logger.info("DataContentType: " + event.getDataContentType());
     logger.info("Source: " + event.getSource().toString());
     logger.info("TypeName: " + event.getClass().getTypeName());
+    logger.info("EventDataBytes: " + new String(event.getData().toBytes()));
   }
 }
