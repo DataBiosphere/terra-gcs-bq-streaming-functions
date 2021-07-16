@@ -16,7 +16,7 @@ public class GenericCFEventHandler extends CloudEventsHarness {
     logger.info("Source: " + event.getSource().toString());
     logger.info("TypeName: " + event.getClass().getTypeName());
     logger.info("Test 1: " + CloudEventV1.class.isInstance(event));
-    logger.info("Test 2: " + event.getClass().equals(CloudEventV1.class));
+    logger.info("Test 2: " + (event.getClass() == CloudEventV1.class));
     logger.info("Test 3: " + CloudEventV1.class);
     logger.info("Data Schema: " + event.getDataSchema());
     if (CloudEventV1.class.isInstance(event)) {
