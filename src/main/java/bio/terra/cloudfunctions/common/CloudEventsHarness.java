@@ -23,6 +23,7 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
   @Override
   public void accept(CloudEvent event) throws Exception {
     this.event = event;
+    parse();
   }
 
   public CloudEvent getEvent() {
