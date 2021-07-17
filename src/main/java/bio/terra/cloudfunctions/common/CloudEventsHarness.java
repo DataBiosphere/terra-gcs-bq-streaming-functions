@@ -82,13 +82,12 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
       case STORAGE_OBJECT_V1_DELETED:
       case STORAGE_OBJECT_V1_FINALIZED:
       case STORAGE_OBJECT_V1_METADATAUPDATED:
-        logger.info("Event type: " + event.getType());
-        logger.info("CloudEventData: " + event.getData());
         message =
             new StorageObjectEventMessage(
                 event.getData().toBytes(),
                 d -> GsonWrapper.getInstance().fromJson(new String(d), StorageObjectData.class));
         messageType = StorageObjectEventMessage.class;
+        logger.info("Concrete event data: " + messageType.cast(message));
         break;
       default:
         break;
