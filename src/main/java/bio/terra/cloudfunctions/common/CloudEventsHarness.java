@@ -9,6 +9,7 @@ import com.google.events.cloud.firestore.v1.DocumentEventData;
 import com.google.events.cloud.pubsub.v1.MessagePublishedData;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 import io.cloudevents.CloudEvent;
+import io.cloudevents.core.impl.BaseCloudEvent;
 import io.cloudevents.core.v03.CloudEventV03;
 import io.cloudevents.core.v1.CloudEventV1;
 import java.util.logging.Logger;
@@ -16,18 +17,18 @@ import java.util.logging.Logger;
 public abstract class CloudEventsHarness implements CloudEventsFunction {
   private static final Logger logger = Logger.getLogger(CloudEventsHarness.class.getName());
 
-  protected Class<? extends CloudEvent> realization;
-  protected CloudEvent event;
+  protected Class<? extends BaseCloudEvent> realization;
+  protected BaseCloudEvent event;
   protected String messageTypeName;
   protected Object message;
 
   @Override
   public void accept(CloudEvent event) throws Exception {
-    this.event = event;
-    this.realization = event.getClass();
+    this.event = (BaseCloudEvent) event;
+    this.realization = this.event.getClass();
   }
 
-  public CloudEvent getEvent() {
+  public BaseCloudEvent getEvent() {
     return event;
   }
 
@@ -40,7 +41,8 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
   }
 
   public boolean isCloudEventV1() {
-    logger.info("isCloudEventV1: " + CloudEventV1.class.equals(realization));
+    logger.info("isCloudEventV1: " + CloudEventV1.class);
+    logger.info("isCloudEventV1: " + realization);
     logger.info("isCloudEventV1: " + CloudEventV03.class.equals(realization));
     logger.info("isCloudEventV1: " + event.getClass().getTypeName());
     logger.info("isCloudEventV1: " + event.getClass().getName());
