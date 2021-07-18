@@ -23,7 +23,7 @@ configurations {
 
 dependencies {
     ext {
-        cloudEvents = "2.2.0"
+        cloudEvents = "2.0.0.RC2"
         googleFunctions = '1.0.4'
         googleEvents = '0.3.0'
         googleFunctionsInvoker = '1.0.2'
@@ -51,7 +51,7 @@ dependencies {
     implementation group: 'io.cloudevents', name: 'cloudevents-core', version: "${cloudEvents}"
 
     // CloudEvents API
-    implementation group: 'io.cloudevents', name: 'cloudevents-api', version: "${cloudEvents}"
+    // implementation group: 'io.cloudevents', name: 'cloudevents-api', version: "${cloudEvents}"
 
     // Every function needs this dependency to get the Functions Framework API.
     implementation group: 'com.google.cloud.functions', name: 'functions-framework-api', version: "${googleFunctions}"
