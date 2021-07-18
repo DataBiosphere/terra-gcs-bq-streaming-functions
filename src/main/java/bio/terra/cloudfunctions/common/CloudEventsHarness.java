@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 public abstract class CloudEventsHarness implements CloudEventsFunction {
   private static final Logger logger = Logger.getLogger(CloudEventsHarness.class.getName());
 
+  protected Class<? extends CloudEvent> realization;
   protected CloudEvent event;
   protected String messageTypeName;
   protected Object message;
@@ -23,6 +24,7 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
   @Override
   public void accept(CloudEvent event) throws Exception {
     this.event = event;
+    this.realization = event.getClass();
   }
 
   public CloudEvent getEvent() {
@@ -38,6 +40,8 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
   }
 
   public boolean isCloudEventV1() {
+    logger.info("isCloudEventV1: " + CloudEventV1.class.equals(realization));
+    logger.info("isCloudEventV1: " + CloudEventV03.class.equals(realization));
     logger.info("isCloudEventV1: " + event.getClass().getTypeName());
     logger.info("isCloudEventV1: " + event.getClass().getName());
     logger.info("isCloudEventV1: " + event.getClass().getCanonicalName());
