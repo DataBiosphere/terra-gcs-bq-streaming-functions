@@ -43,6 +43,7 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
   public boolean isCloudEventV1() {
     logger.info("isCloudEventV1: " + CloudEventV1.class);
     logger.info("isCloudEventV1: " + realization);
+    logger.info("isCloudEventV1: " + CloudEventV1.class.equals(realization));
     logger.info("isCloudEventV1: " + CloudEventV03.class.equals(realization));
     logger.info("isCloudEventV1: " + event.getClass().getTypeName());
     logger.info("isCloudEventV1: " + event.getClass().getName());
