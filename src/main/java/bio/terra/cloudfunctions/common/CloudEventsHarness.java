@@ -9,7 +9,6 @@ import com.google.events.cloud.firestore.v1.DocumentEventData;
 import com.google.events.cloud.pubsub.v1.MessagePublishedData;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 import io.cloudevents.CloudEvent;
-import io.cloudevents.core.impl.BaseCloudEvent;
 import io.cloudevents.core.v03.CloudEventV03;
 import io.cloudevents.core.v1.CloudEventV1;
 import java.util.logging.Logger;
@@ -17,18 +16,18 @@ import java.util.logging.Logger;
 public abstract class CloudEventsHarness implements CloudEventsFunction {
   private static final Logger logger = Logger.getLogger(CloudEventsHarness.class.getName());
 
-  protected Class<? extends BaseCloudEvent> realization;
-  protected BaseCloudEvent event;
+  protected Class<? extends CloudEvent> realization;
+  protected CloudEvent event;
   protected String messageTypeName;
   protected Object message;
 
   @Override
   public void accept(CloudEvent event) throws Exception {
-    this.event = (BaseCloudEvent) event;
+    this.event = event;
     this.realization = this.event.getClass();
   }
 
-  public BaseCloudEvent getEvent() {
+  public CloudEvent getEvent() {
     return event;
   }
 
