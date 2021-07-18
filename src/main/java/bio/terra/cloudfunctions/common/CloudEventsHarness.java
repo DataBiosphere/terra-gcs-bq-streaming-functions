@@ -41,15 +41,10 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
   }
 
   public boolean isCloudEventV1() {
-    Class<CloudEventV1> cloudEventV1ClassObj = CloudEventV1.class;
-    logger.info("isCloudEventV1: " + cloudEventV1ClassObj);
-    logger.info("isCloudEventV1: " + realization);
-    logger.info("isCloudEventV1: " + VM.current().addressOf(cloudEventV1ClassObj));
-    logger.info("isCloudEventV1: " + VM.current().addressOf(realization));
-    logger.info("hashCode: " + cloudEventV1ClassObj.hashCode());
-    logger.info("hashCode: " + realization.hashCode());
-    logger.info("isCloudEventV1: " + CloudEventV1.class.equals(realization));
-    logger.info("isCloudEventV1: " + CloudEventV03.class.equals(realization));
+    logger.info("isCloudEventV1: " + VM.current().addressOf(CloudEventV1.class));
+    logger.info("isCloudEventV1: " + VM.current().addressOf(this.event.getClass()));
+    logger.info("hashCode: " + CloudEventV1.class.hashCode());
+    logger.info("hashCode: " + this.event.getClass().hashCode());
     logger.info("isCloudEventV1: " + event.getClass().getTypeName());
     logger.info("isCloudEventV1: " + event.getClass().getName());
     logger.info("isCloudEventV1: " + event.getClass().getCanonicalName());
@@ -60,14 +55,6 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
         "isCloudEventV1 assignable: " + CloudEvent.class.isAssignableFrom(event.getClass()));
     logger.info(
         "isCloudEventV1 assignable: " + CloudEventV1.class.isAssignableFrom(event.getClass()));
-    try {
-      logger.info(
-          "isCloudEventV1 assignable: "
-              + event.getClass().getDeclaredConstructor().getParameterCount());
-    } catch (NoSuchMethodException e) {
-      logger.info(e.getMessage());
-    }
-    // .newInstance(null, null, null, null, null, null, null, null, null)));
 
     return CloudEventV1.class.isInstance(event);
     // return CloudEventV1.class.getTypeName().equals(event.getClass().getTypeName());
