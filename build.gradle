@@ -38,6 +38,8 @@ dependencies {
         guava = "30.1.1-jre"
     }
 
+    implementation group: 'org.openjdk.jol', name: 'jol-core', version: '0.16'
+
     // Gson for Java serialization/deserialization
     implementation group: 'com.google.code.gson', name: 'gson', version: "${gson}"
 
