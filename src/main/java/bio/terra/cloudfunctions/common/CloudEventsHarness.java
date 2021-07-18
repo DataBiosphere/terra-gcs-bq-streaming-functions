@@ -17,7 +17,7 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
   private static final Logger logger = Logger.getLogger(CloudEventsHarness.class.getName());
 
   protected CloudEvent event;
-  protected Class<?> messageType;
+  protected String messageTypeName;
   protected Object message;
 
   @Override
@@ -30,10 +30,6 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
     return event;
   }
 
-  public Class<?> getMessageType() {
-    return messageType;
-  }
-
   public Object getMessage() {
     return message;
   }
@@ -43,11 +39,15 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
   }
 
   public boolean isCloudEventV1() {
-    return CloudEventV1.class.getTypeName().equals(event.getClass().getTypeName());
+    logger.info("isCloudEventV1");
+    return CloudEventV1.class.isInstance(event);
+    // return CloudEventV1.class.getTypeName().equals(event.getClass().getTypeName());
   }
 
   public boolean isCloudEventV03() {
-    return CloudEventV03.class.getTypeName().equals(event.getClass().getTypeName());
+    logger.info("isCloudEventV03");
+    return CloudEventV03.class.isInstance(event);
+    // return CloudEventV03.class.getTypeName().equals(event.getClass().getTypeName());
   }
 
   public void parse() throws Exception {
@@ -69,14 +69,14 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
             new FirestoreEventMessage(
                 event.getData().toBytes(),
                 d -> GsonWrapper.getInstance().fromJson(new String(d), DocumentEventData.class));
-        messageType = FirestoreEventMessage.class;
+        messageTypeName = FirestoreEventMessage.class.getTypeName();
         break;
       case PUBSUB_TOPIC_V1_MESSAGE_PUBLISHED:
         message =
             new PubSubEventMessage(
                 event.getData().toBytes(),
                 d -> GsonWrapper.getInstance().fromJson(new String(d), MessagePublishedData.class));
-        messageType = PubSubEventMessage.class;
+        messageTypeName = PubSubEventMessage.class.getTypeName();
         break;
       case STORAGE_OBJECT_V1_ARCHIVED:
       case STORAGE_OBJECT_V1_DELETED:
@@ -86,8 +86,14 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
             new StorageObjectEventMessage(
                 event.getData().toBytes(),
                 d -> GsonWrapper.getInstance().fromJson(new String(d), StorageObjectData.class));
-        messageType = StorageObjectEventMessage.class;
-        logger.info("Concrete event data: " + StorageObjectEventMessage.class.cast(message).getMessage().toString());
+        StorageObjectEventMessage m = StorageObjectEventMessage.class.cast(message);
+        messageTypeName = StorageObjectEventMessage.class.getTypeName();
+        logger.info(
+            "getGenericSuperclass: "
+                + StorageObjectEventMessage.class.getGenericSuperclass().getTypeName());
+        // logger.info(
+        //    "Concrete event data: "
+        //        + Class.forName(messageTypeName).asSubclass().cast(message).getMessage());
         break;
       default:
         break;
