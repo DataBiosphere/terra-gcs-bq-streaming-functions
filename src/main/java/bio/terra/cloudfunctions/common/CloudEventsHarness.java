@@ -11,6 +11,8 @@ import com.google.events.cloud.storage.v1.StorageObjectData;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.v03.CloudEventV03;
 import io.cloudevents.core.v1.CloudEventV1;
+import org.openjdk.jol.vm.VM;
+
 import java.util.logging.Logger;
 
 public abstract class CloudEventsHarness implements CloudEventsFunction {
@@ -40,8 +42,13 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
   }
 
   public boolean isCloudEventV1() {
-    logger.info("isCloudEventV1: " + CloudEventV1.class);
+    Class<CloudEventV1> cloudEventV1ClassObj = CloudEventV1.class;
+    logger.info("isCloudEventV1: " + cloudEventV1ClassObj);
     logger.info("isCloudEventV1: " + realization);
+    logger.info("isCloudEventV1: " + VM.current().addressOf(cloudEventV1ClassObj));
+    logger.info("isCloudEventV1: " + VM.current().addressOf(realization));
+    logger.info("hashCode: " + cloudEventV1ClassObj.hashCode());
+    logger.info("hashCode: " + realization.hashCode());
     logger.info("isCloudEventV1: " + CloudEventV1.class.equals(realization));
     logger.info("isCloudEventV1: " + CloudEventV03.class.equals(realization));
     logger.info("isCloudEventV1: " + event.getClass().getTypeName());
