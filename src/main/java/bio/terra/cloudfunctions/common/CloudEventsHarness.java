@@ -23,7 +23,6 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
   @Override
   public void accept(CloudEvent event) throws Exception {
     this.event = event;
-    parse();
   }
 
   public CloudEvent getEvent() {
@@ -39,13 +38,15 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
   }
 
   public boolean isCloudEventV1() {
-    logger.info("isCloudEventV1");
+    logger.info("isCloudEventV1: " + event.getClass().getTypeName());
+    logger.info("isCloudEventV1: " + CloudEventV1.class.isInstance(event));
     return CloudEventV1.class.isInstance(event);
     // return CloudEventV1.class.getTypeName().equals(event.getClass().getTypeName());
   }
 
   public boolean isCloudEventV03() {
-    logger.info("isCloudEventV03");
+    logger.info("isCloudEventV03: " + event.getClass().getTypeName());
+    logger.info("isCloudEventV03: " + CloudEventV03.class.isInstance(event));
     return CloudEventV03.class.isInstance(event);
     // return CloudEventV03.class.getTypeName().equals(event.getClass().getTypeName());
   }
