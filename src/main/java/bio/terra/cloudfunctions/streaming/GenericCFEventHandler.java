@@ -11,6 +11,7 @@ public class GenericCFEventHandler extends CloudEventsHarness {
   @Override
   public void accept(CloudEvent event) throws Exception {
     super.accept(event);
+    parse();
     logger.info("Type: " + event.getType());
     logger.info("DataContentType: " + event.getDataContentType());
     logger.info("Source: " + event.getSource().toString());
