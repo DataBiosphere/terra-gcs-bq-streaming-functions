@@ -48,20 +48,17 @@ public class FileTypeDetector {
   }
 
   private InputStream handleGzipType(InputStream in) {
-    BufferedInputStream bis = null;
+    BufferedInputStream bis;
     try {
       bis = new BufferedInputStream(MediaTypeUtils.createCompressorInputStream(in));
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    if (bis != null) {
-      try {
-        return MediaTypeUtils.createArchiveInputStream(bis);
-      } catch (Exception e) {
-        return bis;
-      }
+    try {
+      return MediaTypeUtils.createArchiveInputStream(bis);
+    } catch (Exception e) {
+      return bis;
     }
-    return null;
   }
 
   private InputStream handleJsonType(InputStream in) {
