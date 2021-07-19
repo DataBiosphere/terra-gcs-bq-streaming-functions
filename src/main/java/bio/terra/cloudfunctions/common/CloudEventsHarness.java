@@ -11,12 +11,25 @@ import com.google.events.cloud.storage.v1.StorageObjectData;
 import io.cloudevents.CloudEvent;
 import java.util.logging.Logger;
 
+/**
+ * This class is an abstract representation of a Cloud Function and contains only framework-specific
+ * logic to receive and parse CloudEvent messages.
+ *
+ * <p>Sub-classes of this class can be integrated with a DI framework to deploy Cloud Functions like
+ * a Service.
+ */
 public abstract class CloudEventsHarness implements CloudEventsFunction {
   private static final Logger logger = Logger.getLogger(CloudEventsHarness.class.getName());
 
-  protected CloudEvent event;
-  protected Object message;
+  private CloudEvent event;
+  private Object message;
 
+  /**
+   * Subclasses of this class must override and invoke this method at the minimum.
+   *
+   * @param event
+   * @throws Exception
+   */
   @Override
   public void accept(CloudEvent event) throws Exception {
     this.event = event;
