@@ -48,6 +48,12 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
     return CloudEventType.fromCode(event.getType());
   }
 
+  /**
+   * The parse() method delegates message parsing to specific implementation that can be replaced in
+   * the fture.
+   *
+   * @throws Exception
+   */
   public void parse() throws Exception {
     parseCloudEventV1();
   }

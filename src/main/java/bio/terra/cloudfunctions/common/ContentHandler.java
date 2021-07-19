@@ -2,6 +2,13 @@ package bio.terra.cloudfunctions.common;
 
 import com.google.events.cloud.storage.v1.StorageObjectData;
 
+/**
+ * This class is an abstract representation of application-specific content handler for extracting
+ * relevant information and formatting the StorageObjectData payload for inserting into BigQuery.
+ *
+ * <p>Sub-classes of this class can be integrated with a DI framework to deploy Cloud Functions like
+ * a Service.
+ */
 public abstract class ContentHandler extends FileTypeDetector {
 
   public ContentHandler(StorageObjectData storageObjectData) {

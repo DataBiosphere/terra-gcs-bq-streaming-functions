@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 
+/** This class is a subclass of App with a custom implementation of the process() logic. */
 public class ProtoApp extends App {
   private static final Logger logger = Logger.getLogger(ProtoApp.class.getName());
 
