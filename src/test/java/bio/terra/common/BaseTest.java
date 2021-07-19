@@ -1,6 +1,6 @@
 package bio.terra.common;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import bio.terra.cloudfunctions.common.MediaTypeWrapper;
 import com.google.cloud.functions.Context;
@@ -85,28 +85,28 @@ public class BaseTest {
         };
   }
 
-  public void assertEvent(StorageObjectData event) {
+  public void assertStorageObjectData(StorageObjectData data) {
     // Check String deserialization
-    assertTrue("terra-kernel-k8s-testrunner-results".equals(event.getBucket()));
+    assertEquals("terra-kernel-k8s-testrunner-results", data.getBucket());
     // Check OffsetDateTime deserialization
-    assertTrue("2021-07-07T22:57:14.257Z".equals(event.getTimeCreated().toString()));
+    assertEquals("2021-07-07T22:57:14.257Z", data.getTimeCreated().toString());
     // Check CustomerEncryption deserialization
-    assertTrue(
-        "6ae5555bcdd2681f1c1e5e5721b6d18a82d0aaada01d1295c22268955e9b79d4753c2f1f5f15c6e1ac80b405e366fda2f4ae26fa7390605c802b8ed7cc787c4ec8458f04c9b07fb65cea1e4344644a33bde9ce28d2eae70ff85cbebc45d6d44c7599cbebfe0b6fed5a1f275968efd29a49aedbd0fd93296f03457ebcc72b2c13"
-            .equals(event.getCustomerEncryption().getKeySha256()));
+    assertEquals(
+        "6ae5555bcdd2681f1c1e5e5721b6d18a82d0aaada01d1295c22268955e9b79d4753c2f1f5f15c6e1ac80b405e366fda2f4ae26fa7390605c802b8ed7cc787c4ec8458f04c9b07fb65cea1e4344644a33bde9ce28d2eae70ff85cbebc45d6d44c7599cbebfe0b6fed5a1f275968efd29a49aedbd0fd93296f03457ebcc72b2c13",
+        data.getCustomerEncryption().getKeySha256());
     // Check Map deserialization
-    assertTrue("value1".equals(event.getMetadata().get("key1")));
-    assertTrue("value2".equals(event.getMetadata().get("key2")));
+    assertEquals("value1", data.getMetadata().get("key1"));
+    assertEquals("value2", data.getMetadata().get("key2"));
   }
 
   public void verifyMockTGZArchiveEntry(String filename, long bytes) {
     System.out.println("Verifying " + filename + " filesize.");
     if (filename.contains("RENDERED")) {
-      assertTrue(bytes == 3584);
+      assertEquals(3584, bytes);
     } else if (filename.contains("RAWDATA")) {
-      assertTrue(bytes == 4579);
+      assertEquals(4579, bytes);
     } else if (filename.contains("SUMMARY")) {
-      assertTrue(bytes == 1350);
+      assertEquals(1350, bytes);
     }
   }
 

@@ -15,12 +15,4 @@ public class CloudEventHarnessTest extends BaseTest {
     System.out.println(VM.current().addressOf(e2.getClass()));
     System.out.println(VM.current().addressOf(CloudEventV1.class));
   }
-
-  private static <T> T convertInstanceOfObject(Object o, Class<T> clazz) {
-    try {
-      return clazz.cast(o);
-    } catch (ClassCastException e) {
-      return null;
-    }
-  }
 }

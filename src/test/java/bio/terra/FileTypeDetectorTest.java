@@ -3,7 +3,9 @@ package bio.terra;
 import static org.junit.Assert.assertTrue;
 
 import bio.terra.cloudfunctions.common.FileTypeDetector;
+import bio.terra.cloudfunctions.common.GsonWrapper;
 import bio.terra.common.BaseTest;
+import com.google.events.cloud.storage.v1.StorageObjectData;
 import java.io.BufferedInputStream;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
@@ -12,11 +14,12 @@ import org.junit.Test;
 public class FileTypeDetectorTest extends BaseTest {
   @Test
   public void gzipHandlerTest() {
-    FileTypeDetectorImpl fileTypeDetector = new FileTypeDetectorImpl();
     try {
+      StorageObjectData storageObjectData =
+          GsonWrapper.getInstance().fromJson(MOCK_EVENT_GZIP, StorageObjectData.class);
+      FileTypeDetector fileTypeDetector = new FileTypeDetector(storageObjectData);
       // Set a mock TGZ input stream to simulate the GCS input stream
       fileTypeDetector.setInputStream(MOCK_TGZ);
-      // fileTypeDetector.accept(MOCK_EVENT_GZIP, FAKE_CLOUD_FUNCTION_CONTEXT);
       ArchiveInputStream ais = (ArchiveInputStream) fileTypeDetector.getDataStream();
       ArchiveEntry archiveEntry;
       System.out.println("gzipHandlerTest:");
@@ -29,8 +32,10 @@ public class FileTypeDetectorTest extends BaseTest {
 
   @Test
   public void gzipHandlerTest2() {
-    FileTypeDetectorImpl fileTypeDetector = new FileTypeDetectorImpl();
     try {
+      StorageObjectData storageObjectData =
+          GsonWrapper.getInstance().fromJson(MOCK_EVENT_GZIP, StorageObjectData.class);
+      FileTypeDetector fileTypeDetector = new FileTypeDetector(storageObjectData);
       // Set a mock GZ input stream to simulate the GCS input stream
       fileTypeDetector.setInputStream(MOCK_GZ);
       // fileTypeDetector.accept(MOCK_EVENT_GZIP, FAKE_CLOUD_FUNCTION_CONTEXT);
@@ -43,8 +48,10 @@ public class FileTypeDetectorTest extends BaseTest {
 
   @Test
   public void jsonHandlerTest() {
-    FileTypeDetectorImpl fileTypeDetector = new FileTypeDetectorImpl();
     try {
+      StorageObjectData storageObjectData =
+          GsonWrapper.getInstance().fromJson(MOCK_EVENT_GZIP, StorageObjectData.class);
+      FileTypeDetector fileTypeDetector = new FileTypeDetector(storageObjectData);
       // Set a mock JSON input stream to simulate the GCS input stream
       fileTypeDetector.setInputStream(MOCK_JSON);
       // fileTypeDetector.accept(MOCK_EVENT_JSON, FAKE_CLOUD_FUNCTION_CONTEXT);
@@ -54,6 +61,4 @@ public class FileTypeDetectorTest extends BaseTest {
     } catch (Exception e) {
     }
   }
-
-  class FileTypeDetectorImpl extends FileTypeDetector {}
 }
