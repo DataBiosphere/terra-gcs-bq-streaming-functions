@@ -8,11 +8,9 @@ import java.util.logging.Logger;
 
 public class FileTypeDetector {
   private static final Logger logger = Logger.getLogger(FileTypeDetector.class.getName());
-  protected StorageObjectData storageObjectData;
+  private StorageObjectData storageObjectData;
   protected InputStream inputStream;
   protected InputStream dataStream;
-
-  public FileTypeDetector() {}
 
   public FileTypeDetector(StorageObjectData storageObjectData) {
     this.storageObjectData = storageObjectData;

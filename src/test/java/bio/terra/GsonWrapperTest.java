@@ -8,8 +8,8 @@ import org.junit.Test;
 public class GsonWrapperTest extends BaseTest {
   @Test
   public void parseStorageObjectData() {
-    StorageObjectData event =
+    StorageObjectData data =
         GsonWrapper.getInstance().fromJson(MOCK_EVENT_GZIP, StorageObjectData.class);
-    assertEvent(event);
+    assertStorageObjectData(data);
   }
 }

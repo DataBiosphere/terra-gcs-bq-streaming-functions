@@ -3,9 +3,6 @@ package bio.terra.cloudfunctions.common;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 
 public abstract class ContentHandler extends FileTypeDetector {
-  public ContentHandler() {
-    super();
-  }
 
   public ContentHandler(StorageObjectData storageObjectData) {
     super(storageObjectData);

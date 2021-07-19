@@ -62,10 +62,7 @@ dependencies {
 
     // CloudEvents Core
     implementation group: 'io.cloudevents', name: 'cloudevents-core', version: "${cloudEvents}"
-
-    // CloudEvents API
-    // implementation group: 'io.cloudevents', name: 'cloudevents-api', version: "${cloudEvents}"
-
+    
     // Every function needs this dependency to get the Functions Framework API.
     implementation group: 'com.google.cloud.functions', name: 'functions-framework-api', version: "${googleFunctions}"
 
