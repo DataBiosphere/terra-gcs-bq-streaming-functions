@@ -1,4 +1,4 @@
-package bio.terra.cloudfunctions.streaming;
+package bio.terra.cloudfunctions.proto;
 
 import bio.terra.cloudevents.v1.CloudEventType;
 import bio.terra.cloudevents.v1.messagewrapper.StorageObjectEventMessage;
@@ -11,20 +11,23 @@ import java.util.logging.Logger;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 
-public class GenericCFEventHandler extends CloudEventsHarness {
-  private static final Logger logger = Logger.getLogger(GenericCFEventHandler.class.getName());
-  private GenericApp app;
+public class ProtoFunc extends CloudEventsHarness {
+  private static final Logger logger = Logger.getLogger(ProtoFunc.class.getName());
+  // Can use @Inject here if a DI framework is used (Spring or Java CDI).
+  ProtoApp app;
 
   @Override
   public void accept(CloudEvent event) throws Exception {
     super.accept(event);
-    app = new GenericApp(getCloudEventType(), getMessage());
+    app = new ProtoApp();
+    app.setEventType(getCloudEventType());
+    app.setMessage(getMessage());
     app.process();
   }
 
-  class GenericApp extends App {
-    public GenericApp(CloudEventType eventType, Object message) {
-      super(eventType, message);
+  class ProtoApp extends App {
+    public ProtoApp() {
+      super();
     }
 
     @Override
@@ -38,14 +41,14 @@ public class GenericCFEventHandler extends CloudEventsHarness {
                 getEventType().getDesc(),
                 storageObjectData.getBucket(),
                 storageObjectData.getContentType()));
-        GenericContentHandler contentHandler = new GenericContentHandler(storageObjectData);
+        ProtoContentHandler contentHandler = new ProtoContentHandler(storageObjectData);
         contentHandler.handleMediaType();
       }
     }
   }
 
-  class GenericContentHandler extends ContentHandler {
-    public GenericContentHandler(StorageObjectData storageObjectData) {
+  class ProtoContentHandler extends ContentHandler {
+    public ProtoContentHandler(StorageObjectData storageObjectData) {
       super(storageObjectData);
     }
 

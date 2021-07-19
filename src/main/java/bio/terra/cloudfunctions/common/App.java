@@ -6,6 +6,8 @@ public abstract class App {
   protected CloudEventType eventType;
   protected Object message;
 
+  public App() {}
+
   public App(CloudEventType eventType, Object message) {
     this.eventType = eventType;
     this.message = message;
@@ -15,8 +17,16 @@ public abstract class App {
     return eventType;
   }
 
+  public void setEventType(CloudEventType eventType) {
+    this.eventType = eventType;
+  }
+
   public Object getMessage() {
     return message;
+  }
+
+  public void setMessage(Object message) {
+    this.message = message;
   }
 
   public void process() throws Exception {
