@@ -42,9 +42,9 @@ public class FileTypeDetector {
       inputStream =
           MediaTypeUtils.getStorageObjectDataAsInputStream(
               projectId, storageObjectData.getBucket(), storageObjectData.getName());
-    if (this.mediaType.isApplicationGzip()) {
+    if (getMediaType().isApplicationGzip()) {
       dataStream = handleGzipType(inputStream);
-    } else if (this.mediaType.isApplicationJson()) {
+    } else if (getMediaType().isApplicationJson()) {
       dataStream = handleJsonType(inputStream);
     }
   }
