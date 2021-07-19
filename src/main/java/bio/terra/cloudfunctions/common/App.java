@@ -2,31 +2,30 @@ package bio.terra.cloudfunctions.common;
 
 import bio.terra.cloudevents.v1.CloudEventType;
 
+/**
+ * This abstract class represents the business application that interprets CloudEvent messages.
+ *
+ * <p>Sub-classes overrides the process() method with business logic to achieve desired functional
+ * goals.
+ *
+ * <p>Sub-classes can be integrated with a DI framework to deploy the business logic like as a
+ * Service.
+ */
 public abstract class App {
-  protected CloudEventType eventType;
-  protected Object message;
+  private CloudEventType cloudEventType;
+  private Object message;
 
-  public App() {}
-
-  public App(CloudEventType eventType, Object message) {
-    this.eventType = eventType;
+  public App(CloudEventType cloudEventType, Object message) {
+    this.cloudEventType = cloudEventType;
     this.message = message;
   }
 
-  public CloudEventType getEventType() {
-    return eventType;
-  }
-
-  public void setEventType(CloudEventType eventType) {
-    this.eventType = eventType;
+  public CloudEventType getCloudEventType() {
+    return cloudEventType;
   }
 
   public Object getMessage() {
     return message;
-  }
-
-  public void setMessage(Object message) {
-    this.message = message;
   }
 
   public void process() throws Exception {
