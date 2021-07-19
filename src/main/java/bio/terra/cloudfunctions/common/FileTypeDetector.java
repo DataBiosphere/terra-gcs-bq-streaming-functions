@@ -9,7 +9,6 @@ public class FileTypeDetector {
   protected StorageObjectData storageObjectData;
   protected InputStream inputStream;
   protected InputStream dataStream;
-  protected MediaTypeWrapper mediaType;
 
   public FileTypeDetector() {}
 
@@ -17,9 +16,8 @@ public class FileTypeDetector {
     this.storageObjectData = storageObjectData;
   }
 
-  public MediaTypeWrapper getMediaType() {
-    if (mediaType == null) mediaType = new MediaTypeWrapper(storageObjectData.getContentType());
-    return mediaType;
+  private MediaTypeWrapper getMediaType() {
+    return new MediaTypeWrapper(storageObjectData.getContentType());
   }
 
   public InputStream getDataStream() {
