@@ -4,6 +4,7 @@ import bio.terra.cloudfunctions.common.CloudEventsHarness;
 import io.cloudevents.CloudEvent;
 import java.util.logging.Logger;
 
+/** This class is a subclass of CloudEventsHarness (i.e. a Cloud Function) with a custom App. */
 public class ProtoFunc extends CloudEventsHarness {
   private static final Logger logger = Logger.getLogger(ProtoFunc.class.getName());
 

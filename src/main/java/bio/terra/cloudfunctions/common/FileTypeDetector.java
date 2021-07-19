@@ -6,6 +6,13 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
+/**
+ * This class detects the raw file type from the StorageObjectData and opens an appropriate
+ * InputStream to the underlying Google storage object.
+ *
+ * <p>Sub-classes of this class can be integrated with a DI framework to deploy Cloud Functions like
+ * a Service.
+ */
 public class FileTypeDetector {
   private static final Logger logger = Logger.getLogger(FileTypeDetector.class.getName());
   private StorageObjectData storageObjectData;

@@ -2,6 +2,7 @@ package bio.terra.cloudevents.v1.messagewrapper;
 
 import io.cloudevents.core.data.BytesCloudEventData;
 
+/** A genric class that represents any event message type. */
 public abstract class EventMessage<T> extends BytesCloudEventData {
   /**
    * @param value the bytes to wrap
@@ -11,6 +12,10 @@ public abstract class EventMessage<T> extends BytesCloudEventData {
     super(value);
   }
 
+  /**
+   * @param value the bytes to wrap
+   * @param mapper functional interface to convert bytes to target T
+   */
   public EventMessage(byte[] value, ToTarget<T> mapper) {
     this(value);
     this.mapper = mapper;
