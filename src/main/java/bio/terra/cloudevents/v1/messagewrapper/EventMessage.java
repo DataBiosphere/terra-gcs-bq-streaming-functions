@@ -8,6 +8,7 @@ public abstract class EventMessage<T> extends BytesCloudEventData {
    * @param value the bytes to wrap
    * @deprecated use {@link BytesCloudEventData#wrap(byte[])}
    */
+  @Deprecated
   public EventMessage(byte[] value) {
     super(value);
   }
