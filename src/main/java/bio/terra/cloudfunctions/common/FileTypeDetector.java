@@ -4,8 +4,10 @@ import bio.terra.cloudfunctions.utils.MediaTypeUtils;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.util.logging.Logger;
 
 public class FileTypeDetector {
+  private static final Logger logger = Logger.getLogger(FileTypeDetector.class.getName());
   protected StorageObjectData storageObjectData;
   protected InputStream inputStream;
   protected InputStream dataStream;
@@ -36,6 +38,7 @@ public class FileTypeDetector {
    */
   public void handleMediaType() throws Exception {
     String projectId = System.getenv("GCLOUD_PROJECT");
+    logger.info("handleMediaType: " + projectId);
     if (inputStream == null)
       inputStream =
           MediaTypeUtils.getStorageObjectDataAsInputStream(
@@ -49,6 +52,7 @@ public class FileTypeDetector {
 
   private InputStream handleGzipType(InputStream in) {
     BufferedInputStream bis;
+    logger.info("handleGzipType");
     try {
       bis = new BufferedInputStream(MediaTypeUtils.createCompressorInputStream(in));
     } catch (Exception e) {
@@ -62,6 +66,7 @@ public class FileTypeDetector {
   }
 
   private InputStream handleJsonType(InputStream in) {
+    logger.info("handleJsonType");
     try {
       return new BufferedInputStream(in);
     } catch (Exception e) {
