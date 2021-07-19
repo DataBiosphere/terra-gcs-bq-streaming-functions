@@ -11,9 +11,9 @@ public class ProtoFunc extends CloudEventsHarness {
   // Can be injected through DI framework (Spring or Java CDI).
   private ProtoApp app;
 
-  public ProtoFunc(ProtoApp app) {
-    this.app = app;
-  }
+  //public ProtoFunc(ProtoApp app) {
+  //  this.app = app;
+  //}
 
   @Override
   public void accept(CloudEvent event) throws Exception {
