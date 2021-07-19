@@ -1,29 +1,25 @@
 package bio.terra.cloudfunctions.common;
 
 import bio.terra.cloudfunctions.utils.MediaTypeUtils;
-import com.google.cloud.functions.Context;
-import com.google.cloud.functions.RawBackgroundFunction;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.lang.reflect.ParameterizedType;
 
-public abstract class FileTypeDetector<E extends StorageObjectData>
-    implements RawBackgroundFunction {
-  protected E event;
-  protected Context eventContext;
+public class FileTypeDetector {
+  protected StorageObjectData storageObjectData;
   protected InputStream inputStream;
   protected InputStream dataStream;
   protected MediaTypeWrapper mediaType;
 
   public FileTypeDetector() {}
 
-  public E getEvent() {
-    return event;
+  public FileTypeDetector(StorageObjectData storageObjectData) {
+    this.storageObjectData = storageObjectData;
   }
 
-  public Context getEventContext() {
-    return eventContext;
+  public MediaTypeWrapper getMediaType() {
+    if (mediaType == null) mediaType = new MediaTypeWrapper(storageObjectData.getContentType());
+    return mediaType;
   }
 
   public InputStream getDataStream() {
@@ -33,25 +29,7 @@ public abstract class FileTypeDetector<E extends StorageObjectData>
   public void setInputStream(InputStream inputStream) {
     this.inputStream = inputStream;
   }
-  /**
-   * Override the base method in RawBackgroundFunction.
-   *
-   * <p>This is the endpoint triggered by the GCS event. It captures the content type of the object
-   * triggering this method and delegate the file type handling to the handleMediaType() method.
-   *
-   * @param json the String representation of the GCS event
-   * @param context the Cloud Function context
-   */
-  @Override
-  public final void accept(String json, Context context) throws Exception {
-    this.eventContext = context;
-    ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
-    @SuppressWarnings("unchecked")
-    Class<E> eClass = (Class<E>) genericSuperclass.getActualTypeArguments()[0];
-    this.event = EventWrapper.parseEvent(json, eClass);
-    this.mediaType = new MediaTypeWrapper(this.event.getContentType());
-    handleMediaType();
-  }
+
   /**
    * Obtain an input stream from the GCS object and convert it to a typed input stream. It supports
    * GZIP and JSON file types. For GZIP, the method returns the ArchiveInputStream or
@@ -63,7 +41,7 @@ public abstract class FileTypeDetector<E extends StorageObjectData>
     if (inputStream == null)
       inputStream =
           MediaTypeUtils.getStorageObjectDataAsInputStream(
-              projectId, this.event.getBucket(), this.event.getName());
+              projectId, storageObjectData.getBucket(), storageObjectData.getName());
     if (this.mediaType.isApplicationGzip()) {
       dataStream = handleGzipType(inputStream);
     } else if (this.mediaType.isApplicationJson()) {

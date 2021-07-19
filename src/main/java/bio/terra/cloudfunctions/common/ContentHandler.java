@@ -2,8 +2,14 @@ package bio.terra.cloudfunctions.common;
 
 import com.google.events.cloud.storage.v1.StorageObjectData;
 
-public abstract class ContentHandler<E extends StorageObjectData> extends FileTypeDetector<E> {
-  public ContentHandler() {}
+public abstract class ContentHandler extends FileTypeDetector {
+  public ContentHandler() {
+    super();
+  }
+
+  public ContentHandler(StorageObjectData storageObjectData) {
+    super(storageObjectData);
+  }
   /**
    * The translate method is to be overridden in inherited class that will transform the raw
    * dataStream into domain-specific format before further processing.
