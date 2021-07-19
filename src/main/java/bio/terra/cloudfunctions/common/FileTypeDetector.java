@@ -38,7 +38,6 @@ public class FileTypeDetector {
    */
   public void handleMediaType() throws Exception {
     String projectId = System.getenv("GCLOUD_PROJECT");
-    logger.info("handleMediaType: " + projectId);
     if (inputStream == null)
       inputStream =
           MediaTypeUtils.getStorageObjectDataAsInputStream(
@@ -52,7 +51,7 @@ public class FileTypeDetector {
 
   private InputStream handleGzipType(InputStream in) {
     BufferedInputStream bis;
-    logger.info("handleGzipType");
+    logger.info("Invoke Gzip handler...");
     try {
       bis = new BufferedInputStream(MediaTypeUtils.createCompressorInputStream(in));
     } catch (Exception e) {
@@ -66,7 +65,7 @@ public class FileTypeDetector {
   }
 
   private InputStream handleJsonType(InputStream in) {
-    logger.info("handleJsonType");
+    logger.info("Invoke Json handler...");
     try {
       return new BufferedInputStream(in);
     } catch (Exception e) {
