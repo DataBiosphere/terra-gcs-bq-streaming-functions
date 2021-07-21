@@ -88,7 +88,7 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
             String.format("Event implementation class: %s", message.getClass().getTypeName()));
         break;
       default:
-        logger.severe(String.format("Unsupported event type '%s'.", event.getType()));
+        logger.warning(String.format("Unsupported event type '%s'.", event.getType()));
         break;
     }
   }
