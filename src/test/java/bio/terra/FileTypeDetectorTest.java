@@ -13,7 +13,7 @@ import org.junit.Test;
 
 public class FileTypeDetectorTest extends BaseTest {
   @Test
-  public void gzipHandlerTest() {
+  public void tarGzipHandlerTest() {
     try {
       StorageObjectData storageObjectData =
           GsonWrapper.getInstance().fromJson(MOCK_EVENT_GZIP, StorageObjectData.class);
@@ -31,7 +31,7 @@ public class FileTypeDetectorTest extends BaseTest {
   }
 
   @Test
-  public void gzipHandlerTest2() {
+  public void gzipHandlerTest() {
     try {
       StorageObjectData storageObjectData =
           GsonWrapper.getInstance().fromJson(MOCK_EVENT_GZIP, StorageObjectData.class);
