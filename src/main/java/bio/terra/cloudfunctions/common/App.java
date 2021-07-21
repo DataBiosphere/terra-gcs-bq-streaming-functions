@@ -28,7 +28,5 @@ public abstract class App {
     return message;
   }
 
-  public void process() throws Exception {
-    throw new UnsupportedOperationException("process method must be overridden by sub-classes");
-  }
+  public abstract void process() throws Exception;
 }
