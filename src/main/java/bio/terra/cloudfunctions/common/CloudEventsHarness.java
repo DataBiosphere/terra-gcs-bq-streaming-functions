@@ -92,8 +92,4 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
         break;
     }
   }
-
-  private void parseCloudEventV03() {
-    throw new UnsupportedOperationException("Unsupported parseCloudEventV03 method.");
-  }
 }
