@@ -25,7 +25,7 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
   private Object message;
 
   /**
-   * Subclasses of this class must override and invoke this method at the minimum.
+   * This method is triggered whenever a target CloudEvent occurs in GCP.
    *
    * @param event
    * @throws Exception
@@ -50,7 +50,7 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
 
   /**
    * The parse() method delegates message parsing to specific implementation that can be replaced in
-   * the fture.
+   * the future.
    *
    * @throws Exception
    */
@@ -92,4 +92,11 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
         break;
     }
   }
+  /**
+   * Subclasses of this class must implement this method to kick off application-specific functions
+   * downstream .
+   *
+   * @throws Exception
+   */
+  public abstract void doAccept() throws Exception;
 }
