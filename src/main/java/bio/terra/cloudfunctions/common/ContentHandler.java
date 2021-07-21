@@ -15,12 +15,10 @@ public abstract class ContentHandler extends FileTypeDetector {
     super(storageObjectData);
   }
   /**
-   * The translate method is to be overridden in inherited class that will transform the raw
-   * dataStream into domain-specific format before further processing.
+   * Subclasses must implement this method as a hook for transforming the raw Storage Object
+   * dataStream into domain-specific format before further downstream processing.
    */
-  public void translate() throws Exception {
-    throw new UnsupportedOperationException("translate method must be overridden by sub-classes");
-  }
+  public abstract void translate() throws Exception;
   /**
    * This handleMediaType method calls the base class method then delegates to the domain-specific
    * translator.
@@ -30,8 +28,6 @@ public abstract class ContentHandler extends FileTypeDetector {
     super.handleMediaType();
     translate();
   }
-  /** This insert method is used for inserting the translated data into BigQuery. */
-  public void insert() throws Exception {
-    throw new UnsupportedOperationException("insert method must be overridden by sub-classes");
-  }
+  /** Subclasses must implement this method as a hook for BigQuery insertion. */
+  public abstract void insert() throws Exception;
 }
