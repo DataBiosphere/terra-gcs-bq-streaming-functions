@@ -1,7 +1,6 @@
 package bio.terra.cloudfunctions.proto;
 
 import bio.terra.cloudfunctions.common.CloudEventsHarness;
-import io.cloudevents.CloudEvent;
 import java.util.logging.Logger;
 
 /**
@@ -27,8 +26,7 @@ public class ProtoFunc extends CloudEventsHarness {
   }
 
   @Override
-  public void accept(CloudEvent event) throws Exception {
-    super.accept(event);
+  public void doAccept() throws Exception {
     app = new ProtoApp(getCloudEventType(), getMessage());
     app.process();
   }
