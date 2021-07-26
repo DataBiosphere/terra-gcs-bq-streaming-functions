@@ -1,0 +1,13 @@
+[
+  {
+    "name":"1f1d1041-bb84-4cc5-bb86-16fd40cc9a34",
+    "entityType":"project",
+    "operations":[
+      {
+        "op":"AddUpdateAttribute",
+        "attributeName":"my_new_column",
+        "addUpdateAttribute":"my_new_value"
+      }
+    ]
+  }
+]
