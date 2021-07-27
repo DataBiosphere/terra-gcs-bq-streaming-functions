@@ -20,11 +20,13 @@ public class BigQueryWriter {
       List<InsertAllRequest.RowToInsert> rows = insert.getData();
       List<List<InsertAllRequest.RowToInsert>> chunks = Lists.partition(rows, 500);
       for (List<InsertAllRequest.RowToInsert> chunk : chunks) {
-        InsertAllResponse insertAllResponse = bigquery.insertAll(InsertAllRequest.newBuilder(bqDataSet, bqTable, chunk).build());
-        if(insertAllResponse.hasErrors()){
+        InsertAllResponse insertAllResponse =
+            bigquery.insertAll(InsertAllRequest.newBuilder(bqDataSet, bqTable, chunk).build());
+        if (insertAllResponse.hasErrors()) {
           Map<Long, List<BigQueryError>> insertErrors = insertAllResponse.getInsertErrors();
           for (Map.Entry<Long, List<BigQueryError>> entry : insertErrors.entrySet()) {
-            logger.warning(String.format("Error for row %s is %s", entry.getKey(), entry.getValue()));
+            logger.warning(
+                String.format("Error for row %s is %s", entry.getKey(), entry.getValue()));
           }
         }
       }
