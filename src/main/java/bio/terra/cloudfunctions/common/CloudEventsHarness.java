@@ -34,6 +34,7 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
   public void accept(CloudEvent event) throws Exception {
     this.event = event;
     parse();
+    doAccept();
   }
 
   public CloudEvent getEvent() {

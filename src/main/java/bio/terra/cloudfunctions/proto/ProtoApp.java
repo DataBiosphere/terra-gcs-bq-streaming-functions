@@ -42,6 +42,7 @@ public class ProtoApp extends App {
 
     @Override
     public void translate() throws Exception {
+      logger.info("Inside translate method for cloud events function");
       ArchiveInputStream ais = (ArchiveInputStream) getDataStream();
       ArchiveEntry archiveEntry;
       while ((archiveEntry = ais.getNextEntry()) != null) {

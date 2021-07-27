@@ -1,7 +1,7 @@
 [
   {
-    "name":"1f1d1041-bb84-4cc5-bb86-16fd40cc9a34",
-    "entityType":"project",
+    "name":"cf_dataset",
+    "entityType":"cf_table",
     "operations":[
       {
         "op":"AddUpdateAttribute",
