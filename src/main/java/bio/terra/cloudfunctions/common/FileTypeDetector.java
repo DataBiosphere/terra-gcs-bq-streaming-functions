@@ -1,5 +1,6 @@
 package bio.terra.cloudfunctions.common;
 
+import bio.terra.cloudfunctions.utils.GcsUtils;
 import bio.terra.cloudfunctions.utils.MediaTypeUtils;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 import java.io.BufferedInputStream;
@@ -45,7 +46,7 @@ public class FileTypeDetector {
     String projectId = System.getenv("GCLOUD_PROJECT");
     if (inputStream == null)
       inputStream =
-          MediaTypeUtils.getStorageObjectDataAsInputStream(
+          GcsUtils.getStorageObjectDataAsInputStream(
               projectId, storageObjectData.getBucket(), storageObjectData.getName());
     if (getMediaType().isApplicationGzip()) {
       dataStream = handleGzipType(inputStream);
