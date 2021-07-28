@@ -21,9 +21,7 @@ public class DeltaLayerBqGenerator implements BigQueryInsertGenerator<List<Point
               .map(
                   s -> {
                     Map<String, Object> data = new HashMap<>();
-                    data.put("attribute_name", s.getAttributeName());
-                    data.put("add_update_attribute", s.getAddUpdateAttribute());
-
+                    data.put("my_new_column", s.getAttributeName());
                     return InsertAllRequest.RowToInsert.of(pointCorrection.getEntityType(), data);
                   })
               .collect(Collectors.toList());
