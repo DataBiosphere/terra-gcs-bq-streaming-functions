@@ -25,6 +25,11 @@ public class DeltaLayerRawFunction
 
   @Override
   public FileMessage convertMessage(StorageObjectData toConvert) {
-    return new FileMessage(toConvert.getName(), toConvert.getBucket(), toConvert.getSize(), null);
+    return new FileMessage(
+        toConvert.getName(),
+        toConvert.getBucket(),
+        toConvert.getSize(),
+        toConvert.getTimeCreated(),
+        toConvert.getContentType());
   }
 }

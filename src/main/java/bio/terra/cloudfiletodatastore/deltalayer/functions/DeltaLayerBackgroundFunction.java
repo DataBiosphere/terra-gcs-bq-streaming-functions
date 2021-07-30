@@ -6,6 +6,7 @@ import bio.terra.cloudfiletodatastore.FileMessage;
 import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerMessageProcessor;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
+import java.time.ZoneOffset;
 import java.util.logging.Logger;
 
 /**
@@ -33,6 +34,7 @@ public class DeltaLayerBackgroundFunction
         toConvert.getName(),
         toConvert.getBucket(),
         toConvert.getSize(),
-        toConvert.getTimeCreated());
+        toConvert.getTimeCreated().toInstant().atOffset(ZoneOffset.UTC),
+        toConvert.getContentType());
   }
 }

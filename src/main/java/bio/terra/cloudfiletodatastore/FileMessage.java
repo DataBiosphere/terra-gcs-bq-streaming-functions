@@ -1,26 +1,34 @@
 package bio.terra.cloudfiletodatastore;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 public class FileMessage {
 
-  private final String resourceUrl;
+  private final String resourceName;
 
   private final String sourceBucket;
 
   private final long size;
 
-  private final Date createdAt;
+  private final OffsetDateTime createdAt;
 
-  public FileMessage(String resourceUrl, String sourceBucket, long size, Date createdAt) {
-    this.resourceUrl = resourceUrl;
+  private final String contentType;
+
+  public FileMessage(
+      String resourceName,
+      String sourceBucket,
+      long size,
+      OffsetDateTime createdAt,
+      String contentType) {
+    this.resourceName = resourceName;
     this.sourceBucket = sourceBucket;
     this.size = size;
     this.createdAt = createdAt;
+    this.contentType = contentType;
   }
 
-  public String getResourceUrl() {
-    return resourceUrl;
+  public String getResourceName() {
+    return resourceName;
   }
 
   public String getSourceBucket() {
@@ -31,23 +39,22 @@ public class FileMessage {
     return size;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
+  }
+
+  public String getContentType() {
+    return contentType;
   }
 
   @Override
   public String toString() {
-    return "FileMessage{"
-        + "resourceUrl='"
-        + resourceUrl
-        + '\''
-        + ", sourceBucket='"
-        + sourceBucket
-        + '\''
-        + ", size="
-        + size
-        + ", createdAt="
-        + createdAt
-        + '}';
+    return "FileMessage{" +
+            "resourceName='" + resourceName + '\'' +
+            ", sourceBucket='" + sourceBucket + '\'' +
+            ", size=" + size +
+            ", createdAt=" + createdAt +
+            ", contentType='" + contentType + '\'' +
+            '}';
   }
 }

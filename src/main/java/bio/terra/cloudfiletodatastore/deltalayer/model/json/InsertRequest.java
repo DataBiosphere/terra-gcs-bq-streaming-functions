@@ -13,7 +13,7 @@ public class InsertRequest {
 
   private InsertSource source;
 
-  private OffsetDateTime insertTimeStamp;
+  private OffsetDateTime insertTimestamp;
 
   public String getInsertId() {
     return insertId;
@@ -47,11 +47,11 @@ public class InsertRequest {
     this.source = source;
   }
 
-  public OffsetDateTime getInsertTimeStamp() {
-    return insertTimeStamp;
+  public OffsetDateTime getInsertTimestamp() {
+    return insertTimestamp;
   }
 
-  public void setInsertTimeStamp(OffsetDateTime insertTimeStamp) {
-    this.insertTimeStamp = insertTimeStamp;
+  public void setInsertTimestamp(OffsetDateTime insertTimestamp) {
+    this.insertTimestamp = insertTimestamp;
   }
 }

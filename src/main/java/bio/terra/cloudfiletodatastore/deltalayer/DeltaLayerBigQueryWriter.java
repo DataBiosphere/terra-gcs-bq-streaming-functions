@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class DeltaLayerBigQueryWriter implements DeltaLayerInsertWriter {
+public class DeltaLayerBigQueryWriter {
 
   private static final Logger logger = Logger.getLogger(DeltaLayerBigQueryWriter.class.getName());
 
   private static final String EAV_TABLE_NAME = "eav_table";
 
-  public void insertRows(List<InsertAllRequest.RowToInsert> inserts, String dataSet, String project) {
+  public void insertRows(
+      List<InsertAllRequest.RowToInsert> inserts, String dataSet, BigQuery bigQuery) {
     List<List<InsertAllRequest.RowToInsert>> chunks = Lists.partition(inserts, 500);
-    BigQuery bigQuery = BigQueryOptions.newBuilder().setProjectId(project).build().getService();
     for (List<InsertAllRequest.RowToInsert> chunk : chunks) {
       InsertAllResponse insertAllResponse =
           bigQuery.insertAll(InsertAllRequest.newBuilder(dataSet, EAV_TABLE_NAME, chunk).build());
