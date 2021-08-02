@@ -2,7 +2,7 @@ package bio.terra.cloudfiletodatastore.deltalayer.functions;
 
 import bio.terra.cloudevents.GCSEvent;
 import bio.terra.cloudfiletodatastore.FileCreatedMessageHarness;
-import bio.terra.cloudfiletodatastore.FileMessage;
+import bio.terra.cloudfiletodatastore.FileUploadedMessage;
 import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerMessageProcessor;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
@@ -11,9 +11,9 @@ import java.util.logging.Logger;
 
 /**
  * Implementation of a GCF background function
- * https://cloud.google.com/functions/docs/writing#background_functions This and other background
- * functions or other message platform listeners should pull the info needed out of the message and
- * delegate to a {@link bio.terra.cloudfiletodatastore.MessageProcessor} subclass.
+ * https://cloud.google.com/functions/docs/writing#background_functions This would be the ideal if
+ * not for the crummy Gson support which prevents us currently from using a Google maintained class
+ * to capture the event data.
  */
 public class DeltaLayerBackgroundFunction
     implements BackgroundFunction<GCSEvent>, FileCreatedMessageHarness<GCSEvent> {
@@ -22,15 +22,15 @@ public class DeltaLayerBackgroundFunction
       Logger.getLogger(DeltaLayerBackgroundFunction.class.getName());
 
   @Override
-  public void accept(GCSEvent gcsEvent, Context context) throws Exception {
+  public void accept(GCSEvent gcsEvent, Context context) {
     // TODO: verify bucket?, check file size, check file type, return a proper error response
     logger.info(String.format("We received this event as storage object data %s", gcsEvent));
     new DeltaLayerMessageProcessor(convertMessage(gcsEvent)).processMessage();
   }
 
   @Override
-  public FileMessage convertMessage(GCSEvent toConvert) {
-    return new FileMessage(
+  public FileUploadedMessage convertMessage(GCSEvent toConvert) {
+    return new FileUploadedMessage(
         toConvert.getName(),
         toConvert.getBucket(),
         toConvert.getSize(),

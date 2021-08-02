@@ -4,11 +4,11 @@ import bio.terra.cloudfiletodatastore.deltalayer.functions.DeltaLayerBackgroundF
 
 /**
  * Event listeners like {@link DeltaLayerBackgroundFunction} should implement this interface to
- * convert the message to {@link FileMessage}
+ * convert the message to {@link FileUploadedMessage}
  *
  * @param <T> the cloud provider message type like GcsEvent
  */
 public interface FileCreatedMessageHarness<T> {
 
-  FileMessage convertMessage(T toConvert);
+  FileUploadedMessage convertMessage(T toConvert);
 }

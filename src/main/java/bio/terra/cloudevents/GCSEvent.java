@@ -2,6 +2,19 @@ package bio.terra.cloudevents;
 
 import java.util.Date;
 
+/**
+ * If we want to use {@link com.google.cloud.functions.BackgroundFunction} we need a class like this
+ * that contains the subset of data that we want to preserve from
+ * https://cloud.google.com/storage/docs/json_api/v1/objects#resource
+ *
+ * <p>In particular, the default Gson instance that GCFs use doesn't know how to serialize to an
+ * {@link java.time.OffsetDateTime} so we have to change those fields to a date time representation
+ * that Gson can deserialize. Here we've chosen {@link Date} For this reason we can't use {@link
+ * com.google.events.cloud.storage.v1.StorageObjectData} in Background function which would be
+ * preferred.
+ *
+ * <p>https://cloud.google.com/functions/docs/writing/background
+ */
 public class GCSEvent {
   String id;
   String selfLink;

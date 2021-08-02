@@ -2,7 +2,11 @@ package bio.terra.cloudfiletodatastore;
 
 import java.time.OffsetDateTime;
 
-public class FileMessage {
+/**
+ * Includes all the info we need from the Google file upload event and decouples us from the Google
+ * realm. All business logic should reference this class rather than Google classes.
+ */
+public class FileUploadedMessage {
 
   private final String resourceName;
 
@@ -14,7 +18,7 @@ public class FileMessage {
 
   private final String contentType;
 
-  public FileMessage(
+  public FileUploadedMessage(
       String resourceName,
       String sourceBucket,
       long size,

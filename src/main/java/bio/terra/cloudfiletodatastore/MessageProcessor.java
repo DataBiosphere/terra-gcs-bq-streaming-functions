@@ -7,9 +7,9 @@ package bio.terra.cloudfiletodatastore;
  */
 public abstract class MessageProcessor {
 
-  protected final FileMessage message;
+  protected final FileUploadedMessage message;
 
-  public MessageProcessor(FileMessage message) {
+  public MessageProcessor(FileUploadedMessage message) {
     this.message = message;
   }
 

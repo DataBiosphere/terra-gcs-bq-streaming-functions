@@ -1,8 +1,8 @@
 package bio.terra.cloudfiletodatastore.deltalayer;
 
 import bio.terra.cloudfiletodatastore.*;
-import bio.terra.cloudfiletodatastore.deltalayer.model.json.InsertDestination;
-import bio.terra.cloudfiletodatastore.deltalayer.model.json.InsertRequest;
+import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionDestination;
+import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionRequest;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.InsertAllRequest;
@@ -13,19 +13,20 @@ import java.util.logging.Logger;
 public class DeltaLayerMessageProcessor extends MessageProcessor {
 
   private static final String EXPECTED_CONTENT_TYPE = "application/json";
+
   private final ResourceFetcher resourceFetcher;
 
   private BigQuery bqForTest;
 
   private static final Logger logger = Logger.getLogger(DeltaLayerMessageProcessor.class.getName());
 
-  public DeltaLayerMessageProcessor(FileMessage message) {
+  public DeltaLayerMessageProcessor(FileUploadedMessage message) {
     super(message);
     this.resourceFetcher = new GcsFileFetcher(message.getSourceBucket(), message.getResourceName());
   }
 
   @VisibleForTesting
-  DeltaLayerMessageProcessor(FileMessage message, ResourceFetcher rf, BigQuery bq) {
+  DeltaLayerMessageProcessor(FileUploadedMessage message, ResourceFetcher rf, BigQuery bq) {
     super(message);
     this.resourceFetcher = rf;
     this.bqForTest = bq;
@@ -38,16 +39,18 @@ public class DeltaLayerMessageProcessor extends MessageProcessor {
       return;
     }
     byte[] resourceBytes = resourceFetcher.fetchResourceBytes();
-    InsertRequest insertRequest =
-        GsonConverter.convertFromClass(new String(resourceBytes), InsertRequest.class);
+    PointCorrectionRequest pointCorrectionRequest =
+        GsonConverter.convertFromClass(new String(resourceBytes), PointCorrectionRequest.class);
     logger.info(
         String.format(
-            "Length of deserialized point corrections is %s", insertRequest.getInserts().size()));
+            "Length of deserialized point corrections is %s",
+            pointCorrectionRequest.getInserts().size()));
     DeltaLayerBqInsertGenerator bqGenerator = new DeltaLayerBqInsertGenerator();
     List<InsertAllRequest.RowToInsert> inserts =
-        bqGenerator.getInserts(insertRequest.getInserts(), insertRequest.getInsertTimestamp());
+        bqGenerator.getInserts(
+            pointCorrectionRequest.getInserts(), pointCorrectionRequest.getInsertTimestamp());
     logger.info(String.format("Length of generated bq inserts is %s", inserts.size()));
-    InsertDestination destination = insertRequest.getDestination();
+    PointCorrectionDestination destination = pointCorrectionRequest.getDestination();
     DeltaLayerBigQueryWriter deltaLayerBigQueryWriter = new DeltaLayerBigQueryWriter();
     if (null != bqForTest) {
       deltaLayerBigQueryWriter.insertRows(inserts, destination.getBqDataset(), bqForTest);

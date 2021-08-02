@@ -1,7 +1,7 @@
 package bio.terra.cloudfiletodatastore.deltalayer.functions;
 
 import bio.terra.cloudfiletodatastore.FileCreatedMessageHarness;
-import bio.terra.cloudfiletodatastore.FileMessage;
+import bio.terra.cloudfiletodatastore.FileUploadedMessage;
 import bio.terra.cloudfiletodatastore.GsonConverter;
 import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerMessageProcessor;
 import com.google.cloud.functions.CloudEventsFunction;
@@ -9,6 +9,7 @@ import com.google.events.cloud.storage.v1.StorageObjectData;
 import io.cloudevents.CloudEvent;
 import java.util.Objects;
 
+/** GCF implementation using cloud events https://cloudevents.io/ */
 public class DeltaLayerCloudFunction
     implements CloudEventsFunction, FileCreatedMessageHarness<StorageObjectData> {
 
@@ -21,12 +22,7 @@ public class DeltaLayerCloudFunction
   }
 
   @Override
-  public FileMessage convertMessage(StorageObjectData toConvert) {
-    return new FileMessage(
-        toConvert.getName(),
-        toConvert.getBucket(),
-        toConvert.getSize(),
-        toConvert.getTimeCreated(),
-        toConvert.getContentType());
+  public FileUploadedMessage convertMessage(StorageObjectData toConvert) {
+    return MessageConverter.getFileMessage(toConvert);
   }
 }

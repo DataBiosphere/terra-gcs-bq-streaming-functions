@@ -2,7 +2,7 @@ package bio.terra.cloudfiletodatastore.deltalayer.model.json;
 
 import java.util.UUID;
 
-public class InsertOperation {
+public class PointCorrectionOperation {
 
   private UUID datarepoRowId;
 

@@ -3,7 +3,7 @@ package bio.terra.cloudfiletodatastore.deltalayer.model.json;
 import java.util.Objects;
 import java.util.UUID;
 
-public class InsertDestination {
+public class PointCorrectionDestination {
 
   private String bqDataset;
 
@@ -11,14 +11,15 @@ public class InsertDestination {
 
   private String datasetProject;
 
-  public InsertDestination(String bqDataset, UUID workspaceId, String datasetProject) {
+  // for ease of testing verification
+  public PointCorrectionDestination(String bqDataset, UUID workspaceId, String datasetProject) {
     this.bqDataset = bqDataset;
     this.workspaceId = workspaceId;
     this.datasetProject = datasetProject;
   }
 
   // for Gson
-  public InsertDestination() {}
+  public PointCorrectionDestination() {}
 
   public String getBqDataset() {
     return bqDataset;
@@ -47,8 +48,8 @@ public class InsertDestination {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof InsertDestination)) return false;
-    InsertDestination that = (InsertDestination) o;
+    if (!(o instanceof PointCorrectionDestination)) return false;
+    PointCorrectionDestination that = (PointCorrectionDestination) o;
     return Objects.equals(getBqDataset(), that.getBqDataset())
         && Objects.equals(getWorkspaceId(), that.getWorkspaceId())
         && Objects.equals(getDatasetProject(), that.getDatasetProject());

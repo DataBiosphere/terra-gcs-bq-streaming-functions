@@ -3,7 +3,7 @@ package bio.terra.cloudfiletodatastore.deltalayer.model.json;
 import java.math.BigInteger;
 import java.util.UUID;
 
-public class InsertSource {
+public class PointCorrectionSource {
 
   private BigInteger insertingUser;
 

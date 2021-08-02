@@ -1,22 +1,33 @@
 package bio.terra.cloudfiletodatastore.deltalayer;
 
-import bio.terra.cloudfiletodatastore.deltalayer.model.json.InsertOperation;
+import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionOperation;
 import com.google.cloud.bigquery.InsertAllRequest;
 import com.google.common.annotations.VisibleForTesting;
 import java.time.OffsetDateTime;
 import java.util.*;
 import org.apache.commons.validator.GenericValidator;
 
+/**
+ * Responsible for translating bio.terra.cloudfiletodatastore.model.json.* instances into {@link
+ * com.google.cloud.bigquery.InsertAllRequest.RowToInsert}
+ */
 public class DeltaLayerBqInsertGenerator {
 
   private Map<Class, String> typeColumns =
-      Map.of(String.class, "str_val", Long.class, "int_val", Double.class, "float_val",
-              Boolean.class, "bool_val");
+      Map.of(
+          String.class,
+          "str_val",
+          Long.class,
+          "int_val",
+          Double.class,
+          "float_val",
+          Boolean.class,
+          "bool_val");
 
   public List<InsertAllRequest.RowToInsert> getInserts(
-      List<InsertOperation> toConvert, OffsetDateTime insertTimeStamp) {
+      List<PointCorrectionOperation> toConvert, OffsetDateTime insertTimeStamp) {
     List<InsertAllRequest.RowToInsert> inserts = new ArrayList<>();
-    for (InsertOperation insert : toConvert) {
+    for (PointCorrectionOperation insert : toConvert) {
       Map<String, Object> data = new HashMap<>();
       data.put("datarepo_row_id", insert.getDatarepoRowId().toString());
       data.put("attribute_name", insert.getName());
@@ -29,7 +40,7 @@ public class DeltaLayerBqInsertGenerator {
 
   @VisibleForTesting
   Object getTypedValue(String value) {
-    //order matters, if we put double before long, non-floating point values
+    // order matters, if we put double before long, non-floating point values
     // will unnecessarily be represented as Doubles
     if (GenericValidator.isLong(value)) {
       return Long.valueOf(value);

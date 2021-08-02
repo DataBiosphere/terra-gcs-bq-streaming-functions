@@ -5,8 +5,8 @@ import static junit.framework.TestCase.assertNotNull;
 
 import bio.terra.cloudfiletodatastore.GsonConverter;
 import bio.terra.cloudfiletodatastore.ResourceFetcher;
-import bio.terra.cloudfiletodatastore.deltalayer.model.json.InsertDestination;
-import bio.terra.cloudfiletodatastore.deltalayer.model.json.InsertRequest;
+import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionDestination;
+import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionRequest;
 import com.google.gson.JsonSyntaxException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -18,27 +18,27 @@ public class GsonParsingTest {
   @Test
   public void parsePointCorrection() {
     ResourceFetcher resourceFetcher = new ClassPathResourceFetcher("single_point_correction.json");
-    InsertRequest insertRequest =
+    PointCorrectionRequest pointCorrectionRequest =
         GsonConverter.convertFromClass(
-            new String(resourceFetcher.fetchResourceBytes()), InsertRequest.class);
-    assertEquals("Should only be one insert", 1, insertRequest.getInserts().size());
+            new String(resourceFetcher.fetchResourceBytes()), PointCorrectionRequest.class);
+    assertEquals("Should only be one insert", 1, pointCorrectionRequest.getInserts().size());
     assertEquals(
         "Destination should match what's in single_point_correction.json",
-        new InsertDestination(
+        new PointCorrectionDestination(
             "point_correction",
             UUID.fromString("fe2dfaa7-e3a8-4725-b652-499f4eb2c88d"),
             "delta-layer-schema-tests"),
-        insertRequest.getDestination());
-    assertNotNull(insertRequest.getInsertTimestamp());
+        pointCorrectionRequest.getDestination());
+    assertNotNull(pointCorrectionRequest.getInsertTimestamp());
     assertEquals(
         OffsetDateTime.of(2021, 7, 23, 14, 23, 33, 60729000, ZoneOffset.UTC),
-        insertRequest.getInsertTimestamp());
+        pointCorrectionRequest.getInsertTimestamp());
   }
 
   @Test(expected = JsonSyntaxException.class)
   public void parseMalformedJson() {
     ResourceFetcher resourceFetcher = new ClassPathResourceFetcher("bad_json.json");
     GsonConverter.convertFromClass(
-        new String(resourceFetcher.fetchResourceBytes()), InsertRequest.class);
+        new String(resourceFetcher.fetchResourceBytes()), PointCorrectionRequest.class);
   }
 }

@@ -31,6 +31,7 @@ public class GcsFileFetcher implements ResourceFetcher {
     return content;
   }
 
+  // Not currently used but if we're concerned about the memory usage, converting directly from
   public InputStream fetchResourceStream() {
     Storage service = StorageOptions.newBuilder().build().getService();
     ReadChannel reader = service.reader(bucket, name);
