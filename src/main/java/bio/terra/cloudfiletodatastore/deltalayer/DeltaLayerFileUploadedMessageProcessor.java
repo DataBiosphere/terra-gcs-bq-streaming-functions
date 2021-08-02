@@ -10,7 +10,11 @@ import com.google.common.annotations.VisibleForTesting;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class DeltaLayerMessageProcessor extends MessageProcessor {
+/**
+ * Fetches the json file referenced in the {@link FileUploadedMessage} from cloud storage,
+ * parses that file into Java using Gson, inserts the requisite data into BigQuery
+ */
+public class DeltaLayerFileUploadedMessageProcessor extends MessageProcessor {
 
   private static final String EXPECTED_CONTENT_TYPE = "application/json";
 
@@ -18,15 +22,15 @@ public class DeltaLayerMessageProcessor extends MessageProcessor {
 
   private BigQuery bqForTest;
 
-  private static final Logger logger = Logger.getLogger(DeltaLayerMessageProcessor.class.getName());
+  private static final Logger logger = Logger.getLogger(DeltaLayerFileUploadedMessageProcessor.class.getName());
 
-  public DeltaLayerMessageProcessor(FileUploadedMessage message) {
+  public DeltaLayerFileUploadedMessageProcessor(FileUploadedMessage message) {
     super(message);
     this.resourceFetcher = new GcsFileFetcher(message.getSourceBucket(), message.getResourceName());
   }
 
   @VisibleForTesting
-  DeltaLayerMessageProcessor(FileUploadedMessage message, ResourceFetcher rf, BigQuery bq) {
+  DeltaLayerFileUploadedMessageProcessor(FileUploadedMessage message, ResourceFetcher rf, BigQuery bq) {
     super(message);
     this.resourceFetcher = rf;
     this.bqForTest = bq;
@@ -52,6 +56,7 @@ public class DeltaLayerMessageProcessor extends MessageProcessor {
     logger.info(String.format("Length of generated bq inserts is %s", inserts.size()));
     PointCorrectionDestination destination = pointCorrectionRequest.getDestination();
     DeltaLayerBigQueryWriter deltaLayerBigQueryWriter = new DeltaLayerBigQueryWriter();
+    //kind of icky but our BigQuery instance's project and dataset will vary based on the file
     if (null != bqForTest) {
       deltaLayerBigQueryWriter.insertRows(inserts, destination.getBqDataset(), bqForTest);
     } else {

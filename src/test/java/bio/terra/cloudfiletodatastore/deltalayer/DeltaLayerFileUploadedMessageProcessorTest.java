@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class DeltaLayerMessageProcessorTest {
+public class DeltaLayerFileUploadedMessageProcessorTest {
 
   @Test
   public void sunnyDay() throws InterruptedException {
@@ -19,8 +19,8 @@ public class DeltaLayerMessageProcessorTest {
     Mockito.when(trMock.getTotalRows()).thenReturn(1L);
     Mockito.when(bqMock.query(any())).thenReturn(trMock);
     Mockito.when(bqMock.insertAll(any())).thenReturn(Mockito.mock(InsertAllResponse.class));
-    DeltaLayerMessageProcessor messageProcessor =
-        new DeltaLayerMessageProcessor(
+    DeltaLayerFileUploadedMessageProcessor messageProcessor =
+        new DeltaLayerFileUploadedMessageProcessor(
             message, new ClassPathResourceFetcher("single_point_correction.json"), bqMock);
     messageProcessor.processMessage();
     Mockito.verify(bqMock, Mockito.times(1)).insertAll(any());
@@ -31,8 +31,8 @@ public class DeltaLayerMessageProcessorTest {
     FileUploadedMessage message =
         new FileUploadedMessage("myUrl", "bucket", 100, OffsetDateTime.now(), "application/xml");
     BigQuery bqMock = Mockito.mock(BigQuery.class);
-    DeltaLayerMessageProcessor messageProcessor =
-        new DeltaLayerMessageProcessor(message, null, bqMock);
+    DeltaLayerFileUploadedMessageProcessor messageProcessor =
+        new DeltaLayerFileUploadedMessageProcessor(message, null, bqMock);
     messageProcessor.processMessage();
     Mockito.verify(bqMock, Mockito.times(0)).insertAll(any());
   }

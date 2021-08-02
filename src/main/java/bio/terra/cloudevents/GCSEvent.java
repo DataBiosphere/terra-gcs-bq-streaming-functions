@@ -7,7 +7,7 @@ import java.util.Date;
  * that contains the subset of data that we want to preserve from
  * https://cloud.google.com/storage/docs/json_api/v1/objects#resource
  *
- * <p>In particular, the default Gson instance that GCFs use doesn't know how to serialize to an
+ * <p>In particular, the default Gson instance that GCFs use doesn't know how to deserialize to an
  * {@link java.time.OffsetDateTime} so we have to change those fields to a date time representation
  * that Gson can deserialize. Here we've chosen {@link Date} For this reason we can't use {@link
  * com.google.events.cloud.storage.v1.StorageObjectData} in Background function which would be

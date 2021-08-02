@@ -5,7 +5,7 @@ import static bio.terra.cloudfiletodatastore.deltalayer.functions.MessageConvert
 import bio.terra.cloudfiletodatastore.FileCreatedMessageHarness;
 import bio.terra.cloudfiletodatastore.FileUploadedMessage;
 import bio.terra.cloudfiletodatastore.GsonConverter;
-import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerMessageProcessor;
+import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerFileUploadedMessageProcessor;
 import com.google.cloud.functions.Context;
 import com.google.cloud.functions.RawBackgroundFunction;
 import com.google.events.cloud.storage.v1.StorageObjectData;
@@ -30,7 +30,7 @@ public class DeltaLayerRawFunction
     StorageObjectData storageObjectData =
         GsonConverter.convertFromClass(s, StorageObjectData.class);
     logger.info(String.format("Here's the serialized object %s", storageObjectData));
-    new DeltaLayerMessageProcessor(convertMessage(storageObjectData)).processMessage();
+    new DeltaLayerFileUploadedMessageProcessor(convertMessage(storageObjectData)).processMessage();
   }
 
   @Override

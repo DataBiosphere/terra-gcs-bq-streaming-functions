@@ -1,8 +1,8 @@
 package bio.terra.cloudfiletodatastore;
 
 /**
- * Encapsulates business logic, subclasses should not use cloud provider api classes, all the
- * necessary data should transferred from the cloud provider specific classes to the FileMessage
+ * Subclasses encapsulate business logic and should not use cloud provider api classes, all the
+ * necessary data should transferred from the cloud provider specific classes to the {@link FileUploadedMessage}
  * instance passed to the constructor.
  */
 public abstract class MessageProcessor {

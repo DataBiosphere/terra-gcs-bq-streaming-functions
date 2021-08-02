@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** Does the Big Query things, namely create the EAV table and insert to the EAV table. */
+/**
+ * Does the Big Query things, namely create the EAV table and insert to the EAV table.
+ */
 public class DeltaLayerBigQueryWriter {
 
   private static final Logger logger = Logger.getLogger(DeltaLayerBigQueryWriter.class.getName());

@@ -3,7 +3,7 @@ package bio.terra.cloudfiletodatastore.deltalayer.functions;
 import bio.terra.cloudevents.GCSEvent;
 import bio.terra.cloudfiletodatastore.FileCreatedMessageHarness;
 import bio.terra.cloudfiletodatastore.FileUploadedMessage;
-import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerMessageProcessor;
+import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerFileUploadedMessageProcessor;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import java.time.ZoneOffset;
@@ -23,9 +23,8 @@ public class DeltaLayerBackgroundFunction
 
   @Override
   public void accept(GCSEvent gcsEvent, Context context) {
-    // TODO: verify bucket?, check file size, check file type, return a proper error response
     logger.info(String.format("We received this event as storage object data %s", gcsEvent));
-    new DeltaLayerMessageProcessor(convertMessage(gcsEvent)).processMessage();
+    new DeltaLayerFileUploadedMessageProcessor(convertMessage(gcsEvent)).processMessage();
   }
 
   @Override
