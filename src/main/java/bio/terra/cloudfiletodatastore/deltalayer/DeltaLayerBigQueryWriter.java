@@ -36,7 +36,8 @@ public class DeltaLayerBigQueryWriter {
         Field.of("date_val", StandardSQLTypeName.DATETIME),
         Field.of("int_val", StandardSQLTypeName.INT64),
         Field.of("float_val", StandardSQLTypeName.FLOAT64),
-        Field.of("str_val", StandardSQLTypeName.STRING));
+        Field.of("str_val", StandardSQLTypeName.STRING),
+        Field.of("bool_val", StandardSQLTypeName.BOOL));
   }
 
   private boolean eavTableExists(BigQuery bigQuery, String dataSet) {

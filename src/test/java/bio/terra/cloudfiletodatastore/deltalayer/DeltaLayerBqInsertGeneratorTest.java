@@ -1,6 +1,7 @@
 package bio.terra.cloudfiletodatastore.deltalayer;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 
 import bio.terra.cloudfiletodatastore.GsonConverter;
 import bio.terra.cloudfiletodatastore.deltalayer.model.json.InsertRequest;
@@ -25,8 +26,18 @@ public class DeltaLayerBqInsertGeneratorTest {
         new DeltaLayerBqInsertGenerator().getInserts(insertRequest.getInserts(), insertTimeStamp);
     assertEquals("Should have created one insert", 1, inserts.size());
     assertEquals(
-        "Insert timestamp is not what was expected",
+        "Insert timestamp does not match what was in DL file",
         "2021-07-23T14:23:33.060729Z",
         insertRequest.getInsertTimestamp().toString());
+  }
+
+  @Test
+  public void getTypedValuesForInsert() {
+    DeltaLayerBqInsertGenerator insertGenerator = new DeltaLayerBqInsertGenerator();
+    assertTrue(insertGenerator.getTypedValue("a string") instanceof String);
+    assertTrue(insertGenerator.getTypedValue("111") instanceof Long);
+    assertTrue(insertGenerator.getTypedValue("111.22") instanceof Double);
+    assertTrue(insertGenerator.getTypedValue("true") instanceof Boolean);
+    assertTrue(insertGenerator.getTypedValue("") instanceof String);
   }
 }
