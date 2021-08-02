@@ -30,7 +30,7 @@ public class DeltaLayerBigQueryWriter {
 
   private List<Field> getEavSchema() {
     return List.of(
-        Field.of("datarepoRowId", StandardSQLTypeName.STRING),
+        Field.of("datarepo_row_id", StandardSQLTypeName.STRING),
         Field.of("attribute_name", StandardSQLTypeName.STRING),
         Field.of("updated_at", StandardSQLTypeName.TIMESTAMP),
         Field.of("date_val", StandardSQLTypeName.DATETIME),

@@ -18,7 +18,7 @@ public class DeltaLayerBqInsertGenerator {
     List<InsertAllRequest.RowToInsert> inserts = new ArrayList<>();
     for (InsertOperation insert : toConvert) {
       Map<String, Object> data = new HashMap<>();
-      data.put("dataRepoRowId", insert.getDatarepoRowId().toString());
+      data.put("datarepo_row_id", insert.getDatarepoRowId().toString());
       data.put("attribute_name", insert.getName());
       data.put("updated_at", insertTimeStamp.toString());
       data.put(getTargetColumn(insert.getValue()), getTypedValue(insert.getValue()));
