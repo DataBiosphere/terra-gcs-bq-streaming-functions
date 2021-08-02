@@ -39,7 +39,8 @@ public class DeltaLayerFileUploadedMessageProcessor extends MessageProcessor {
   @Override
   public void processMessage() {
     if (!EXPECTED_CONTENT_TYPE.equals(message.getContentType())) {
-      logger.warning("Unexpected content type, concluding processing early");
+      logger.warning(String.format("Unexpected content type %s, concluding processing early",
+              message.getContentType()));
       return;
     }
     byte[] resourceBytes = resourceFetcher.fetchResourceBytes();
