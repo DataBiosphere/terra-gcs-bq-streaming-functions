@@ -20,7 +20,7 @@ public class DeltaLayerBqInsertGenerator {
       data.put("attribute_name", insert.getName());
       data.put("updated_at", insertTimeStamp.toString());
       data.put(getTargetColumn(insert.getValue()), getTypedValue(insert.getValue()));
-      inserts.add(InsertAllRequest.RowToInsert.of(insert.getDatarepoRowId().toString(), data));
+      inserts.add(InsertAllRequest.RowToInsert.of(data));
     }
     return inserts;
   }
