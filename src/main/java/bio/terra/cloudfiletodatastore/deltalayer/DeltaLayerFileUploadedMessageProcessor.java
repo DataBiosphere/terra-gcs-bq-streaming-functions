@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Fetches the json file referenced in the {@link FileUploadedMessage} from cloud storage,
- * parses that file into Java using Gson, inserts the requisite data into BigQuery
+ * Fetches the json file referenced in the {@link FileUploadedMessage} from cloud storage, parses
+ * that file into Java using Gson, inserts the requisite data into BigQuery
  */
 public class DeltaLayerFileUploadedMessageProcessor extends MessageProcessor {
 
@@ -22,7 +22,8 @@ public class DeltaLayerFileUploadedMessageProcessor extends MessageProcessor {
 
   private BigQuery bqForTest;
 
-  private static final Logger logger = Logger.getLogger(DeltaLayerFileUploadedMessageProcessor.class.getName());
+  private static final Logger logger =
+      Logger.getLogger(DeltaLayerFileUploadedMessageProcessor.class.getName());
 
   public DeltaLayerFileUploadedMessageProcessor(FileUploadedMessage message) {
     super(message);
@@ -30,7 +31,8 @@ public class DeltaLayerFileUploadedMessageProcessor extends MessageProcessor {
   }
 
   @VisibleForTesting
-  DeltaLayerFileUploadedMessageProcessor(FileUploadedMessage message, ResourceFetcher rf, BigQuery bq) {
+  DeltaLayerFileUploadedMessageProcessor(
+      FileUploadedMessage message, ResourceFetcher rf, BigQuery bq) {
     super(message);
     this.resourceFetcher = rf;
     this.bqForTest = bq;
@@ -39,8 +41,9 @@ public class DeltaLayerFileUploadedMessageProcessor extends MessageProcessor {
   @Override
   public void processMessage() {
     if (!EXPECTED_CONTENT_TYPE.equals(message.getContentType())) {
-      logger.warning(String.format("Unexpected content type %s, concluding processing early",
-              message.getContentType()));
+      logger.warning(
+          String.format(
+              "Unexpected content type %s, concluding processing early", message.getContentType()));
       return;
     }
     byte[] resourceBytes = resourceFetcher.fetchResourceBytes();
@@ -57,7 +60,7 @@ public class DeltaLayerFileUploadedMessageProcessor extends MessageProcessor {
     logger.info(String.format("Length of generated bq inserts is %s", inserts.size()));
     PointCorrectionDestination destination = pointCorrectionRequest.getDestination();
     DeltaLayerBigQueryWriter deltaLayerBigQueryWriter = new DeltaLayerBigQueryWriter();
-    //kind of icky but our BigQuery instance's project and dataset will vary based on the file
+    // kind of icky but our BigQuery instance's project and dataset will vary based on the file
     if (null != bqForTest) {
       deltaLayerBigQueryWriter.insertRows(inserts, destination.getBqDataset(), bqForTest);
     } else {

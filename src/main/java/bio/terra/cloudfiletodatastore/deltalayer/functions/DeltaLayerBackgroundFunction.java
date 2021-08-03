@@ -1,7 +1,6 @@
 package bio.terra.cloudfiletodatastore.deltalayer.functions;
 
 import bio.terra.cloudevents.GCSEvent;
-import bio.terra.cloudfiletodatastore.FileCreatedMessageHarness;
 import bio.terra.cloudfiletodatastore.FileUploadedMessage;
 import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerFileUploadedMessageProcessor;
 import com.google.cloud.functions.BackgroundFunction;
@@ -15,8 +14,7 @@ import java.util.logging.Logger;
  * not for the crummy Gson support which prevents us currently from using a Google maintained class
  * to capture the event data.
  */
-public class DeltaLayerBackgroundFunction
-    implements BackgroundFunction<GCSEvent>, FileCreatedMessageHarness<GCSEvent> {
+public class DeltaLayerBackgroundFunction implements BackgroundFunction<GCSEvent> {
 
   private static final Logger logger =
       Logger.getLogger(DeltaLayerBackgroundFunction.class.getName());
@@ -27,8 +25,7 @@ public class DeltaLayerBackgroundFunction
     new DeltaLayerFileUploadedMessageProcessor(convertMessage(gcsEvent)).processMessage();
   }
 
-  @Override
-  public FileUploadedMessage convertMessage(GCSEvent toConvert) {
+  private FileUploadedMessage convertMessage(GCSEvent toConvert) {
     return new FileUploadedMessage(
         toConvert.getName(),
         toConvert.getBucket(),

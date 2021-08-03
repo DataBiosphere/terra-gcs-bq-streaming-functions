@@ -2,8 +2,6 @@ package bio.terra.cloudfiletodatastore.deltalayer.functions;
 
 import static bio.terra.cloudfiletodatastore.deltalayer.functions.MessageConverter.getFileMessage;
 
-import bio.terra.cloudfiletodatastore.FileCreatedMessageHarness;
-import bio.terra.cloudfiletodatastore.FileUploadedMessage;
 import bio.terra.cloudfiletodatastore.GsonConverter;
 import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerFileUploadedMessageProcessor;
 import com.google.cloud.functions.Context;
@@ -19,8 +17,7 @@ import java.util.logging.Logger;
  * how to deserialize to {@link java.time.OffsetDateTime} and therefore we can use Google's {@link
  * StorageObjectData}
  */
-public class DeltaLayerRawFunction
-    implements RawBackgroundFunction, FileCreatedMessageHarness<StorageObjectData> {
+public class DeltaLayerRawFunction implements RawBackgroundFunction {
 
   private static final Logger logger = Logger.getLogger(DeltaLayerRawFunction.class.getName());
 
@@ -30,11 +27,6 @@ public class DeltaLayerRawFunction
     StorageObjectData storageObjectData =
         GsonConverter.convertFromClass(s, StorageObjectData.class);
     logger.info(String.format("Here's the serialized object %s", storageObjectData));
-    new DeltaLayerFileUploadedMessageProcessor(convertMessage(storageObjectData)).processMessage();
-  }
-
-  @Override
-  public FileUploadedMessage convertMessage(StorageObjectData toConvert) {
-    return getFileMessage(toConvert);
+    new DeltaLayerFileUploadedMessageProcessor(getFileMessage(storageObjectData)).processMessage();
   }
 }

@@ -7,25 +7,12 @@ import java.util.List;
  * This class as well as the others in this package are used to deserialize delta layer json using
  * Google's Gson library. files:
  *
- * {
- *   "destination": {
- *     "bqDataset": "point_correction",
- *     "datasetProject": "delta-layer-schema-tests",
- *     "workspaceId": "fe2dfaa7-e3a8-4725-b652-499f4eb2c88d"
- *   },
- *   "insertId": "d3b7b01f-952e-4d5e-b4c2-548c21409da0",
- *   "insertTimestamp": "2021-07-23T14:23:33.060729Z",
- *   "inserts": [{
- *     "datarepoRowId": "1f1d1041-bb84-4cc5-bb86-16fd40cc9a34",
- *     "name": "my_new_bool_column",
- *     "value": "false"
- *   }],
- *   "source": {
- *     "insertingUser": "111137720113699110757",
- *     "referenceId": "6d1f2766-f46c-4427-acc2-00caf089b37e"
- *   }
- * }
- *
+ * <p>{ "destination": { "bqDataset": "point_correction", "datasetProject":
+ * "delta-layer-schema-tests", "workspaceId": "fe2dfaa7-e3a8-4725-b652-499f4eb2c88d" }, "insertId":
+ * "d3b7b01f-952e-4d5e-b4c2-548c21409da0", "insertTimestamp": "2021-07-23T14:23:33.060729Z",
+ * "inserts": [{ "datarepoRowId": "1f1d1041-bb84-4cc5-bb86-16fd40cc9a34", "name":
+ * "my_new_bool_column", "value": "false" }], "source": { "insertingUser": "111137720113699110757",
+ * "referenceId": "6d1f2766-f46c-4427-acc2-00caf089b37e" } }
  */
 public class PointCorrectionRequest {
 
