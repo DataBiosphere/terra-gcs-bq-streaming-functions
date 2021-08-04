@@ -3,6 +3,7 @@ package bio.terra.cloudfiletodatastore.deltalayer;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
+import bio.terra.cloudevents.GCSEvent;
 import bio.terra.cloudfiletodatastore.ResourceFetcher;
 import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionDestination;
 import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionRequest;
@@ -40,5 +41,15 @@ public class GsonParsingTest {
     ResourceFetcher resourceFetcher = new ClassPathResourceFetcher("bad_json.json");
     GsonWrapper.convertFromClass(
         new String(resourceFetcher.fetchResourceBytes()), PointCorrectionRequest.class);
+  }
+
+  @Test
+  public void parseToGcsEvent() {
+    ResourceFetcher resourceFetcher = new ClassPathResourceFetcher("gcsevent.json");
+    GCSEvent gcsEvent =
+        GsonWrapper.convertFromClass(
+            new String(resourceFetcher.fetchResourceBytes()), GCSEvent.class);
+    assertNotNull(gcsEvent.getId());
+    assertNotNull(gcsEvent.getTimeCreated());
   }
 }
