@@ -8,7 +8,7 @@ public class PointCorrectionOperation {
 
   private String name;
 
-  private String value;
+  private Object value;
 
   public UUID getDatarepoRowId() {
     return datarepoRowId;
@@ -26,7 +26,7 @@ public class PointCorrectionOperation {
     this.name = name;
   }
 
-  public String getValue() {
+  public Object getValue() {
     return value;
   }
 

@@ -4,6 +4,7 @@ import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionOpera
 import com.google.cloud.bigquery.InsertAllRequest;
 import com.google.common.annotations.VisibleForTesting;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import org.apache.commons.validator.GenericValidator;
 
@@ -22,7 +23,9 @@ public class DeltaLayerBqInsertGenerator {
           Double.class,
           "float_val",
           Boolean.class,
-          "bool_val");
+          "bool_val",
+          OffsetDateTime.class,
+          "date_val");
 
   public List<InsertAllRequest.RowToInsert> getInserts(
       List<PointCorrectionOperation> toConvert, OffsetDateTime insertTimeStamp) {
@@ -39,24 +42,38 @@ public class DeltaLayerBqInsertGenerator {
   }
 
   @VisibleForTesting
-  Object getTypedValue(String value) {
+  Object getTypedValue(Object value) {
     // order matters, if we put double before long, non-floating point values
-    // will unnecessarily be represented as Doubles
-    if (GenericValidator.isLong(value)) {
-      return Long.valueOf(value);
+    // will unnecessarily be represented as Doubles, String should come last
+    String strval = value.toString();
+    if (GenericValidator.isLong(strval)) {
+      return Long.valueOf(strval);
     }
-    if (GenericValidator.isDouble(value)) {
-      return Double.valueOf(value);
+    if (GenericValidator.isDouble(strval)) {
+      return Double.valueOf(strval);
     }
-    if ("false".equals(value.toLowerCase(Locale.ROOT))
-        || "true".equals(value.toLowerCase(Locale.ROOT))) {
-      return Boolean.valueOf(value);
+    if ("false".equals(strval.toLowerCase(Locale.ROOT))
+        || "true".equals(strval.toLowerCase(Locale.ROOT))) {
+      return Boolean.valueOf(strval);
     }
-    // TODO: handle dates
-    return value;
+    if (isValidDate(strval)) {
+      return OffsetDateTime.parse(strval);
+    }
+    return strval;
   }
 
-  private String getTargetColumn(String value) {
+  @VisibleForTesting
+  boolean isValidDate(String strval) {
+    try {
+      // https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html#ISO_OFFSET_DATE_TIME
+      OffsetDateTime.parse(strval);
+      return true;
+    } catch (DateTimeParseException e) {
+      return false;
+    }
+  }
+
+  private String getTargetColumn(Object value) {
     Object typedValue = getTypedValue(value);
     return typeColumns.get(typedValue.getClass());
   }
