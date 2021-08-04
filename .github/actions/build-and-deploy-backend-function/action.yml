@@ -47,19 +47,19 @@ runs:
         ./gradlew shadowJar
       shell: bash
 
-#    - name: Deploy Cloud Function
-#      id: deploy-step
-#      run: |
-#        cat src/main/resources/${{ inputs.module }}/envvars.yml | \
-#            sed "s|_GCLOUD_PROJECT_|${{ env.GCLOUD_PROJECT }}|g" | \
-#            sed "s|_DATASET_|${{ inputs.dataset }}|g" > ${{ inputs.envvars_yml }}
-#        more ${{ inputs.envvars_yml }}
-#        gcloud config set project ${{ env.GCLOUD_PROJECT }}
-#        gcloud functions deploy ${{ inputs.func }} \
-#          --runtime=java11 --entry-point=${{ inputs.entry_point }} \
-#          --memory=${{ inputs.runtime_memory }} --region=${{ inputs.region }} \
-#          --source=./build/libs \
-#          --env-vars-file=${{ inputs.envvars_yml }} \
-#          --trigger-event=${{ inputs.trigger }}  \
-#          --trigger-resource=${{ env.GCLOUD_PROJECT }}-${{ inputs.bucket }}
-#      shell: bash
+    - name: Deploy Cloud Function
+      id: deploy-step
+      run: |
+        cat src/main/resources/${{ inputs.module }}/envvars.yml | \
+            sed "s|_GCLOUD_PROJECT_|${{ env.GCLOUD_PROJECT }}|g" | \
+            sed "s|_DATASET_|${{ inputs.dataset }}|g" > ${{ inputs.envvars_yml }}
+        more ${{ inputs.envvars_yml }}
+        gcloud config set project ${{ env.GCLOUD_PROJECT }}
+        gcloud functions deploy ${{ inputs.func }} \
+          --runtime=java11 --entry-point=${{ inputs.entry_point }} \
+          --memory=${{ inputs.runtime_memory }} --region=${{ inputs.region }} \
+          --source=./build/libs \
+          --env-vars-file=${{ inputs.envvars_yml }} \
+          --trigger-event=${{ inputs.trigger }}  \
+          --trigger-resource=${{ env.GCLOUD_PROJECT }}-${{ inputs.bucket }}
+      shell: bash
