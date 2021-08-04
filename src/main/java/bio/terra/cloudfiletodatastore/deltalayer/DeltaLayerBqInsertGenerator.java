@@ -46,8 +46,8 @@ public class DeltaLayerBqInsertGenerator {
     // order matters, if we put double before long, non-floating point values
     // will unnecessarily be represented as Doubles, String should come last
     String strval = value.toString();
-    if (GenericValidator.isLong(strval)) {
-      return Long.valueOf(strval);
+    if (strval.endsWith(".0")) {
+      return Long.valueOf(strval.substring(0, strval.length() - 2));
     }
     if (GenericValidator.isDouble(strval)) {
       return Double.valueOf(strval);

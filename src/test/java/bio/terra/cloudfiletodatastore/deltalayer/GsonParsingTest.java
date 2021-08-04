@@ -1,7 +1,6 @@
 package bio.terra.cloudfiletodatastore.deltalayer;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.*;
 
 import bio.terra.cloudevents.GCSEvent;
 import bio.terra.cloudfiletodatastore.ResourceFetcher;
@@ -34,6 +33,57 @@ public class GsonParsingTest {
     assertEquals(
         OffsetDateTime.of(2021, 7, 23, 14, 23, 33, 60729000, ZoneOffset.UTC),
         pointCorrectionRequest.getInsertTimestamp());
+  }
+
+  @Test
+  public void parseDatePointCorrection() {
+    ResourceFetcher resourceFetcher = new ClassPathResourceFetcher("date_point_correction.json");
+    PointCorrectionRequest pointCorrectionRequest =
+        GsonWrapper.convertFromClass(
+            new String(resourceFetcher.fetchResourceBytes()), PointCorrectionRequest.class);
+    Object typedValue =
+        new DeltaLayerBqInsertGenerator()
+            .getTypedValue(pointCorrectionRequest.getInserts().get(0).getValue());
+    assertTrue(typedValue instanceof OffsetDateTime);
+  }
+
+  @Test
+  public void parseLongPointCorrection() {
+    ResourceFetcher resourceFetcher = new ClassPathResourceFetcher("long_point_correction.json");
+    PointCorrectionRequest pointCorrectionRequest =
+        GsonWrapper.convertFromClass(
+            new String(resourceFetcher.fetchResourceBytes()), PointCorrectionRequest.class);
+    Object typedValue =
+        new DeltaLayerBqInsertGenerator()
+            .getTypedValue(pointCorrectionRequest.getInserts().get(0).getValue());
+    assertTrue(typedValue instanceof Long);
+    assertEquals(11L, typedValue);
+  }
+
+  @Test
+  public void parseDoublePointCorrection() {
+    ResourceFetcher resourceFetcher = new ClassPathResourceFetcher("double_point_correction.json");
+    PointCorrectionRequest pointCorrectionRequest =
+        GsonWrapper.convertFromClass(
+            new String(resourceFetcher.fetchResourceBytes()), PointCorrectionRequest.class);
+    Object typedValue =
+        new DeltaLayerBqInsertGenerator()
+            .getTypedValue(pointCorrectionRequest.getInserts().get(0).getValue());
+    assertTrue(typedValue instanceof Double);
+    assertEquals(3.14, typedValue);
+  }
+
+  @Test
+  public void parseBooleanPointCorrection() {
+    ResourceFetcher resourceFetcher = new ClassPathResourceFetcher("bool_point_correction.json");
+    PointCorrectionRequest pointCorrectionRequest =
+        GsonWrapper.convertFromClass(
+            new String(resourceFetcher.fetchResourceBytes()), PointCorrectionRequest.class);
+    Object typedValue =
+        new DeltaLayerBqInsertGenerator()
+            .getTypedValue(pointCorrectionRequest.getInserts().get(0).getValue());
+    assertTrue(typedValue instanceof Boolean);
+    assertEquals(false, typedValue);
   }
 
   @Test(expected = JsonSyntaxException.class)
