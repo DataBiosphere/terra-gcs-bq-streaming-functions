@@ -3,10 +3,10 @@ package bio.terra.cloudfiletodatastore.deltalayer;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
-import bio.terra.cloudfiletodatastore.GsonConverter;
 import bio.terra.cloudfiletodatastore.ResourceFetcher;
 import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionDestination;
 import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionRequest;
+import bio.terra.cloudfunctions.common.GsonWrapper;
 import com.google.gson.JsonSyntaxException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -19,7 +19,7 @@ public class GsonParsingTest {
   public void parsePointCorrection() {
     ResourceFetcher resourceFetcher = new ClassPathResourceFetcher("single_point_correction.json");
     PointCorrectionRequest pointCorrectionRequest =
-        GsonConverter.convertFromClass(
+        GsonWrapper.convertFromClass(
             new String(resourceFetcher.fetchResourceBytes()), PointCorrectionRequest.class);
     assertEquals("Should only be one insert", 1, pointCorrectionRequest.getInserts().size());
     assertEquals(
@@ -38,7 +38,7 @@ public class GsonParsingTest {
   @Test(expected = JsonSyntaxException.class)
   public void parseMalformedJson() {
     ResourceFetcher resourceFetcher = new ClassPathResourceFetcher("bad_json.json");
-    GsonConverter.convertFromClass(
+    GsonWrapper.convertFromClass(
         new String(resourceFetcher.fetchResourceBytes()), PointCorrectionRequest.class);
   }
 }

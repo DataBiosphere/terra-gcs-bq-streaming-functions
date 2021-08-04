@@ -3,6 +3,7 @@ package bio.terra.cloudfiletodatastore.deltalayer;
 import bio.terra.cloudfiletodatastore.*;
 import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionDestination;
 import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionRequest;
+import bio.terra.cloudfunctions.common.GsonWrapper;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.InsertAllRequest;
@@ -48,7 +49,7 @@ public class DeltaLayerFileUploadedMessageProcessor extends MessageProcessor {
     }
     byte[] resourceBytes = resourceFetcher.fetchResourceBytes();
     PointCorrectionRequest pointCorrectionRequest =
-        GsonConverter.convertFromClass(new String(resourceBytes), PointCorrectionRequest.class);
+        GsonWrapper.convertFromClass(new String(resourceBytes), PointCorrectionRequest.class);
     logger.info(
         String.format(
             "Length of deserialized point corrections is %s",

@@ -3,8 +3,8 @@ package bio.terra.cloudfiletodatastore.deltalayer;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
-import bio.terra.cloudfiletodatastore.GsonConverter;
 import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionRequest;
+import bio.terra.cloudfunctions.common.GsonWrapper;
 import com.google.cloud.bigquery.InsertAllRequest;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -19,7 +19,7 @@ public class DeltaLayerBqInsertGeneratorTest {
     ClassPathResourceFetcher classPathResourceFetcher =
         new ClassPathResourceFetcher("single_point_correction.json");
     PointCorrectionRequest pointCorrectionRequest =
-        GsonConverter.convertFromClass(
+        GsonWrapper.convertFromClass(
             new String(classPathResourceFetcher.fetchResourceBytes()),
             PointCorrectionRequest.class);
     OffsetDateTime insertTimeStamp = OffsetDateTime.of(LocalDateTime.now(), ZoneOffset.UTC);

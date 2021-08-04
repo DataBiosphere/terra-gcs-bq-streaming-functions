@@ -2,8 +2,8 @@ package bio.terra.cloudfiletodatastore.deltalayer.functions;
 
 import static bio.terra.cloudfiletodatastore.deltalayer.functions.MessageConverter.getFileMessage;
 
-import bio.terra.cloudfiletodatastore.GsonConverter;
 import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerFileUploadedMessageProcessor;
+import bio.terra.cloudfunctions.common.GsonWrapper;
 import com.google.cloud.functions.CloudEventsFunction;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 import io.cloudevents.CloudEvent;
@@ -16,7 +16,7 @@ public class DeltaLayerCloudFunction implements CloudEventsFunction {
   public void accept(CloudEvent event) throws Exception {
     byte[] eventBytes = Objects.requireNonNull(event.getData()).toBytes();
     StorageObjectData storageObjectData =
-        GsonConverter.convertFromClass(new String(eventBytes), StorageObjectData.class);
+        GsonWrapper.convertFromClass(new String(eventBytes), StorageObjectData.class);
     new DeltaLayerFileUploadedMessageProcessor(getFileMessage(storageObjectData)).processMessage();
   }
 }
