@@ -1,16 +1,15 @@
 package bio.terra.cloudfiletodatastore.deltalayer;
 
+import static org.mockito.ArgumentMatchers.any;
+
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.InsertAllResponse;
 import com.google.cloud.bigquery.TableInfo;
 import com.google.cloud.bigquery.TableResult;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import java.util.List;
 import java.util.Map;
-
-import static org.mockito.ArgumentMatchers.any;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 public class DeltaLayerBigQueryWriterTest {
 
@@ -27,5 +26,4 @@ public class DeltaLayerBigQueryWriterTest {
     Mockito.verify(bqMock, Mockito.times(1)).create((TableInfo) any());
     Mockito.verify(bqMock, Mockito.times(1)).insertAll(any());
   }
-
 }

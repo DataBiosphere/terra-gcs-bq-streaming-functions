@@ -21,7 +21,7 @@ public class DeltaLayerFileUploadedMessageProcessorTest {
     Mockito.when(bqMock.insertAll(any())).thenReturn(Mockito.mock(InsertAllResponse.class));
     DeltaLayerFileUploadedMessageProcessor messageProcessor =
         new DeltaLayerFileUploadedMessageProcessor(
-            message, new ClassPathResourceFetcher("single_point_correction.json"), bqMock);
+            message, new ClassPathResourceFetcher("string_point_correction.json"), bqMock);
     messageProcessor.processMessage();
     Mockito.verify(bqMock, Mockito.times(1)).insertAll(any());
   }

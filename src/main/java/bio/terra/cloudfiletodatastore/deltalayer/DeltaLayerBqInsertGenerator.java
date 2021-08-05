@@ -2,6 +2,7 @@ package bio.terra.cloudfiletodatastore.deltalayer;
 
 import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionOperation;
 import com.google.common.annotations.VisibleForTesting;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -24,6 +25,8 @@ public class DeltaLayerBqInsertGenerator {
           Boolean.class,
           "bool_val",
           OffsetDateTime.class,
+          "ts_val",
+          LocalDate.class,
           "date_val");
 
   public List<Map<String, Object>> getInserts(
@@ -34,7 +37,9 @@ public class DeltaLayerBqInsertGenerator {
       data.put("datarepo_row_id", insert.getDatarepoRowId().toString());
       data.put("attribute_name", insert.getName());
       data.put("updated_at", insertTimeStamp.toString());
-      data.put(getTargetColumn(insert.getValue()), getTypedValue(insert.getValue()));
+      data.put(
+          getTargetColumn(insert.getValue()),
+          serializeTypedValueForBq(getTypedValue(insert.getValue())));
       inserts.add(data);
     }
     return inserts;
@@ -57,11 +62,33 @@ public class DeltaLayerBqInsertGenerator {
         || "true".equals(strval.toLowerCase(Locale.ROOT))) {
       return Boolean.valueOf(strval);
     }
+    if (isValidTs(strval)) {
+      return OffsetDateTime.parse(strval);
+    }
+    if (isValidDate(strval)) {
+      return LocalDate.parse(strval);
+    }
     return strval;
   }
 
+  private boolean isValidDate(String strval) {
+    try {
+      LocalDate.parse(strval);
+      return true;
+    } catch (DateTimeParseException e) {
+      return false;
+    }
+  }
+
+  private Object serializeTypedValueForBq(Object val) {
+    if (val instanceof OffsetDateTime || val instanceof LocalDate) {
+      return val.toString();
+    }
+    return val;
+  }
+
   @VisibleForTesting
-  boolean isValidDate(String strval) {
+  boolean isValidTs(String strval) {
     try {
       // https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html#ISO_OFFSET_DATE_TIME
       OffsetDateTime.parse(strval);

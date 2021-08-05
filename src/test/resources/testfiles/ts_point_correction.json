@@ -8,8 +8,8 @@
   "insertTimestamp": "2021-07-23T14:23:33.060729Z",
   "inserts": [{
     "datarepoRowId": "1f1d1041-bb84-4cc5-bb86-16fd40cc9a34",
-    "name": "my_date_col",
-    "value": "2021-09-23"
+    "name": "my_ts_col",
+    "value": "2021-08-23T14:23:33.060729Z"
   }],
   "source": {
     "insertingUser": "111137720113699110757",

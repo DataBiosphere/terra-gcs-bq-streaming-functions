@@ -17,13 +17,13 @@ public class GsonParsingTest {
 
   @Test
   public void parsePointCorrection() {
-    ResourceFetcher resourceFetcher = new ClassPathResourceFetcher("single_point_correction.json");
+    ResourceFetcher resourceFetcher = new ClassPathResourceFetcher("string_point_correction.json");
     PointCorrectionRequest pointCorrectionRequest =
         GsonWrapper.convertFromClass(
             new String(resourceFetcher.fetchResourceBytes()), PointCorrectionRequest.class);
     assertEquals("Should only be one insert", 1, pointCorrectionRequest.getInserts().size());
     assertEquals(
-        "Destination should match what's in single_point_correction.json",
+        "Destination should match what's in string_point_correction.json",
         new PointCorrectionDestination(
             "point_correction",
             UUID.fromString("fe2dfaa7-e3a8-4725-b652-499f4eb2c88d"),
@@ -37,14 +37,14 @@ public class GsonParsingTest {
 
   @Test
   public void parseDatePointCorrection() {
-    ResourceFetcher resourceFetcher = new ClassPathResourceFetcher("date_point_correction.json");
+    ResourceFetcher resourceFetcher = new ClassPathResourceFetcher("ts_point_correction.json");
     PointCorrectionRequest pointCorrectionRequest =
         GsonWrapper.convertFromClass(
             new String(resourceFetcher.fetchResourceBytes()), PointCorrectionRequest.class);
     Object typedValue =
         new DeltaLayerBqInsertGenerator()
             .getTypedValue(pointCorrectionRequest.getInserts().get(0).getValue());
-    assertTrue(typedValue instanceof String);
+    assertTrue(typedValue instanceof OffsetDateTime);
   }
 
   @Test
