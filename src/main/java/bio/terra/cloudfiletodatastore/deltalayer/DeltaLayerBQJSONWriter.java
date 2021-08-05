@@ -40,19 +40,23 @@ public class DeltaLayerBQJSONWriter implements DeltaLayerBigQueryWriter {
         logger.log(Level.SEVERE, "Could not write to BQ", e);
         return;
       }
-      try {
-        Job job = writer.getJob().waitFor();
-        JobStatus status = job.getStatus();
-        if (status.getError() != null) {
-          logger.log(
-              Level.SEVERE,
-              "There was an error writing to BQ: {0}, error list: {1}",
-              new Object[] {status.getError(), status.getExecutionErrors()});
-        }
-      } catch (InterruptedException e) {
-        logger.log(Level.SEVERE, "Thread was interrupted while waiting for job to finish", e);
-      }
+      errorCheck(writer);
     }
     logger.info("Done writing data to big query");
+  }
+
+  private void errorCheck(TableDataWriteChannel writer) {
+    try {
+      Job job = writer.getJob().waitFor();
+      JobStatus status = job.getStatus();
+      if (status.getError() != null) {
+        logger.log(
+            Level.SEVERE,
+            "There was an error writing to BQ: {0}, error list: {1}",
+            new Object[] {status.getError(), status.getExecutionErrors()});
+      }
+    } catch (InterruptedException e) {
+      logger.log(Level.SEVERE, "Thread was interrupted while waiting for job to finish", e);
+    }
   }
 }
