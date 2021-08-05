@@ -2,6 +2,7 @@ package bio.terra.cloudfiletodatastore.deltalayer.functions;
 
 import bio.terra.cloudevents.GCSEvent;
 import bio.terra.cloudfiletodatastore.FileUploadedMessage;
+import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerBQJSONWriter;
 import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerFileUploadedMessageProcessor;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
@@ -22,7 +23,9 @@ public class DeltaLayerBackgroundFunction implements BackgroundFunction<GCSEvent
   @Override
   public void accept(GCSEvent gcsEvent, Context context) {
     logger.info(String.format("We received this event as storage object data %s", gcsEvent));
-    new DeltaLayerFileUploadedMessageProcessor(convertMessage(gcsEvent)).processMessage();
+    new DeltaLayerFileUploadedMessageProcessor(
+            convertMessage(gcsEvent), new DeltaLayerBQJSONWriter())
+        .processMessage();
   }
 
   private FileUploadedMessage convertMessage(GCSEvent toConvert) {

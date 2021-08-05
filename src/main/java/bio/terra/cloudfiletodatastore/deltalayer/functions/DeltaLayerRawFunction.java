@@ -2,6 +2,7 @@ package bio.terra.cloudfiletodatastore.deltalayer.functions;
 
 import static bio.terra.cloudfiletodatastore.deltalayer.functions.MessageConverter.getFileMessage;
 
+import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerBQSQLWriter;
 import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerFileUploadedMessageProcessor;
 import bio.terra.cloudfunctions.common.GsonWrapper;
 import com.google.cloud.functions.Context;
@@ -26,6 +27,8 @@ public class DeltaLayerRawFunction implements RawBackgroundFunction {
     logger.info(String.format("Here's the message %s", s));
     StorageObjectData storageObjectData = GsonWrapper.convertFromClass(s, StorageObjectData.class);
     logger.info(String.format("Here's the serialized object %s", storageObjectData));
-    new DeltaLayerFileUploadedMessageProcessor(getFileMessage(storageObjectData)).processMessage();
+    new DeltaLayerFileUploadedMessageProcessor(
+            getFileMessage(storageObjectData), new DeltaLayerBQSQLWriter())
+        .processMessage();
   }
 }

@@ -44,7 +44,7 @@ public class GsonParsingTest {
     Object typedValue =
         new DeltaLayerBqInsertGenerator()
             .getTypedValue(pointCorrectionRequest.getInserts().get(0).getValue());
-    assertTrue(typedValue instanceof OffsetDateTime);
+    assertTrue(typedValue instanceof String);
   }
 
   @Test

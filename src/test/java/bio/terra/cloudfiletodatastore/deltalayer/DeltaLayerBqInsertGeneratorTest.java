@@ -6,11 +6,11 @@ import static org.junit.Assert.assertFalse;
 
 import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionRequest;
 import bio.terra.cloudfunctions.common.GsonWrapper;
-import com.google.cloud.bigquery.InsertAllRequest;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Map;
 import org.junit.Test;
 
 public class DeltaLayerBqInsertGeneratorTest {
@@ -24,7 +24,8 @@ public class DeltaLayerBqInsertGeneratorTest {
             new String(classPathResourceFetcher.fetchResourceBytes()),
             PointCorrectionRequest.class);
     OffsetDateTime insertTimeStamp = OffsetDateTime.of(LocalDateTime.now(), ZoneOffset.UTC);
-    List<InsertAllRequest.RowToInsert> inserts =
+
+    List<Map<String, Object>> inserts =
         new DeltaLayerBqInsertGenerator()
             .getInserts(pointCorrectionRequest.getInserts(), insertTimeStamp);
     assertEquals("Should have created one insert", 1, inserts.size());
@@ -42,7 +43,7 @@ public class DeltaLayerBqInsertGeneratorTest {
     assertTrue(insertGenerator.getTypedValue(111.22) instanceof Double);
     assertTrue(insertGenerator.getTypedValue(true) instanceof Boolean);
     assertTrue(insertGenerator.getTypedValue("") instanceof String);
-    assertTrue(insertGenerator.getTypedValue("2011-12-03T10:15:30Z") instanceof OffsetDateTime);
+    assertTrue(insertGenerator.getTypedValue("2011-12-03T10:15:30Z") instanceof String);
   }
 
   @Test

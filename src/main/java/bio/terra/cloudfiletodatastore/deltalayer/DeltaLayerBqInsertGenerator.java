@@ -1,7 +1,6 @@
 package bio.terra.cloudfiletodatastore.deltalayer;
 
 import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionOperation;
-import com.google.cloud.bigquery.InsertAllRequest;
 import com.google.common.annotations.VisibleForTesting;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeParseException;
@@ -27,16 +26,16 @@ public class DeltaLayerBqInsertGenerator {
           OffsetDateTime.class,
           "date_val");
 
-  public List<InsertAllRequest.RowToInsert> getInserts(
+  public List<Map<String, Object>> getInserts(
       List<PointCorrectionOperation> toConvert, OffsetDateTime insertTimeStamp) {
-    List<InsertAllRequest.RowToInsert> inserts = new ArrayList<>();
+    List<Map<String, Object>> inserts = new ArrayList<>();
     for (PointCorrectionOperation insert : toConvert) {
       Map<String, Object> data = new HashMap<>();
       data.put("datarepo_row_id", insert.getDatarepoRowId().toString());
       data.put("attribute_name", insert.getName());
       data.put("updated_at", insertTimeStamp.toString());
       data.put(getTargetColumn(insert.getValue()), getTypedValue(insert.getValue()));
-      inserts.add(InsertAllRequest.RowToInsert.of(data));
+      inserts.add(data);
     }
     return inserts;
   }
@@ -46,7 +45,9 @@ public class DeltaLayerBqInsertGenerator {
     // order matters, if we put double before long, non-floating point values
     // will unnecessarily be represented as Doubles, String should come last
     String strval = value.toString();
-    if (strval.endsWith(".0")) {
+    // gson will parse 11 as 11.0
+    // https://stackoverflow.com/questions/45734769/why-does-gson-parse-an-integer-as-a-double
+    if (strval.endsWith(".0") || GenericValidator.isLong(strval)) {
       return Long.valueOf(strval.substring(0, strval.length() - 2));
     }
     if (GenericValidator.isDouble(strval)) {
@@ -55,9 +56,6 @@ public class DeltaLayerBqInsertGenerator {
     if ("false".equals(strval.toLowerCase(Locale.ROOT))
         || "true".equals(strval.toLowerCase(Locale.ROOT))) {
       return Boolean.valueOf(strval);
-    }
-    if (isValidDate(strval)) {
-      return OffsetDateTime.parse(strval);
     }
     return strval;
   }
