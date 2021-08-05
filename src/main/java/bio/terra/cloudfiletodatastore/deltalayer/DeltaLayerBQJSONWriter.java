@@ -10,7 +10,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** Does the Big Query things, namely create the EAV table and insert to the EAV table. */
+/**
+ * Use a lower level API to write to BQ; this API is more succinct if there are no errors
+ * but has the disadvantage of quietly swallowing errors unless we inspect the {@link JobStatus}
+ **/
 public class DeltaLayerBQJSONWriter implements DeltaLayerBigQueryWriter {
 
   private static final Logger logger = Logger.getLogger(DeltaLayerBQJSONWriter.class.getName());

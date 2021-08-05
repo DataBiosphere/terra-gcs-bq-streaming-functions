@@ -1,17 +1,16 @@
 package bio.terra.cloudfiletodatastore.deltalayer;
 
-import static org.mockito.ArgumentMatchers.any;
-
-import com.google.cloud.bigquery.*;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import org.junit.Ignore;
+import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.bigquery.InsertAllResponse;
+import com.google.cloud.bigquery.TableInfo;
+import com.google.cloud.bigquery.TableResult;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.any;
 
 public class DeltaLayerBigQueryWriterTest {
 
