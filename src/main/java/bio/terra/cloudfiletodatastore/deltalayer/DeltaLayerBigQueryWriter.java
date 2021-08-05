@@ -16,9 +16,9 @@ public interface DeltaLayerBigQueryWriter {
   @VisibleForTesting
   default List<Field> getEavSchema() {
     return List.of(
-        Field.of("datarepo_row_id", StandardSQLTypeName.STRING),
-        Field.of("attribute_name", StandardSQLTypeName.STRING),
-        Field.of("updated_at", StandardSQLTypeName.TIMESTAMP),
+        Field.newBuilder("datarepo_row_id", StandardSQLTypeName.STRING).setMode(Field.Mode.REQUIRED).build(),
+        Field.newBuilder("attribute_name", StandardSQLTypeName.STRING).setMode(Field.Mode.REQUIRED).build(),
+        Field.newBuilder("updated_at", StandardSQLTypeName.TIMESTAMP).setMode(Field.Mode.REQUIRED).build(),
         Field.of("date_val", StandardSQLTypeName.DATE),
         Field.of("ts_val", StandardSQLTypeName.TIMESTAMP),
         Field.of("int_val", StandardSQLTypeName.INT64),
