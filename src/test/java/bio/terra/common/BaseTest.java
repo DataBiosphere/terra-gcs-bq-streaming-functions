@@ -3,6 +3,7 @@ package bio.terra.common;
 import static org.junit.Assert.assertEquals;
 
 import bio.terra.cloudfunctions.common.MediaTypeWrapper;
+import bio.terra.cloudfunctions.common.StorageObjectEventHarness;
 import com.google.cloud.functions.Context;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 import java.io.InputStream;
@@ -110,7 +111,7 @@ public class BaseTest {
     }
   }
 
-  class CFContext implements Context {
+  public class CFContext implements Context {
 
     @Override
     public String eventId() {
@@ -131,5 +132,11 @@ public class BaseTest {
     public String resource() {
       return null;
     }
+  }
+
+  public class StorageObjectEventHarnessImpl extends StorageObjectEventHarness {
+
+    @Override
+    public void doAccept() throws Exception {}
   }
 }
