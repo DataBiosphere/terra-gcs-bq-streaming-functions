@@ -1,7 +1,7 @@
 package bio.terra;
 
 import bio.terra.cloudfunctions.common.ContentHandler;
-import bio.terra.cloudfunctions.common.GsonWrapper;
+import bio.terra.cloudfunctions.utils.GsonConverter;
 import bio.terra.common.BaseTest;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -14,7 +14,7 @@ public class ChildContentHandlerTest extends BaseTest {
 
     try {
       StorageObjectData storageObjectData =
-          GsonWrapper.getInstance().fromJson(MOCK_EVENT_GZIP, StorageObjectData.class);
+          GsonConverter.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
       ChildContentHandler handler = new ChildContentHandler(storageObjectData);
       handler.setInputStream(MOCK_TGZ);
       handler.handleMediaType();
