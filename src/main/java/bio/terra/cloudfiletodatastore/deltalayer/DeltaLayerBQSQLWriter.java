@@ -11,27 +11,28 @@ public class DeltaLayerBQSQLWriter implements DeltaLayerBigQueryWriter {
 
   private static final Logger logger = Logger.getLogger(DeltaLayerBQSQLWriter.class.getName());
 
-  public void createEavTableIfNeeded(BigQuery bigQuery, String dataSet) {
-    if (!eavTableExists(bigQuery, dataSet)) {
-      createEavTable(bigQuery, dataSet);
+  public void createEavTableIfNeeded(BigQuery bigQuery, String dataSet, String project) {
+    if (!eavTableExists(bigQuery, project, dataSet)) {
+      createEavTable(bigQuery, project, dataSet);
     }
   }
 
-  private void createEavTable(BigQuery bigQuery, String dataSet) {
+  private void createEavTable(BigQuery bigQuery, String dataSet, String project) {
     logger.info("About to create EAV table");
-    TableId tableId = TableId.of(dataSet, EAV_TABLE_NAME);
+    TableId tableId = TableId.of(project, dataSet, EAV_TABLE_NAME);
     TableDefinition tableDefinition = StandardTableDefinition.of(Schema.of(getEavSchema()));
     TableInfo tableInfo = TableInfo.newBuilder(tableId, tableDefinition).build();
     bigQuery.create(tableInfo);
     logger.info("EAV table created");
   }
 
-  private boolean eavTableExists(BigQuery bigQuery, String dataSet) {
+  private boolean eavTableExists(BigQuery bigQuery, String project, String dataSet) {
     String query =
         String.format(
-            "select TABLE_NAME from %s.INFORMATION_SCHEMA.TABLES where TABLE_NAME = '%s'",
-            dataSet, EAV_TABLE_NAME);
+            "select TABLE_NAME from `%s`.%s.INFORMATION_SCHEMA.TABLES where TABLE_NAME = '%s'",
+            project, dataSet, EAV_TABLE_NAME);
     QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
+
     try {
       return bigQuery.query(queryConfig).getTotalRows() == 1;
     } catch (InterruptedException e) {
@@ -41,13 +42,15 @@ public class DeltaLayerBQSQLWriter implements DeltaLayerBigQueryWriter {
   }
 
   @Override
-  public void insertRows(List<Map<String, Object>> inserts, String dataSet, BigQuery bigQuery) {
-    createEavTableIfNeeded(bigQuery, dataSet);
+  public void insertRows(
+      List<Map<String, Object>> inserts, String dataSet, String project, BigQuery bigQuery) {
+    createEavTableIfNeeded(bigQuery, dataSet, project);
     for (Map<String, Object> insert : inserts) {
       InsertAllResponse insertAllResponse =
           bigQuery.insertAll(
               InsertAllRequest.newBuilder(
-                      dataSet, EAV_TABLE_NAME, InsertAllRequest.RowToInsert.of(insert))
+                      TableId.of(project, dataSet, EAV_TABLE_NAME),
+                      InsertAllRequest.RowToInsert.of(insert))
                   .build());
       if (insertAllResponse.hasErrors()) {
         Map<Long, List<BigQueryError>> insertErrors = insertAllResponse.getInsertErrors();

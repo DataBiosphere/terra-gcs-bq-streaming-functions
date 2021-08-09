@@ -2,9 +2,12 @@ package bio.terra.cloudfiletodatastore.deltalayer.functions;
 
 import static bio.terra.cloudfiletodatastore.deltalayer.functions.MessageConverter.getFileMessage;
 
+import bio.terra.cloudfiletodatastore.FileUploadedMessage;
 import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerBQSQLWriter;
 import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerFileUploadedMessageProcessor;
+import bio.terra.cloudfiletodatastore.deltalayer.GcsFileFetcher;
 import bio.terra.cloudfunctions.common.GsonWrapper;
+import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.functions.Context;
 import com.google.cloud.functions.RawBackgroundFunction;
 import com.google.events.cloud.storage.v1.StorageObjectData;
@@ -27,8 +30,12 @@ public class DeltaLayerRawFunction implements RawBackgroundFunction {
     logger.info(String.format("Here's the message %s", s));
     StorageObjectData storageObjectData = GsonWrapper.convertFromClass(s, StorageObjectData.class);
     logger.info(String.format("Here's the serialized object %s", storageObjectData));
+    FileUploadedMessage message = getFileMessage(storageObjectData);
     new DeltaLayerFileUploadedMessageProcessor(
-            getFileMessage(storageObjectData), new DeltaLayerBQSQLWriter())
+            message,
+            new DeltaLayerBQSQLWriter(),
+            BigQueryOptions.getDefaultInstance().getService(),
+            new GcsFileFetcher(message.getSourceBucket(), message.getResourceName()))
         .processMessage();
   }
 }

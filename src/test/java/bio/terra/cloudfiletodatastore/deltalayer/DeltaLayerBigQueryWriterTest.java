@@ -21,7 +21,7 @@ public class DeltaLayerBigQueryWriterTest {
     Mockito.when(trMock.getTotalRows()).thenReturn(0L);
     Mockito.when(bqMock.query(any())).thenReturn(trMock);
     Mockito.when(bqMock.insertAll(any())).thenReturn(Mockito.mock(InsertAllResponse.class));
-    writerToTest.insertRows(List.of((Map.of("foo", "bar"))), "point_correction", bqMock);
+    writerToTest.insertRows(List.of((Map.of("foo", "bar"))), "point_correction", "project", bqMock);
     Mockito.verify(bqMock, Mockito.times(1)).query(any());
     Mockito.verify(bqMock, Mockito.times(1)).create((TableInfo) any());
     Mockito.verify(bqMock, Mockito.times(1)).insertAll(any());

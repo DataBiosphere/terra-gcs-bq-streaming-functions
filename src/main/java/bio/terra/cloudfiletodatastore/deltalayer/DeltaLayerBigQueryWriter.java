@@ -11,7 +11,8 @@ public interface DeltaLayerBigQueryWriter {
 
   String EAV_TABLE_NAME = "eav_table";
 
-  void insertRows(List<Map<String, Object>> inserts, String dataSet, BigQuery bigQuery);
+  void insertRows(
+      List<Map<String, Object>> inserts, String dataSet, String project, BigQuery bigQuery);
 
   @VisibleForTesting
   default List<Field> getEavSchema() {

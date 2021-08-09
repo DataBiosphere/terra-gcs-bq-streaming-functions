@@ -4,6 +4,8 @@ import bio.terra.cloudevents.GCSEvent;
 import bio.terra.cloudfiletodatastore.FileUploadedMessage;
 import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerBQJSONWriter;
 import bio.terra.cloudfiletodatastore.deltalayer.DeltaLayerFileUploadedMessageProcessor;
+import bio.terra.cloudfiletodatastore.deltalayer.GcsFileFetcher;
+import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import java.time.ZoneOffset;
@@ -23,8 +25,12 @@ public class DeltaLayerBackgroundFunction implements BackgroundFunction<GCSEvent
   @Override
   public void accept(GCSEvent gcsEvent, Context context) {
     logger.info(String.format("We received this event as storage object data %s", gcsEvent));
+    FileUploadedMessage message = convertMessage(gcsEvent);
     new DeltaLayerFileUploadedMessageProcessor(
-            convertMessage(gcsEvent), new DeltaLayerBQJSONWriter())
+            message,
+            new DeltaLayerBQJSONWriter(),
+            BigQueryOptions.getDefaultInstance().getService(),
+            new GcsFileFetcher(message.getSourceBucket(), message.getResourceName()))
         .processMessage();
   }
 

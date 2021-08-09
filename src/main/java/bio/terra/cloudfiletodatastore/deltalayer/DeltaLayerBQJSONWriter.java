@@ -19,8 +19,9 @@ public class DeltaLayerBQJSONWriter implements DeltaLayerBigQueryWriter {
   private static final Logger logger = Logger.getLogger(DeltaLayerBQJSONWriter.class.getName());
 
   @Override
-  public void insertRows(List<Map<String, Object>> inserts, String dataSet, BigQuery bigQuery) {
-    TableId tableId = TableId.of(dataSet, EAV_TABLE_NAME);
+  public void insertRows(
+      List<Map<String, Object>> inserts, String dataSet, String project, BigQuery bigQuery) {
+    TableId tableId = TableId.of(project, dataSet, EAV_TABLE_NAME);
     WriteChannelConfiguration writeChannelConfiguration =
         WriteChannelConfiguration.newBuilder(tableId)
             .setCreateDisposition(JobInfo.CreateDisposition.CREATE_IF_NEEDED)

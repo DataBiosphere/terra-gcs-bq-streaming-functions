@@ -5,8 +5,6 @@ import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionDesti
 import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionRequest;
 import bio.terra.cloudfunctions.common.GsonWrapper;
 import com.google.cloud.bigquery.BigQuery;
-import com.google.cloud.bigquery.BigQueryOptions;
-import com.google.common.annotations.VisibleForTesting;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -28,20 +26,17 @@ public class DeltaLayerFileUploadedMessageProcessor extends MessageProcessor {
 
   private final DeltaLayerBigQueryWriter deltaLayerBigQueryWriter;
 
-  public DeltaLayerFileUploadedMessageProcessor(
-      FileUploadedMessage message, DeltaLayerBigQueryWriter dlWriter) {
-    super(message);
-    this.resourceFetcher = new GcsFileFetcher(message.getSourceBucket(), message.getResourceName());
-    deltaLayerBigQueryWriter = dlWriter;
-  }
+  private final BigQuery bigQuery;
 
-  @VisibleForTesting
-  DeltaLayerFileUploadedMessageProcessor(
-      FileUploadedMessage message, ResourceFetcher rf, BigQuery bq) {
+  public DeltaLayerFileUploadedMessageProcessor(
+      FileUploadedMessage message,
+      DeltaLayerBigQueryWriter dlWriter,
+      BigQuery bigQuery,
+      ResourceFetcher rf) {
     super(message);
     this.resourceFetcher = rf;
-    this.bqForTest = bq;
-    deltaLayerBigQueryWriter = new DeltaLayerBQSQLWriter();
+    deltaLayerBigQueryWriter = dlWriter;
+    this.bigQuery = bigQuery;
   }
 
   @Override
@@ -59,17 +54,7 @@ public class DeltaLayerFileUploadedMessageProcessor extends MessageProcessor {
             pointCorrectionRequest.getInserts(), pointCorrectionRequest.getInsertTimestamp());
     logger.info(String.format("Length of generated bq inserts is %s", inserts.size()));
     PointCorrectionDestination destination = pointCorrectionRequest.getDestination();
-    // kind of icky but our BigQuery instance's project and dataset will vary based on the file
-    if (null != bqForTest) {
-      deltaLayerBigQueryWriter.insertRows(inserts, destination.getBqDataset(), bqForTest);
-    } else {
-      deltaLayerBigQueryWriter.insertRows(
-          inserts,
-          destination.getBqDataset(),
-          BigQueryOptions.newBuilder()
-              .setProjectId(destination.getDatasetProject())
-              .build()
-              .getService());
-    }
+    deltaLayerBigQueryWriter.insertRows(
+        inserts, destination.getBqDataset(), destination.getDatasetProject(), bigQuery);
   }
 }
