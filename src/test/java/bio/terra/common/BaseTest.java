@@ -2,6 +2,8 @@ package bio.terra.common;
 
 import static org.junit.Assert.assertEquals;
 
+import bio.terra.cloudevents.GCSEvent;
+import bio.terra.cloudfunctions.common.CloudStorageEventHarness;
 import bio.terra.cloudfunctions.common.MediaTypeWrapper;
 import bio.terra.cloudfunctions.common.StorageObjectEventHarness;
 import com.google.cloud.functions.Context;
@@ -100,6 +102,13 @@ public class BaseTest {
     assertEquals("value2", data.getMetadata().get("key2"));
   }
 
+  public void assertGCSEvent(GCSEvent data) {
+    // Check String deserialization
+    assertEquals("terra-kernel-k8s-testrunner-results", data.getBucket());
+    // Check OffsetDateTime deserialization
+    assertEquals("2021-07-07T22:57:14.257Z", data.getTimeCreated().toInstant());
+  }
+
   public void verifyMockTGZArchiveEntry(String filename, long bytes) {
     System.out.println("Verifying " + filename + " filesize.");
     if (filename.contains("RENDERED")) {
@@ -135,6 +144,12 @@ public class BaseTest {
   }
 
   public class StorageObjectEventHarnessImpl extends StorageObjectEventHarness {
+
+    @Override
+    public void doAccept() throws Exception {}
+  }
+
+  public class GCSEventHarnessImpl extends CloudStorageEventHarness<GCSEvent> {
 
     @Override
     public void doAccept() throws Exception {}
