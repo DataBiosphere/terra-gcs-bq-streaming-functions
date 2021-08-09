@@ -16,19 +16,12 @@ public class FileUploadedMessage {
 
   private final OffsetDateTime createdAt;
 
-  private final String contentType;
-
   public FileUploadedMessage(
-      String resourceName,
-      String sourceBucket,
-      long size,
-      OffsetDateTime createdAt,
-      String contentType) {
+      String resourceName, String sourceBucket, long size, OffsetDateTime createdAt) {
     this.resourceName = resourceName;
     this.sourceBucket = sourceBucket;
     this.size = size;
     this.createdAt = createdAt;
-    this.contentType = contentType;
   }
 
   public String getResourceName() {
@@ -47,13 +40,9 @@ public class FileUploadedMessage {
     return createdAt;
   }
 
-  public String getContentType() {
-    return contentType;
-  }
-
   @Override
   public String toString() {
-    return "FileMessage{"
+    return "FileUploadedMessage{"
         + "resourceName='"
         + resourceName
         + '\''
@@ -64,9 +53,34 @@ public class FileUploadedMessage {
         + size
         + ", createdAt="
         + createdAt
-        + ", contentType='"
-        + contentType
-        + '\''
         + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof FileUploadedMessage)) return false;
+
+    FileUploadedMessage that = (FileUploadedMessage) o;
+
+    if (getSize() != that.getSize()) return false;
+    if (getResourceName() != null
+        ? !getResourceName().equals(that.getResourceName())
+        : that.getResourceName() != null) return false;
+    if (getSourceBucket() != null
+        ? !getSourceBucket().equals(that.getSourceBucket())
+        : that.getSourceBucket() != null) return false;
+    return getCreatedAt() != null
+        ? getCreatedAt().equals(that.getCreatedAt())
+        : that.getCreatedAt() == null;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = getResourceName() != null ? getResourceName().hashCode() : 0;
+    result = 31 * result + (getSourceBucket() != null ? getSourceBucket().hashCode() : 0);
+    result = 31 * result + (int) (getSize() ^ (getSize() >>> 32));
+    result = 31 * result + (getCreatedAt() != null ? getCreatedAt().hashCode() : 0);
+    return result;
   }
 }

@@ -2,6 +2,7 @@ package bio.terra.cloudfiletodatastore.deltalayer;
 
 import bio.terra.cloudfunctions.common.GsonWrapper;
 import com.google.cloud.bigquery.*;
+import com.google.common.annotations.VisibleForTesting;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -21,18 +22,10 @@ public class DeltaLayerBQJSONWriter implements DeltaLayerBigQueryWriter {
   @Override
   public void insertRows(
       List<Map<String, Object>> inserts, String dataSet, String project, BigQuery bigQuery) {
-    TableId tableId = TableId.of(project, dataSet, EAV_TABLE_NAME);
     WriteChannelConfiguration writeChannelConfiguration =
-        WriteChannelConfiguration.newBuilder(tableId)
-            .setCreateDisposition(JobInfo.CreateDisposition.CREATE_IF_NEEDED)
-            .setFormatOptions(FormatOptions.json())
-            .setSchema(Schema.of(getEavSchema()))
-            .build();
-
+        getWriteChannelConfiguration(dataSet, project);
     for (Map<String, Object> insert : inserts) {
-      String json = GsonWrapper.getInstance().toJson(insert);
-      logger.info(String.format("Submitting JSON %s", json));
-      byte[] jsonBytes = json.getBytes(StandardCharsets.UTF_8);
+      byte[] jsonBytes = getBytesForInsert(insert);
       TableDataWriteChannel writer = bigQuery.writer(writeChannelConfiguration);
       try {
         writer.write(ByteBuffer.wrap(jsonBytes));
@@ -44,6 +37,25 @@ public class DeltaLayerBQJSONWriter implements DeltaLayerBigQueryWriter {
       errorCheck(writer);
     }
     logger.info("Done writing data to big query");
+  }
+
+  @VisibleForTesting
+  byte[] getBytesForInsert(Map<String, Object> insert) {
+    String json = GsonWrapper.getInstance().toJson(insert);
+    logger.info(String.format("Submitting JSON %s", json));
+    return json.getBytes(StandardCharsets.UTF_8);
+  }
+
+  @VisibleForTesting
+  WriteChannelConfiguration getWriteChannelConfiguration(String dataSet, String project) {
+    TableId tableId = TableId.of(project, dataSet, EAV_TABLE_NAME);
+    WriteChannelConfiguration writeChannelConfiguration =
+        WriteChannelConfiguration.newBuilder(tableId)
+            .setCreateDisposition(JobInfo.CreateDisposition.CREATE_IF_NEEDED)
+            .setFormatOptions(FormatOptions.json())
+            .setSchema(Schema.of(getEavSchema()))
+            .build();
+    return writeChannelConfiguration;
   }
 
   private void errorCheck(TableDataWriteChannel writer) {

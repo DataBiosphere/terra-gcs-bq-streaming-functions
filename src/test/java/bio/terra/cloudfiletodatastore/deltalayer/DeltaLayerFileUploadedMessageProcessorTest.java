@@ -13,7 +13,7 @@ public class DeltaLayerFileUploadedMessageProcessorTest {
   @Test
   public void sunnyDay() throws InterruptedException {
     FileUploadedMessage message =
-        new FileUploadedMessage("myUrl", "bucket", 100, OffsetDateTime.now(), "application/json");
+        new FileUploadedMessage("myUrl", "bucket", 100, OffsetDateTime.now());
     BigQuery bqMock = Mockito.mock(BigQuery.class);
     TableResult trMock = Mockito.mock(TableResult.class);
     Mockito.when(trMock.getTotalRows()).thenReturn(1L);

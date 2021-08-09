@@ -1,13 +1,10 @@
 package bio.terra.cloudfiletodatastore.deltalayer;
 
 import bio.terra.cloudfiletodatastore.ResourceFetcher;
-import com.google.cloud.ReadChannel;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import java.io.InputStream;
-import java.nio.channels.Channels;
 import java.util.logging.Logger;
 
 public class GcsFileFetcher implements ResourceFetcher {
@@ -29,12 +26,5 @@ public class GcsFileFetcher implements ResourceFetcher {
     byte[] content = blob.getContent();
     logger.info(String.format("Bytes length is %s", content.length));
     return content;
-  }
-
-  // Not currently used but if we're concerned about the memory usage, converting directly from
-  public InputStream fetchResourceStream() {
-    Storage service = StorageOptions.newBuilder().build().getService();
-    ReadChannel reader = service.reader(bucket, name);
-    return Channels.newInputStream(reader);
   }
 }

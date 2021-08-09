@@ -39,7 +39,6 @@ public class DeltaLayerBackgroundFunction implements BackgroundFunction<GCSEvent
         toConvert.getName(),
         toConvert.getBucket(),
         toConvert.getSize(),
-        toConvert.getTimeCreated().toInstant().atOffset(ZoneOffset.UTC),
-        toConvert.getContentType());
+        toConvert.getTimeCreated().toInstant().atOffset(ZoneOffset.UTC));
   }
 }

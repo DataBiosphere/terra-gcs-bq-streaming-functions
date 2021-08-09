@@ -10,7 +10,6 @@ public class MessageConverter {
         toConvert.getName(),
         toConvert.getBucket(),
         toConvert.getSize(),
-        toConvert.getTimeCreated(),
-        toConvert.getContentType());
+        toConvert.getTimeCreated());
   }
 }
