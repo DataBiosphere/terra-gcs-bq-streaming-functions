@@ -3,7 +3,7 @@ package bio.terra;
 import static org.junit.Assert.assertTrue;
 
 import bio.terra.cloudfunctions.common.FileTypeDetector;
-import bio.terra.cloudfunctions.utils.GsonConverter;
+import bio.terra.cloudfunctions.common.GsonWrapper;
 import bio.terra.common.BaseTest;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 import java.io.BufferedInputStream;
@@ -16,7 +16,7 @@ public class FileTypeDetectorTest extends BaseTest {
   public void tarGzipHandlerTest() {
     try {
       StorageObjectData storageObjectData =
-          GsonConverter.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
+          GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
       FileTypeDetector fileTypeDetector = new FileTypeDetector(storageObjectData);
       // Set a mock TGZ input stream to simulate the GCS input stream
       fileTypeDetector.setInputStream(MOCK_TGZ);
@@ -34,7 +34,7 @@ public class FileTypeDetectorTest extends BaseTest {
   public void gzipHandlerTest() {
     try {
       StorageObjectData storageObjectData =
-          GsonConverter.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
+          GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
       FileTypeDetector fileTypeDetector = new FileTypeDetector(storageObjectData);
       // Set a mock GZ input stream to simulate the GCS input stream
       fileTypeDetector.setInputStream(MOCK_GZ);
@@ -50,7 +50,7 @@ public class FileTypeDetectorTest extends BaseTest {
   public void jsonHandlerTest() {
     try {
       StorageObjectData storageObjectData =
-          GsonConverter.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
+          GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
       FileTypeDetector fileTypeDetector = new FileTypeDetector(storageObjectData);
       // Set a mock JSON input stream to simulate the GCS input stream
       fileTypeDetector.setInputStream(MOCK_JSON);

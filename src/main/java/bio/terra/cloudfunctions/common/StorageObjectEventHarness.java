@@ -1,6 +1,5 @@
 package bio.terra.cloudfunctions.common;
 
-import bio.terra.cloudfunctions.utils.GsonConverter;
 import com.google.cloud.functions.Context;
 import com.google.cloud.functions.RawBackgroundFunction;
 import com.google.events.cloud.storage.v1.StorageObjectData;
@@ -30,7 +29,7 @@ public abstract class StorageObjectEventHarness implements RawBackgroundFunction
    */
   @Override
   public void accept(String json, Context context) throws Exception {
-    message = GsonConverter.convertFromClass(json, StorageObjectData.class);
+    message = GsonWrapper.convertFromClass(json, StorageObjectData.class);
     this.context = context;
     doAccept();
   }

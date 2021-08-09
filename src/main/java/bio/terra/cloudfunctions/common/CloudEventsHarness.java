@@ -4,7 +4,6 @@ import bio.terra.cloudevents.v1.CloudEventType;
 import bio.terra.cloudevents.v1.messagewrapper.FirestoreEventMessage;
 import bio.terra.cloudevents.v1.messagewrapper.PubSubEventMessage;
 import bio.terra.cloudevents.v1.messagewrapper.StorageObjectEventMessage;
-import bio.terra.cloudfunctions.utils.GsonConverter;
 import com.google.cloud.functions.CloudEventsFunction;
 import com.google.events.cloud.firestore.v1.DocumentEventData;
 import com.google.events.cloud.pubsub.v1.MessagePublishedData;
@@ -69,13 +68,13 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
         message =
             new FirestoreEventMessage(
                 event.getData().toBytes(),
-                d -> GsonConverter.convertFromClass(new String(d), DocumentEventData.class));
+                d -> GsonWrapper.convertFromClass(new String(d), DocumentEventData.class));
         break;
       case PUBSUB_TOPIC_V1_MESSAGE_PUBLISHED:
         message =
             new PubSubEventMessage(
                 event.getData().toBytes(),
-                d -> GsonConverter.convertFromClass(new String(d), MessagePublishedData.class));
+                d -> GsonWrapper.convertFromClass(new String(d), MessagePublishedData.class));
         break;
       case STORAGE_OBJECT_V1_ARCHIVED:
       case STORAGE_OBJECT_V1_DELETED:
@@ -84,7 +83,7 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
         message =
             new StorageObjectEventMessage(
                 event.getData().toBytes(),
-                d -> GsonConverter.convertFromClass(new String(d), StorageObjectData.class));
+                d -> GsonWrapper.convertFromClass(new String(d), StorageObjectData.class));
         logger.info(
             String.format("Event implementation class: %s", message.getClass().getTypeName()));
         break;

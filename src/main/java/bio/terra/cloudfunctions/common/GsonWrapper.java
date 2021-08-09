@@ -32,4 +32,8 @@ public class GsonWrapper {
               .create();
     return _instance;
   }
+
+  public static <T> T convertFromClass(String s, Class<T> classOfT) {
+    return getInstance().fromJson(s, classOfT);
+  }
 }

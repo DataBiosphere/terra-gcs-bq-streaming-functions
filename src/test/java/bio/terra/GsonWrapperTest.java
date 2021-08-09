@@ -1,15 +1,14 @@
 package bio.terra;
 
-import bio.terra.cloudfunctions.utils.GsonConverter;
+import bio.terra.cloudfunctions.common.GsonWrapper;
 import bio.terra.common.BaseTest;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 import org.junit.Test;
 
-public class GsonConverterTest extends BaseTest {
+public class GsonWrapperTest extends BaseTest {
   @Test
   public void parseStorageObjectData() {
-    StorageObjectData data =
-        GsonConverter.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
+    StorageObjectData data = GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
     assertStorageObjectData(data);
   }
 }
