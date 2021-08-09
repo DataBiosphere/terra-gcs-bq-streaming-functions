@@ -27,7 +27,7 @@ public abstract class CloudStorageEventHarness<T> implements BackgroundFunction<
    * This method is triggered by a GCS Event.
    *
    * @param event string
-   * @throws Exception
+   * @throws Exception when something wrong happened
    */
   @Override
   public void accept(T event, Context context) throws Exception {
@@ -48,7 +48,7 @@ public abstract class CloudStorageEventHarness<T> implements BackgroundFunction<
    * Subclasses of this class must implement this method to kick off application-specific functions
    * downstream .
    *
-   * @throws Exception
+   * @throws Exception when something wrong happened
    */
   public abstract void doAccept() throws Exception;
 }
