@@ -25,7 +25,6 @@ public abstract class CloudStorageEventHarness<T> implements BackgroundFunction<
   private T event;
 
   /**
-   *
    * @param event String
    * @param context event function context
    * @throws Exception when something goes wrong
