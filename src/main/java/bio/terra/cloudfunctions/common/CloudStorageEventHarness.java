@@ -23,11 +23,12 @@ public abstract class CloudStorageEventHarness<T> implements BackgroundFunction<
 
   private Context context;
   private T event;
+
   /**
-   * This method is triggered by a GCS Event.
    *
-   * @param event string
-   * @throws Exception when something wrong happened
+   * @param event String
+   * @param context event function context
+   * @throws Exception when something goes wrong
    */
   @Override
   public void accept(T event, Context context) throws Exception {
