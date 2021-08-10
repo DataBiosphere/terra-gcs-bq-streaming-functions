@@ -28,11 +28,15 @@ public class FileTypeDetectorTest extends BaseTest {
       ArchiveInputStream ais = (ArchiveInputStream) fileTypeDetector.getDataStream();
       ArchiveEntry archiveEntry;
       logger.info("gzipHandlerTest:");
+      int numberOfFilesProcessed = 0;
       while ((archiveEntry = ais.getNextEntry()) != null) {
         logger.info("Verifying " + archiveEntry.getName() + " filesize.");
-        if (!archiveEntry.isDirectory())
+        if (!archiveEntry.isDirectory()) {
+          numberOfFilesProcessed++;
           verifyMockTGZArchiveEntry(archiveEntry.getName(), archiveEntry.getSize());
+        }
       }
+      assertEquals(3, numberOfFilesProcessed);
     } catch (Exception e) {
       fail(e.getMessage());
     }
