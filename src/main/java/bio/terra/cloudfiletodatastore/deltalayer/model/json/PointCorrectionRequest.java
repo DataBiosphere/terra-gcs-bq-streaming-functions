@@ -2,6 +2,7 @@ package bio.terra.cloudfiletodatastore.deltalayer.model.json;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This class as well as the others in this package are used to deserialize delta layer json using
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public class PointCorrectionRequest {
 
-  private String insertId;
+  private UUID insertId;
 
   private PointCorrectionDestination destination;
 
@@ -26,11 +27,11 @@ public class PointCorrectionRequest {
 
   private OffsetDateTime insertTimestamp;
 
-  public String getInsertId() {
+  public UUID getInsertId() {
     return insertId;
   }
 
-  public void setInsertId(String insertId) {
+  public void setInsertId(UUID insertId) {
     this.insertId = insertId;
   }
 

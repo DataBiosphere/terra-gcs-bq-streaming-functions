@@ -53,6 +53,9 @@ public class GsonParsingTest {
     PointCorrectionRequest pointCorrectionRequest =
         GsonWrapper.convertFromClass(
             new String(resourceFetcher.fetchResourceBytes()), PointCorrectionRequest.class);
+    assertEquals(
+        UUID.fromString("d3b7b01f-952e-4d5e-b4c2-548c21409da0"),
+        pointCorrectionRequest.getInsertId());
     Object typedValue =
         new DeltaLayerBqInsertGenerator()
             .getTypedValue(pointCorrectionRequest.getInserts().get(0).getValue());

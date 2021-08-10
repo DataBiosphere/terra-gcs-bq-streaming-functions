@@ -7,5 +7,4 @@ package bio.terra.cloudfiletodatastore;
 public interface ResourceFetcher {
 
   byte[] fetchResourceBytes();
-
 }
