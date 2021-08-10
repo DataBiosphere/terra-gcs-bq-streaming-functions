@@ -36,7 +36,7 @@ public class GsonWrapper {
     return GsonSingleton._instance;
   }
 
-  public static <T> T convertFromClass(String s, Class<T> classOfT) {
+  public static <T> T convertFromClass(String s, Class<T> classOfT) throws Exception {
     return getInstance().fromJson(s, classOfT);
   }
 }

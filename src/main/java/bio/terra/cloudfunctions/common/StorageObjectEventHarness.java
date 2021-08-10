@@ -29,9 +29,14 @@ public abstract class StorageObjectEventHarness implements RawBackgroundFunction
    */
   @Override
   public void accept(String json, Context context) throws Exception {
-    message = GsonWrapper.convertFromClass(json, StorageObjectData.class);
-    this.context = context;
-    doAccept();
+    try {
+      message = GsonWrapper.convertFromClass(json, StorageObjectData.class);
+      this.context = context;
+      doAccept();
+    } catch (Exception e) {
+      logger.severe(e.getMessage());
+      throw e;
+    }
   }
 
   public Context getContext() {
