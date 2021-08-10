@@ -2,7 +2,6 @@ package bio.terra.cloudfunctions.common;
 
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
-import java.util.logging.Logger;
 
 /**
  * This class is an abstract representation of a Function triggered by a Cloud Storage Event. It
@@ -19,7 +18,6 @@ import java.util.logging.Logger;
  * a Service.
  */
 public abstract class CloudStorageEventHarness<T> implements BackgroundFunction<T> {
-  private static final Logger logger = Logger.getLogger(CloudStorageEventHarness.class.getName());
 
   private Context context;
   private T event;
