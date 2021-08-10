@@ -6,7 +6,6 @@ package bio.terra.cloudfiletodatastore;
  */
 public interface ResourceFetcher {
 
-  default byte[] fetchResourceBytes() {
-    throw new UnsupportedOperationException();
-  }
+  byte[] fetchResourceBytes();
+
 }
