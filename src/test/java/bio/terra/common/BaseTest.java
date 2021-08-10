@@ -106,7 +106,7 @@ public class BaseTest {
     // Check String deserialization
     assertEquals("terra-kernel-k8s-testrunner-results", data.getBucket());
     // Check OffsetDateTime deserialization
-    assertEquals("2021-07-07T22:57:14.257Z", data.getTimeCreated().toInstant());
+    assertEquals("2021-07-07T22:57:14.257Z", data.getTimeCreated().toInstant().toString());
   }
 
   public void verifyMockTGZArchiveEntry(String filename, long bytes) {
@@ -119,7 +119,7 @@ public class BaseTest {
     }
   }
 
-  public class CFContext implements Context {
+  public static class CFContext implements Context {
 
     @Override
     public String eventId() {
@@ -142,15 +142,19 @@ public class BaseTest {
     }
   }
 
-  public class StorageObjectEventHarnessImpl extends StorageObjectEventHarness {
+  public static class StorageObjectEventHarnessImpl extends StorageObjectEventHarness {
 
     @Override
-    public void doAccept() throws Exception {}
+    public void doAccept() throws UnsupportedOperationException {
+      throw new UnsupportedOperationException("Not implemented");
+    }
   }
 
-  public class GCSEventHarnessImpl extends CloudStorageEventHarness<GCSEvent> {
+  public static class GCSEventHarnessImpl extends CloudStorageEventHarness<GCSEvent> {
 
     @Override
-    public void doAccept() throws Exception {}
+    public void doAccept() throws UnsupportedOperationException {
+      throw new UnsupportedOperationException("Not implemented");
+    }
   }
 }
