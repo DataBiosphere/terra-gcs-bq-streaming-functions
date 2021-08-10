@@ -20,13 +20,13 @@ public class MediaTypeUtilsTest extends BaseTest {
 
   @Test
   public void mockTGZTest() {
-    CompressorInputStream cis = null;
-    ArchiveInputStream ais = null;
-    BufferedInputStream bis = null;
+    CompressorInputStream cis;
+    ArchiveInputStream ais;
+    BufferedInputStream bis;
     try {
       cis = MediaTypeUtils.createCompressorInputStream(MOCK_TGZ);
       bis = new BufferedInputStream(cis);
-      ais = MediaTypeUtils.createArchiveInputStream(cis);
+      ais = MediaTypeUtils.createArchiveInputStream(bis);
       ArchiveEntry archiveEntry;
       logger.info("mockTGZTest:");
       int numberOfFilesProcessed = 0;
@@ -44,7 +44,7 @@ public class MediaTypeUtilsTest extends BaseTest {
 
   @Test
   public void mockGZTest() {
-    CompressorInputStream cis = null;
+    CompressorInputStream cis;
     ArchiveInputStream ais = null;
     BufferedInputStream bis = null;
     try {
