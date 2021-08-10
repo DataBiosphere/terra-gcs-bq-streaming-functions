@@ -47,13 +47,9 @@ public class ChildContentHandlerTest extends BaseTest {
     }
 
     @Override
-    public void translate() throws UnsupportedOperationException {
-      throw new UnsupportedOperationException("Not implemented");
-    }
+    public void translate() {}
 
     @Override
-    public void insert() throws UnsupportedOperationException {
-      throw new UnsupportedOperationException("Not implemented");
-    }
+    public void insert() {}
   }
 }
