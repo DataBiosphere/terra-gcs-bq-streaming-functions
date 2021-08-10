@@ -1,10 +1,13 @@
 package bio.terra.cloudfiletodatastore.deltalayer;
 
 import com.google.cloud.bigquery.*;
+import com.google.common.annotations.VisibleForTesting;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** Does the Big Query things, namely create the EAV table and insert to the EAV table. */
 public class DeltaLayerBQSQLWriter implements DeltaLayerBigQueryWriter {
@@ -27,6 +30,8 @@ public class DeltaLayerBQSQLWriter implements DeltaLayerBigQueryWriter {
   }
 
   private boolean eavTableExists(BigQuery bigQuery, String project, String dataSet) {
+    sanitizeName(project);
+    sanitizeName(dataSet);
     String query =
         String.format(
             "select TABLE_NAME from `%s`.%s.INFORMATION_SCHEMA.TABLES where TABLE_NAME = '%s'",
@@ -39,6 +44,18 @@ public class DeltaLayerBQSQLWriter implements DeltaLayerBigQueryWriter {
       logger.log(Level.SEVERE, "Could not query for EAV table's existence", e);
       return false;
     }
+  }
+
+  @VisibleForTesting
+  String sanitizeName(String projectOrDataset) {
+    // only allow word characters or dashes, this does allow -- which we account just below
+    String regex = "(\\w|-)+";
+    Pattern compile = Pattern.compile(regex);
+    Matcher matcher = compile.matcher(projectOrDataset);
+    if (!matcher.matches() || projectOrDataset.contains("--")) {
+      throw new IllegalArgumentException("Possible SQL Injection Detected");
+    }
+    return projectOrDataset;
   }
 
   @Override
