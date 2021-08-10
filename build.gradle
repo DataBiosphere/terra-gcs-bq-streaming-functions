@@ -23,7 +23,6 @@ configurations {
 
 dependencies {
     ext {
-        cloudEvents = "2.0.0.RC2"
         googleFunctions = '1.0.4'
         googleEvents = '0.3.0'
         googleFunctionsInvoker = '1.0.2'
@@ -49,9 +48,6 @@ dependencies {
     // Google Core Libraries For Java
     implementation group: 'com.google.guava', name: 'guava', version: "${guava}"
 
-    // CloudEvents Core
-    implementation group: 'io.cloudevents', name: 'cloudevents-core', version: "${cloudEvents}"
-    
     // Every function needs this dependency to get the Functions Framework API.
     implementation group: 'com.google.cloud.functions', name: 'functions-framework-api', version: "${googleFunctions}"
 
