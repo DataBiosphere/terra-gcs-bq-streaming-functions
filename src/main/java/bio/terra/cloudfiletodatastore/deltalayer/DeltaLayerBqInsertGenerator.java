@@ -37,9 +37,8 @@ public class DeltaLayerBqInsertGenerator {
       data.put("datarepo_row_id", insert.getDatarepoRowId().toString());
       data.put("attribute_name", insert.getName());
       data.put("updated_at", insertTimeStamp.toString());
-      data.put(
-          getTargetColumn(insert.getValue()),
-          serializeTypedValueForBq(getTypedValue(insert.getValue())));
+      Object typedValue = getTypedValue(insert.getValue());
+      data.put(typeColumns.get(typedValue.getClass()), serializeTypedValueForBq(typedValue));
       inserts.add(new InsertData(insertId.toString(), data));
     }
     return inserts;
@@ -96,10 +95,5 @@ public class DeltaLayerBqInsertGenerator {
     } catch (DateTimeParseException e) {
       return false;
     }
-  }
-
-  private String getTargetColumn(Object value) {
-    Object typedValue = getTypedValue(value);
-    return typeColumns.get(typedValue.getClass());
   }
 }

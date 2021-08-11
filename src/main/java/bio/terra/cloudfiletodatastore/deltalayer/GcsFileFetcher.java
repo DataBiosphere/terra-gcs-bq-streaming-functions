@@ -21,7 +21,7 @@ public class GcsFileFetcher implements ResourceFetcher {
 
   @Override
   public byte[] fetchResourceBytes() {
-    //TODO: figure out best practices for retries, validating download
+    // TODO: figure out best practices for retries, validating download
     Storage service = StorageOptions.newBuilder().build().getService();
     Blob blob = service.get(BlobId.of(bucket, name));
     byte[] content = blob.getContent();
