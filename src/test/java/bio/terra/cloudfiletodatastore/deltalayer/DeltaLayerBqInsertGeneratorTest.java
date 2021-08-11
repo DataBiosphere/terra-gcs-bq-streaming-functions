@@ -9,12 +9,11 @@ import bio.terra.cloudfunctions.common.GsonWrapper;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
 import org.junit.Test;
 
 public class DeltaLayerBqInsertGeneratorTest {
 
-  private List<Map<String, Object>> getInsertDataFromFile(String file) {
+  private List<InsertData> getInsertDataFromFile(String file) {
     ClassPathResourceFetcher classPathResourceFetcher = new ClassPathResourceFetcher(file);
     PointCorrectionRequest pointCorrectionRequest =
         GsonWrapper.convertFromClass(
@@ -22,36 +21,38 @@ public class DeltaLayerBqInsertGeneratorTest {
             PointCorrectionRequest.class);
     return new DeltaLayerBqInsertGenerator()
         .getInserts(
-            pointCorrectionRequest.getInserts(), pointCorrectionRequest.getInsertTimestamp());
+            pointCorrectionRequest.getInserts(),
+            pointCorrectionRequest.getInsertTimestamp(),
+            pointCorrectionRequest.getInsertId());
   }
 
   @Test
   public void testStringInsert() {
-    List<Map<String, Object>> inserts = getInsertDataFromFile("string_point_correction.json");
+    List<InsertData> inserts = getInsertDataFromFile("string_point_correction.json");
     assertEquals("Should have created one insert", 1, inserts.size());
-    assertEquals("hello there", inserts.get(0).get("str_val"));
-    assertEquals("2021-07-23T14:23:33.060729Z", inserts.get(0).get("updated_at"));
+    assertEquals("hello there", inserts.get(0).getData().get("str_val"));
+    assertEquals("2021-07-23T14:23:33.060729Z", inserts.get(0).getData().get("updated_at"));
   }
 
   @Test
   public void testBooleanInsert() {
-    List<Map<String, Object>> inserts = getInsertDataFromFile("bool_point_correction.json");
+    List<InsertData> inserts = getInsertDataFromFile("bool_point_correction.json");
     assertEquals("Should have created one insert", 1, inserts.size());
-    assertEquals(false, inserts.get(0).get("bool_val"));
+    assertEquals(false, inserts.get(0).getData().get("bool_val"));
   }
 
   @Test
   public void testTsInsert() {
-    List<Map<String, Object>> inserts = getInsertDataFromFile("ts_point_correction.json");
+    List<InsertData> inserts = getInsertDataFromFile("ts_point_correction.json");
     assertEquals("Should have created one insert", 1, inserts.size());
-    assertEquals("2021-08-23T14:23:33.060729Z", inserts.get(0).get("ts_val"));
+    assertEquals("2021-08-23T14:23:33.060729Z", inserts.get(0).getData().get("ts_val"));
   }
 
   @Test
   public void testDateInsert() {
-    List<Map<String, Object>> inserts = getInsertDataFromFile("date_point_correction.json");
+    List<InsertData> inserts = getInsertDataFromFile("date_point_correction.json");
     assertEquals("Should have created one insert", 1, inserts.size());
-    assertEquals("2021-09-23", inserts.get(0).get("date_val"));
+    assertEquals("2021-09-23", inserts.get(0).getData().get("date_val"));
   }
 
   @Test

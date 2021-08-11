@@ -29,9 +29,9 @@ public class DeltaLayerBqInsertGenerator {
           LocalDate.class,
           "date_val");
 
-  public List<Map<String, Object>> getInserts(
-      List<PointCorrectionOperation> toConvert, OffsetDateTime insertTimeStamp) {
-    List<Map<String, Object>> inserts = new ArrayList<>();
+  public List<InsertData> getInserts(
+      List<PointCorrectionOperation> toConvert, OffsetDateTime insertTimeStamp, UUID insertId) {
+    List<InsertData> inserts = new ArrayList<>();
     for (PointCorrectionOperation insert : toConvert) {
       Map<String, Object> data = new HashMap<>();
       data.put("datarepo_row_id", insert.getDatarepoRowId().toString());
@@ -40,7 +40,7 @@ public class DeltaLayerBqInsertGenerator {
       data.put(
           getTargetColumn(insert.getValue()),
           serializeTypedValueForBq(getTypedValue(insert.getValue())));
-      inserts.add(data);
+      inserts.add(new InsertData(insertId.toString(), data));
     }
     return inserts;
   }

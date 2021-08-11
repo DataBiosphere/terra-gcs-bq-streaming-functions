@@ -6,7 +6,6 @@ import bio.terra.cloudfiletodatastore.deltalayer.model.json.PointCorrectionReque
 import bio.terra.cloudfunctions.common.GsonWrapper;
 import com.google.cloud.bigquery.BigQuery;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -45,9 +44,11 @@ public class DeltaLayerFileUploadedMessageProcessor extends MessageProcessor {
             "Length of deserialized point corrections is %s",
             pointCorrectionRequest.getInserts().size()));
     DeltaLayerBqInsertGenerator bqGenerator = new DeltaLayerBqInsertGenerator();
-    List<Map<String, Object>> inserts =
+    List<InsertData> inserts =
         bqGenerator.getInserts(
-            pointCorrectionRequest.getInserts(), pointCorrectionRequest.getInsertTimestamp());
+            pointCorrectionRequest.getInserts(),
+            pointCorrectionRequest.getInsertTimestamp(),
+            pointCorrectionRequest.getInsertId());
     logger.info(String.format("Length of generated bq inserts is %s", inserts.size()));
     PointCorrectionDestination destination = pointCorrectionRequest.getDestination();
     deltaLayerBigQueryWriter.insertRows(

@@ -33,7 +33,7 @@ public class DeltaLayerBQSQLWriter implements DeltaLayerBigQueryWriter {
     String query =
         String.format(
             "select TABLE_NAME from `%s`.%s.INFORMATION_SCHEMA.TABLES where TABLE_NAME = '%s'",
-                sanitizeName(project), sanitizeName(dataSet), EAV_TABLE_NAME);
+            sanitizeName(project), sanitizeName(dataSet), EAV_TABLE_NAME);
     QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
 
     try {
@@ -58,14 +58,14 @@ public class DeltaLayerBQSQLWriter implements DeltaLayerBigQueryWriter {
 
   @Override
   public void insertRows(
-      List<Map<String, Object>> inserts, String dataSet, String project, BigQuery bigQuery) {
+      List<InsertData> inserts, String dataSet, String project, BigQuery bigQuery) {
     createEavTableIfNeeded(bigQuery, dataSet, project);
-    for (Map<String, Object> insert : inserts) {
+    for (InsertData insert : inserts) {
       InsertAllResponse insertAllResponse =
           bigQuery.insertAll(
               InsertAllRequest.newBuilder(
                       TableId.of(project, dataSet, EAV_TABLE_NAME),
-                      InsertAllRequest.RowToInsert.of(insert))
+                      InsertAllRequest.RowToInsert.of(insert.getRowId(), insert.getData()))
                   .build());
       if (insertAllResponse.hasErrors()) {
         Map<Long, List<BigQueryError>> insertErrors = insertAllResponse.getInsertErrors();

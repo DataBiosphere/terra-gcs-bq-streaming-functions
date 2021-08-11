@@ -5,14 +5,12 @@ import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.StandardSQLTypeName;
 import com.google.common.annotations.VisibleForTesting;
 import java.util.List;
-import java.util.Map;
 
 public interface DeltaLayerBigQueryWriter {
 
   String EAV_TABLE_NAME = "eav_table";
 
-  void insertRows(
-      List<Map<String, Object>> inserts, String dataSet, String project, BigQuery bigQuery);
+  void insertRows(List<InsertData> inserts, String dataSet, String project, BigQuery bigQuery);
 
   @VisibleForTesting
   default List<Field> getEavSchema() {

@@ -3,10 +3,7 @@ package bio.terra.cloudfiletodatastore.deltalayer;
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
-import com.google.cloud.bigquery.BigQuery;
-import com.google.cloud.bigquery.InsertAllResponse;
-import com.google.cloud.bigquery.TableInfo;
-import com.google.cloud.bigquery.TableResult;
+import com.google.cloud.bigquery.*;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;
@@ -22,7 +19,11 @@ public class DeltaLayerBQSqlWriterTest {
     Mockito.when(trMock.getTotalRows()).thenReturn(0L);
     Mockito.when(bqMock.query(any())).thenReturn(trMock);
     Mockito.when(bqMock.insertAll(any())).thenReturn(Mockito.mock(InsertAllResponse.class));
-    writerToTest.insertRows(List.of((Map.of("foo", "bar"))), "point_correction", "project", bqMock);
+    writerToTest.insertRows(
+        List.of(new InsertData("rowid", Map.of("foo", "bar"))),
+        "point_correction",
+        "project",
+        bqMock);
     Mockito.verify(bqMock, Mockito.times(1)).query(any());
     Mockito.verify(bqMock, Mockito.times(1)).create((TableInfo) any());
     Mockito.verify(bqMock, Mockito.times(1)).insertAll(any());
@@ -36,7 +37,11 @@ public class DeltaLayerBQSqlWriterTest {
     Mockito.when(trMock.getTotalRows()).thenReturn(1L);
     Mockito.when(bqMock.query(any())).thenReturn(trMock);
     Mockito.when(bqMock.insertAll(any())).thenReturn(Mockito.mock(InsertAllResponse.class));
-    writerToTest.insertRows(List.of((Map.of("foo", "bar"))), "point_correction", "project", bqMock);
+    writerToTest.insertRows(
+        List.of(new InsertData("rowId", Map.of("foo", "bar"))),
+        "point_correction",
+        "project",
+        bqMock);
     Mockito.verify(bqMock, Mockito.times(1)).query(any());
     Mockito.verify(bqMock, Mockito.times(0)).create((TableInfo) any());
     Mockito.verify(bqMock, Mockito.times(1)).insertAll(any());
