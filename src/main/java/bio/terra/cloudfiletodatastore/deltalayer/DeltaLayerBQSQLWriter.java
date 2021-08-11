@@ -30,12 +30,10 @@ public class DeltaLayerBQSQLWriter implements DeltaLayerBigQueryWriter {
   }
 
   private boolean eavTableExists(BigQuery bigQuery, String project, String dataSet) {
-    sanitizeName(project);
-    sanitizeName(dataSet);
     String query =
         String.format(
             "select TABLE_NAME from `%s`.%s.INFORMATION_SCHEMA.TABLES where TABLE_NAME = '%s'",
-            project, dataSet, EAV_TABLE_NAME);
+                sanitizeName(project), sanitizeName(dataSet), EAV_TABLE_NAME);
     QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
 
     try {
