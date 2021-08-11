@@ -5,8 +5,6 @@ This repository contains lightweight, portable functions that target the `Java 1
 
 The open source Java Functions Framework provides an API that can be used to author your functions, as well as an invoker which can be called to run the functions locally on your machine, or anywhere with a `Java 11` environment.
 
-Cloud Build resources that enable remote builds to take place in the cloud can be customized in `cloudbuild.yaml`.
-
 There are a number of Java Deployment options for deploying cloud functions. For portability purpose, we have chosen to package cloud functions and all dependencies as Uber JAR archives.
 
 For more details, please refer to the following articles
