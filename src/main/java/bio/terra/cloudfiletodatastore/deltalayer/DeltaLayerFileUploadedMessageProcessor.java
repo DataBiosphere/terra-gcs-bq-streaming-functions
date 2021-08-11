@@ -15,11 +15,7 @@ import java.util.logging.Logger;
  */
 public class DeltaLayerFileUploadedMessageProcessor extends MessageProcessor {
 
-  private static final String EXPECTED_CONTENT_TYPE = "application/json";
-
   private final ResourceFetcher resourceFetcher;
-
-  private BigQuery bqForTest;
 
   private static final Logger logger =
       Logger.getLogger(DeltaLayerFileUploadedMessageProcessor.class.getName());
