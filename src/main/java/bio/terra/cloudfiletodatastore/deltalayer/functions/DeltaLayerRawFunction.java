@@ -14,8 +14,6 @@ import com.google.events.cloud.storage.v1.StorageObjectData;
 import java.util.logging.Logger;
 
 /**
- * Very similar to {@link DeltaLayerBackgroundFunction} but here we implement a
- * RawBackgroundFunction
  * https://javadoc.io/static/com.google.cloud.functions/functions-framework-api/1.0.1/com/google/cloud/functions/RawBackgroundFunction.html
  * the event payload is passed as a String and we can deserialize using a Gson instance that knows
  * how to deserialize to {@link java.time.OffsetDateTime} and therefore we can use Google's {@link
