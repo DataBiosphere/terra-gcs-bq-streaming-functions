@@ -1,0 +1,32 @@
+name: 'create-bq-schemas'
+description: 'Create BigQuery Schemas'
+author: ''
+inputs:
+  schemas_dir:
+    description: 'The relative path that contains definitions of BigQuery schema json files'
+    required: false
+    default: 'schemas'
+  module:
+    description: 'Name of the module deployment'
+    required: true
+    default: 'testrunner'
+  dataset:
+    description: 'Name of the BigQuery dataset'
+    required: true
+    default: 'simple_stream_dataset'
+runs:
+  using: "composite"
+  steps:
+    - name: Create BigQuery schemas
+      id: create-schemas-step
+      run: |
+        for i in src/main/resources/${{ inputs.module }}/${{ inputs.schemas_dir }}/*.json; do
+            [ -f "$i" ] || break
+            NOEXT=${i%.json}
+            TBL=${NOEXT##*/}
+            echo ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL}
+            echo $i
+            bq show --schema ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL} || \
+                bq mk --table ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL} $i
+        done
+      shell: bash
