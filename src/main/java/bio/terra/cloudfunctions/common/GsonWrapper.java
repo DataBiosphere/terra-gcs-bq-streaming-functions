@@ -8,29 +8,32 @@ import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 
 public class GsonWrapper {
-  private static Gson _instance;
+  private GsonWrapper() {}
+
+  // Provide a thread-safe Gson singleton (Bill Pugh)
+  private static class GsonSingleton {
+    private static final Gson _instance =
+        new GsonBuilder()
+            .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
+            .registerTypeAdapter(
+                OffsetDateTime.class,
+                (JsonDeserializer<OffsetDateTime>)
+                    (json, type, jsonDeserializationContext) -> {
+                      try {
+                        return ZonedDateTime.parse(json.getAsString()).toOffsetDateTime();
+                      } catch (Exception e) {
+                        return null;
+                      }
+                    })
+            .create();
+  }
   /**
    * Returns a Gson instance capable of parsing a string that represents OffsetDateTime object.
    *
    * @return Gson object
    */
   public static Gson getInstance() {
-    if (_instance == null)
-      _instance =
-          new GsonBuilder()
-              .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
-              .registerTypeAdapter(
-                  OffsetDateTime.class,
-                  (JsonDeserializer<OffsetDateTime>)
-                      (json, type, jsonDeserializationContext) -> {
-                        try {
-                          return ZonedDateTime.parse(json.getAsString()).toOffsetDateTime();
-                        } catch (Exception e) {
-                          return null;
-                        }
-                      })
-              .create();
-    return _instance;
+    return GsonSingleton._instance;
   }
 
   public static <T> T convertFromClass(String s, Class<T> classOfT) {
