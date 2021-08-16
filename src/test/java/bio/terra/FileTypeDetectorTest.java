@@ -46,7 +46,7 @@ public class FileTypeDetectorTest extends BaseTest {
   public void gzipHandlerTest() {
     try {
       StorageObjectData storageObjectData =
-          GsonWrapper.getInstance().fromJson(MOCK_EVENT_GZIP, StorageObjectData.class);
+          GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
       FileTypeDetector fileTypeDetector = new FileTypeDetector(storageObjectData);
       // Set a mock GZ input stream to simulate the GCS input stream
       fileTypeDetector.setInputStream(MOCK_GZ);
@@ -63,7 +63,7 @@ public class FileTypeDetectorTest extends BaseTest {
   public void jsonHandlerTest() {
     try {
       StorageObjectData storageObjectData =
-          GsonWrapper.getInstance().fromJson(MOCK_EVENT_GZIP, StorageObjectData.class);
+          GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
       FileTypeDetector fileTypeDetector = new FileTypeDetector(storageObjectData);
       // Set a mock JSON input stream to simulate the GCS input stream
       fileTypeDetector.setInputStream(MOCK_JSON);
