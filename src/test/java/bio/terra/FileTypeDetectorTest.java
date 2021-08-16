@@ -1,31 +1,40 @@
 package bio.terra;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import bio.terra.cloudfunctions.common.FileTypeDetector;
 import bio.terra.cloudfunctions.common.GsonWrapper;
 import bio.terra.common.BaseTest;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 import java.io.BufferedInputStream;
+import java.util.logging.Logger;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.junit.Test;
 
 public class FileTypeDetectorTest extends BaseTest {
+  private static final Logger logger = Logger.getLogger(FileTypeDetectorTest.class.getName());
+
   @Test
   public void tarGzipHandlerTest() {
     try {
       StorageObjectData storageObjectData =
-          GsonWrapper.getInstance().fromJson(MOCK_EVENT_GZIP, StorageObjectData.class);
+          GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
       FileTypeDetector fileTypeDetector = new FileTypeDetector(storageObjectData);
       // Set a mock TGZ input stream to simulate the GCS input stream
       fileTypeDetector.setInputStream(MOCK_TGZ);
       ArchiveInputStream ais = (ArchiveInputStream) fileTypeDetector.getDataStream();
       ArchiveEntry archiveEntry;
-      System.out.println("gzipHandlerTest:");
+      logger.info("gzipHandlerTest:");
+      int numberOfFilesProcessed = 0;
       while ((archiveEntry = ais.getNextEntry()) != null) {
-        verifyMockTGZArchiveEntry(archiveEntry.getName(), archiveEntry.getSize());
+        logger.info("Verifying " + archiveEntry.getName() + " filesize.");
+        if (!archiveEntry.isDirectory()) {
+          numberOfFilesProcessed++;
+          verifyMockTGZArchiveEntry(archiveEntry.getName(), archiveEntry.getSize());
+        }
       }
+      assertEquals(3, numberOfFilesProcessed);
     } catch (Exception e) {
     }
   }
@@ -40,8 +49,8 @@ public class FileTypeDetectorTest extends BaseTest {
       fileTypeDetector.setInputStream(MOCK_GZ);
       // fileTypeDetector.accept(MOCK_EVENT_GZIP, FAKE_CLOUD_FUNCTION_CONTEXT);
       BufferedInputStream bis = (BufferedInputStream) fileTypeDetector.getDataStream();
-      System.out.println("gzipHandlerTest2: Verifying filesize.");
-      assertTrue(bis.readAllBytes().length == 1350);
+      logger.info("gzipHandlerTest2: Verifying filesize.");
+      assertEquals(bis.readAllBytes().length, 1350);
     } catch (Exception e) {
     }
   }
@@ -56,8 +65,8 @@ public class FileTypeDetectorTest extends BaseTest {
       fileTypeDetector.setInputStream(MOCK_JSON);
       // fileTypeDetector.accept(MOCK_EVENT_JSON, FAKE_CLOUD_FUNCTION_CONTEXT);
       BufferedInputStream bis = (BufferedInputStream) fileTypeDetector.getDataStream();
-      System.out.println("jsonHandlerTest: Verifying filesize.");
-      assertTrue(bis.readAllBytes().length == 1350);
+      logger.info("jsonHandlerTest: Verifying filesize.");
+      assertEquals(bis.readAllBytes().length, 1350);
     } catch (Exception e) {
     }
   }
