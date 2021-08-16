@@ -83,7 +83,7 @@ public abstract class CloudEventsHarness implements CloudEventsFunction {
         message =
             new StorageObjectEventMessage(
                 event.getData().toBytes(),
-                d -> GsonWrapper.getInstance().fromJson(new String(d), StorageObjectData.class));
+                d -> GsonWrapper.convertFromClass(new String(d), StorageObjectData.class));
         logger.info(
             String.format("Event implementation class: %s", message.getClass().getTypeName()));
         break;
