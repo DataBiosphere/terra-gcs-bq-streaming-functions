@@ -1,6 +1,7 @@
 package bio.terra;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import bio.terra.cloudfunctions.common.FileTypeDetector;
 import bio.terra.cloudfunctions.common.GsonWrapper;
@@ -23,6 +24,7 @@ public class FileTypeDetectorTest extends BaseTest {
       FileTypeDetector fileTypeDetector = new FileTypeDetector(storageObjectData);
       // Set a mock TGZ input stream to simulate the GCS input stream
       fileTypeDetector.setInputStream(MOCK_TGZ);
+      fileTypeDetector.handleMediaType();
       ArchiveInputStream ais = (ArchiveInputStream) fileTypeDetector.getDataStream();
       ArchiveEntry archiveEntry;
       logger.info("gzipHandlerTest:");
@@ -36,6 +38,7 @@ public class FileTypeDetectorTest extends BaseTest {
       }
       assertEquals(3, numberOfFilesProcessed);
     } catch (Exception e) {
+      fail(e.getMessage());
     }
   }
 
@@ -47,11 +50,12 @@ public class FileTypeDetectorTest extends BaseTest {
       FileTypeDetector fileTypeDetector = new FileTypeDetector(storageObjectData);
       // Set a mock GZ input stream to simulate the GCS input stream
       fileTypeDetector.setInputStream(MOCK_GZ);
-      // fileTypeDetector.accept(MOCK_EVENT_GZIP, FAKE_CLOUD_FUNCTION_CONTEXT);
+      fileTypeDetector.handleMediaType();
       BufferedInputStream bis = (BufferedInputStream) fileTypeDetector.getDataStream();
       logger.info("gzipHandlerTest2: Verifying filesize.");
       assertEquals(bis.readAllBytes().length, 1350);
     } catch (Exception e) {
+      fail(e.getMessage());
     }
   }
 
@@ -63,11 +67,12 @@ public class FileTypeDetectorTest extends BaseTest {
       FileTypeDetector fileTypeDetector = new FileTypeDetector(storageObjectData);
       // Set a mock JSON input stream to simulate the GCS input stream
       fileTypeDetector.setInputStream(MOCK_JSON);
-      // fileTypeDetector.accept(MOCK_EVENT_JSON, FAKE_CLOUD_FUNCTION_CONTEXT);
+      fileTypeDetector.handleMediaType();
       BufferedInputStream bis = (BufferedInputStream) fileTypeDetector.getDataStream();
       logger.info("jsonHandlerTest: Verifying filesize.");
       assertEquals(bis.readAllBytes().length, 1350);
     } catch (Exception e) {
+      fail(e.getMessage());
     }
   }
 }
