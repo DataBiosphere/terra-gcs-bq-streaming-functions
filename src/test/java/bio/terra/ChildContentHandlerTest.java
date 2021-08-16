@@ -1,14 +1,20 @@
 package bio.terra;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import bio.terra.cloudfunctions.common.ContentHandler;
 import bio.terra.cloudfunctions.common.GsonWrapper;
 import bio.terra.common.BaseTest;
 import com.google.events.cloud.storage.v1.StorageObjectData;
+import java.util.logging.Logger;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.junit.Test;
 
 public class ChildContentHandlerTest extends BaseTest {
+  private static final Logger logger = Logger.getLogger(ChildContentHandlerTest.class.getName());
+
   @Test
   public void acceptEventTest() {
 
@@ -20,11 +26,18 @@ public class ChildContentHandlerTest extends BaseTest {
       handler.handleMediaType();
       ArchiveInputStream ais = (ArchiveInputStream) handler.getDataStream();
       ArchiveEntry archiveEntry;
-      System.out.println("mockTGZTest:");
+      logger.info("mockTGZTest:");
+      int numberOfFilesProcessed = 0;
       while ((archiveEntry = ais.getNextEntry()) != null) {
-        verifyMockTGZArchiveEntry(archiveEntry.getName(), archiveEntry.getSize());
+        logger.info("Verifying " + archiveEntry.getName() + " filesize.");
+        if (!archiveEntry.isDirectory()) {
+          numberOfFilesProcessed++;
+          verifyMockTGZArchiveEntry(archiveEntry.getName(), archiveEntry.getSize());
+        }
       }
+      assertEquals(3, numberOfFilesProcessed);
     } catch (Exception e) {
+      fail(e.getMessage());
     }
   }
 
@@ -34,9 +47,9 @@ public class ChildContentHandlerTest extends BaseTest {
     }
 
     @Override
-    public void translate() throws Exception {}
+    public void translate() {}
 
     @Override
-    public void insert() throws Exception {}
+    public void insert() {}
   }
 }

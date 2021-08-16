@@ -101,7 +101,6 @@ public class BaseTest {
   }
 
   public void verifyMockTGZArchiveEntry(String filename, long bytes) {
-    System.out.println("Verifying " + filename + " filesize.");
     if (filename.contains("RENDERED")) {
       assertEquals(3584, bytes);
     } else if (filename.contains("RAWDATA")) {
