@@ -81,6 +81,13 @@ public class BaseTest {
     assertEquals("value2", data.getMetadata().get("key2"));
   }
 
+  public void assertGCSEvent(GCSEvent data) {
+    // Check String deserialization
+    assertEquals("terra-kernel-k8s-testrunner-results", data.getBucket());
+    // Check OffsetDateTime deserialization
+    assertEquals("2021-07-07T22:57:14.257Z", data.getTimeCreated().toInstant().toString());
+  }
+
   public void verifyMockTGZArchiveEntry(String filename, long bytes) {
     if (filename.contains("RENDERED")) {
       assertEquals(3584, bytes);
