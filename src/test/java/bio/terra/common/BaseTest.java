@@ -1,6 +1,7 @@
 package bio.terra.common;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import bio.terra.cloudfunctions.common.GsonWrapper;
 import bio.terra.cloudfunctions.common.MediaTypeWrapper;
@@ -85,6 +86,8 @@ public class BaseTest {
       assertEquals(4579, bytes);
     } else if (filename.contains("SUMMARY")) {
       assertEquals(1350, bytes);
+    } else {
+      fail("Unexpected " + filename);
     }
   }
 
