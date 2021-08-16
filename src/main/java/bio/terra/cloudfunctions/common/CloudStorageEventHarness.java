@@ -18,10 +18,9 @@ import com.google.cloud.functions.Context;
  * <p>Sub-classes of this class can be integrated with a DI framework to deploy Cloud Functions like
  * a Service.
  */
-public abstract class CloudStorageEventHarness<T extends GCSEvent>
-    implements BackgroundFunction<T> {
+public abstract class CloudStorageEventHarness implements BackgroundFunction<GCSEvent> {
   private Context context;
-  private T event;
+  private GCSEvent event;
 
   /**
    * @param event String
@@ -29,7 +28,7 @@ public abstract class CloudStorageEventHarness<T extends GCSEvent>
    * @throws Exception when something goes wrong
    */
   @Override
-  public void accept(T event, Context context) throws Exception {
+  public void accept(GCSEvent event, Context context) throws Exception {
     this.event = event;
     this.context = context;
     doAccept();
@@ -39,7 +38,7 @@ public abstract class CloudStorageEventHarness<T extends GCSEvent>
     return context;
   }
 
-  public T getEvent() {
+  public GCSEvent getEvent() {
     return event;
   }
 
