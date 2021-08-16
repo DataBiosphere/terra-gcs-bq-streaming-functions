@@ -20,7 +20,7 @@ public class ChildContentHandlerTest extends BaseTest {
 
     try {
       StorageObjectData storageObjectData =
-          GsonWrapper.getInstance().fromJson(MOCK_EVENT_GZIP, StorageObjectData.class);
+          GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
       ChildContentHandler handler = new ChildContentHandler(storageObjectData);
       handler.setInputStream(MOCK_TGZ);
       handler.handleMediaType();
