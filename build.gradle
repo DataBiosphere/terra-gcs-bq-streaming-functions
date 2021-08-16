@@ -82,18 +82,6 @@ dependencies {
     // These dependencies are only used by the tests.
     testImplementation group: 'junit', name: 'junit', version: '4.12'
     testImplementation "org.mockito:mockito-core:3.+"
-
-    // Google Cloud SDK needed for Cloud Storage
-    implementation group: 'com.google.cloud', name: 'google-cloud-storage', version: "${googleStorage}"
-
-    // Google Cloud SDK needed for Streaming BQ
-    implementation group: 'com.google.cloud', name: 'google-cloud-bigquery', version: "${googleBigQuery}"
-
-    // To run function locally using Functions Framework's local invoker
-    invoker group: 'com.google.cloud.functions.invoker', name: 'java-function-invoker', version: "${googleFunctionsInvoker}"
-
-    // These dependencies are only used by the tests.
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
 // For more info, please refer to https://cloud.google.com/functions/docs/first-java#gradle_1
