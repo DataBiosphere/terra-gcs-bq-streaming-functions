@@ -3,6 +3,8 @@ package bio.terra.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import bio.terra.cloudevents.GCSEvent;
+import bio.terra.cloudfunctions.common.CloudStorageEventHarness;
 import bio.terra.cloudfunctions.common.GsonWrapper;
 import bio.terra.cloudfunctions.common.MediaTypeWrapper;
 import bio.terra.cloudfunctions.common.StorageObjectEventHarness;
@@ -91,7 +93,7 @@ public class BaseTest {
     }
   }
 
-  public class CFContext implements Context {
+  public static class CFContext implements Context {
 
     @Override
     public String eventId() {
@@ -114,9 +116,19 @@ public class BaseTest {
     }
   }
 
-  public class StorageObjectEventHarnessImpl extends StorageObjectEventHarness {
+  public static class StorageObjectEventHarnessImpl extends StorageObjectEventHarness {
 
     @Override
-    public void doAccept() throws Exception {}
+    public void doAccept() throws UnsupportedOperationException {
+      throw new UnsupportedOperationException("Not implemented");
+    }
+  }
+
+  public static class GCSEventHarnessImpl extends CloudStorageEventHarness<GCSEvent> {
+
+    @Override
+    public void doAccept() throws UnsupportedOperationException {
+      throw new UnsupportedOperationException("Not implemented");
+    }
   }
 }
