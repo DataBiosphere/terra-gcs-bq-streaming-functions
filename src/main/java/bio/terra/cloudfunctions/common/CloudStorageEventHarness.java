@@ -1,5 +1,6 @@
 package bio.terra.cloudfunctions.common;
 
+import bio.terra.cloudevents.GCSEvent;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 
@@ -17,7 +18,8 @@ import com.google.cloud.functions.Context;
  * <p>Sub-classes of this class can be integrated with a DI framework to deploy Cloud Functions like
  * a Service.
  */
-public abstract class CloudStorageEventHarness<T> implements BackgroundFunction<T> {
+public abstract class CloudStorageEventHarness<T extends GCSEvent>
+    implements BackgroundFunction<T> {
   private Context context;
   private T event;
 
