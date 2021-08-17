@@ -52,7 +52,8 @@ public abstract class GoogleCloudStorageEventHarness
    */
   public <T> T getEvent(Class<T> classOfT) throws Exception {
     try {
-      return GsonWrapper.convertFromClass(GsonWrapper.getInstance().toJson(this.event), classOfT);
+      return GsonWrapper.getInstance()
+          .fromJson(GsonWrapper.getInstance().toJsonTree(this.event).getAsJsonObject(), classOfT);
     } catch (Exception e) {
       logger.severe(e.getMessage());
       throw e;

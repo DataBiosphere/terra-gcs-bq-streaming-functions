@@ -4,8 +4,7 @@
 name: Build and deploy backend cloud function
 
 on:
-  push:
-    branches: [ main ]
+  push
 
 jobs:
   build-and-deploy:
