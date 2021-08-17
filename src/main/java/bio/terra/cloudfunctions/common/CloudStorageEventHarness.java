@@ -1,8 +1,8 @@
 package bio.terra.cloudfunctions.common;
 
-import bio.terra.cloudevents.GCSEvent;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
+import com.google.gson.internal.LinkedTreeMap;
 import java.util.logging.Logger;
 
 /**
@@ -19,11 +19,11 @@ import java.util.logging.Logger;
  * <p>Sub-classes of this class can be integrated with a DI framework to deploy Cloud Functions like
  * a Service.
  */
-public abstract class CloudStorageEventHarness<T extends GCSEvent> implements BackgroundFunction<T> {
+public abstract class CloudStorageEventHarness implements BackgroundFunction<LinkedTreeMap<?, ?>> {
   private static final Logger logger = Logger.getLogger(CloudStorageEventHarness.class.getName());
 
   private Context context;
-  private T event;
+  private LinkedTreeMap<?, ?> event;
 
   /**
    * @param event String
@@ -31,10 +31,10 @@ public abstract class CloudStorageEventHarness<T extends GCSEvent> implements Ba
    * @throws Exception when something goes wrong
    */
   @Override
-  public void accept(T event, Context context) throws Exception {
+  public void accept(LinkedTreeMap<?, ?> event, Context context) throws Exception {
     this.event = event;
     this.context = context;
-    logger.info("CloudStorageEventHarness T");
+    logger.info("CloudStorageEventHarness: " + GsonWrapper.getInstance().toJson(this.event));
     doAccept();
   }
 
@@ -42,7 +42,7 @@ public abstract class CloudStorageEventHarness<T extends GCSEvent> implements Ba
     return context;
   }
 
-  public T getEvent() {
+  public LinkedTreeMap<?, ?> getEvent() {
     return event;
   }
 
