@@ -131,7 +131,7 @@ public class BaseTest {
     }
   }
 
-  public static class GCSEventHarnessImpl extends CloudStorageEventHarness<GCSEvent> {
+  public static class GCSEventHarnessImpl extends CloudStorageEventHarness {
 
     @Override
     public void doAccept() throws UnsupportedOperationException {
