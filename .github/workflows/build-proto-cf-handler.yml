@@ -1,11 +1,10 @@
 # This workflow will build a backend cloud function with Gradle
 # For more information see: https://github.com/google-github-actions/deploy-cloud-functions
 
-name: Build and deploy backend cloud function
+name: Build and deploy ProtoFunc cloud function
 
 on:
-  push:
-    branches: [ main ]
+  push
 
 jobs:
   build-and-deploy:

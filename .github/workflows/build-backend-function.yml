@@ -1,10 +1,11 @@
 # This workflow will build a backend cloud function with Gradle
 # For more information see: https://github.com/google-github-actions/deploy-cloud-functions
 
-name: Build and deploy backend cloud function
+name: Build and deploy TestRunner cloud function
 
 on:
-  push
+  push:
+    branches: [ main ]
 
 jobs:
   build-and-deploy:
