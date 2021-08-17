@@ -1,5 +1,6 @@
 package bio.terra.cloudfunctions.common;
 
+import bio.terra.cloudevents.GCSEvent;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import com.google.gson.internal.LinkedTreeMap;
@@ -34,7 +35,15 @@ public abstract class CloudStorageEventHarness implements BackgroundFunction<Lin
   public void accept(LinkedTreeMap<?, ?> event, Context context) throws Exception {
     this.event = event;
     this.context = context;
-    logger.info("CloudStorageEventHarness: " + GsonWrapper.getInstance().toJson(this.event));
+    GCSEvent gcsEvent =
+        GsonWrapper.convertFromClass(GsonWrapper.getInstance().toJson(this.event), GCSEvent.class);
+    logger.info(
+        "CloudStorageEventHarness: "
+            + gcsEvent.getBucket()
+            + " "
+            + gcsEvent.getContentType()
+            + " "
+            + context.eventType());
     doAccept();
   }
 
