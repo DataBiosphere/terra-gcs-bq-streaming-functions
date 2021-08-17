@@ -2,7 +2,7 @@ package bio.terra.cloudfunctions.common;
 
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
-import com.google.gson.internal.LinkedTreeMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -15,13 +15,12 @@ import java.util.logging.Logger;
  * <p>Sub-classes of this class can be integrated with a DI framework to deploy Cloud Functions like
  * a Service.
  */
-public abstract class GoogleCloudStorageEventHarness
-    implements BackgroundFunction<LinkedTreeMap<?, ?>> {
+public abstract class GoogleCloudStorageEventHarness implements BackgroundFunction<Map<?, ?>> {
   private static final Logger logger =
       Logger.getLogger(GoogleCloudStorageEventHarness.class.getName());
 
   private Context context;
-  private LinkedTreeMap<?, ?> event;
+  private Map<?, ?> event;
 
   /**
    * @param event String
@@ -29,7 +28,7 @@ public abstract class GoogleCloudStorageEventHarness
    * @throws Exception when something goes wrong
    */
   @Override
-  public void accept(LinkedTreeMap<?, ?> event, Context context) throws Exception {
+  public void accept(Map<?, ?> event, Context context) throws Exception {
     this.event = event;
     this.context = context;
     doAccept();
@@ -52,8 +51,7 @@ public abstract class GoogleCloudStorageEventHarness
    */
   public <T> T getEvent(Class<T> classOfT) throws Exception {
     try {
-      return GsonWrapper.getInstance()
-          .fromJson(GsonWrapper.getInstance().toJsonTree(this.event).getAsJsonObject(), classOfT);
+      return GsonWrapper.convertFromClass(this.event, classOfT);
     } catch (Exception e) {
       logger.severe(e.getMessage());
       throw e;
