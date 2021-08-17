@@ -15,8 +15,10 @@ import java.util.logging.Logger;
  * <p>Sub-classes of this class can be integrated with a DI framework to deploy Cloud Functions like
  * a Service.
  */
-public abstract class CloudStorageEventHarness implements BackgroundFunction<LinkedTreeMap<?, ?>> {
-  private static final Logger logger = Logger.getLogger(CloudStorageEventHarness.class.getName());
+public abstract class GoogleCloudStorageEventHarness
+    implements BackgroundFunction<LinkedTreeMap<?, ?>> {
+  private static final Logger logger =
+      Logger.getLogger(GoogleCloudStorageEventHarness.class.getName());
 
   private Context context;
   private LinkedTreeMap<?, ?> event;

@@ -2,7 +2,7 @@ package bio.terra.cloudfunctions.proto;
 
 import bio.terra.cloudevents.CloudStorageEventType;
 import bio.terra.cloudevents.GCSEvent;
-import bio.terra.cloudfunctions.common.CloudStorageEventHarness;
+import bio.terra.cloudfunctions.common.GoogleCloudStorageEventHarness;
 
 /**
  * This class is a subclass of CloudEventsHarness (i.e. a Cloud Function) with a custom App.
@@ -10,7 +10,7 @@ import bio.terra.cloudfunctions.common.CloudStorageEventHarness;
  * <p>The no-arg and setter method is for supporting Cloud Function initialization and for this
  * function to be potentially used in a managed DI framework as a service.
  */
-public class ProtoFunc extends CloudStorageEventHarness {
+public class ProtoFunc extends GoogleCloudStorageEventHarness {
 
   @Override
   public void doAccept() throws Exception {

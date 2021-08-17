@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import bio.terra.cloudevents.GCSEvent;
-import bio.terra.cloudfunctions.common.CloudStorageEventHarness;
+import bio.terra.cloudfunctions.common.GoogleCloudStorageEventHarness;
 import bio.terra.cloudfunctions.common.GsonWrapper;
 import bio.terra.cloudfunctions.common.MediaTypeWrapper;
 import com.google.cloud.functions.Context;
@@ -122,7 +122,7 @@ public class BaseTest {
     }
   }
 
-  public static class GCSEventHarnessImpl extends CloudStorageEventHarness {
+  public static class GCSEventHarnessImpl extends GoogleCloudStorageEventHarness {
 
     @Override
     public void doAccept() {}
