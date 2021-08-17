@@ -7,7 +7,6 @@ import bio.terra.cloudevents.GCSEvent;
 import bio.terra.cloudfunctions.common.CloudStorageEventHarness;
 import bio.terra.cloudfunctions.common.GsonWrapper;
 import bio.terra.cloudfunctions.common.MediaTypeWrapper;
-import bio.terra.cloudfunctions.common.StorageObjectEventHarness;
 import com.google.cloud.functions.Context;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 import java.io.InputStream;
@@ -123,19 +122,9 @@ public class BaseTest {
     }
   }
 
-  public static class StorageObjectEventHarnessImpl extends StorageObjectEventHarness {
-
-    @Override
-    public void doAccept() throws UnsupportedOperationException {
-      throw new UnsupportedOperationException("Not implemented");
-    }
-  }
-
   public static class GCSEventHarnessImpl extends CloudStorageEventHarness {
 
     @Override
-    public void doAccept() throws UnsupportedOperationException {
-      throw new UnsupportedOperationException("Not implemented");
-    }
+    public void doAccept() {}
   }
 }
