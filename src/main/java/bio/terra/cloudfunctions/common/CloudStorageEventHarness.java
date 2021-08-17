@@ -40,13 +40,13 @@ public abstract class CloudStorageEventHarness implements BackgroundFunction<Lin
 
   /**
    * @param classOfT generic type of event pojo
-   * @param <T>
+   * @param <T> generic event pojo
    * @return an event pojo of generic type T matching the provider's specification of the event. *
    *     (e.g. GCSEvent is a pojo of GCS StorageObjectData event). Other providers have equivalent
    *     events * such as AWS S3Event and Azure BlobTrigger. Different providers use slightly
    *     different naming and * syntax for the event trigger (e.g. accept for GCS, handleRequest for
    *     S3, run for Azure Blob * Storage)
-   * @throws Exception
+   * @throws Exception when something goes wrong
    */
   public <T> T getEvent(Class<T> classOfT) throws Exception {
     try {
