@@ -1,5 +1,9 @@
 package bio.terra.cloudevents;
 
+/**
+ * For a enumeration of all Cloud Event types, please refer to
+ * https://cloud.google.com/functions/docs/calling/storage
+ */
 public enum CloudStorageEventType {
   GOOGLE_STORAGE_OBJECT_FINALIZE(
       "google.storage.object.finalize", "Google Storage Object Finalize"),
