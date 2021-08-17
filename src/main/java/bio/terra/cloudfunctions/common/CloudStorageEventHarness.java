@@ -1,18 +1,13 @@
 package bio.terra.cloudfunctions.common;
 
-import bio.terra.cloudevents.GCSEvent;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import com.google.gson.internal.LinkedTreeMap;
 import java.util.logging.Logger;
 
 /**
- * This class is an abstract representation of a Function triggered by a Cloud Storage Event. It
- * accepts a generic event type T which is a proxy of the provider's specification of the event.
- * (e.g. GCSEvent is a proxy of GCS StorageObjectData event). Other providers have equivalent events
- * such as AWS S3Event and Azure BlobTrigger. Different providers use slightly different naming and
- * syntax for the event trigger (e.g. accept for GCS, handleRequest for S3, run for Azure Blob
- * Storage)
+ * This class is an abstract representation of a Function triggered by a Google Cloud Storage Event.
+ * The function casts the Google Cloud Storage Event into a Map of key-value pairs.
  *
  * <p>This class contains only framework-specific logic to receive and parse Google Storage Object
  * Event messages.
@@ -35,24 +30,31 @@ public abstract class CloudStorageEventHarness implements BackgroundFunction<Lin
   public void accept(LinkedTreeMap<?, ?> event, Context context) throws Exception {
     this.event = event;
     this.context = context;
-    GCSEvent gcsEvent =
-        GsonWrapper.convertFromClass(GsonWrapper.getInstance().toJson(this.event), GCSEvent.class);
-    logger.info(
-        "CloudStorageEventHarness: "
-            + gcsEvent.getBucket()
-            + " "
-            + gcsEvent.getContentType()
-            + " "
-            + context.eventType());
     doAccept();
   }
 
+  /** @return Google Cloud Storage Event Context */
   public Context getContext() {
     return context;
   }
 
-  public LinkedTreeMap<?, ?> getEvent() {
-    return event;
+  /**
+   * @param classOfT generic type of event pojo
+   * @param <T>
+   * @return an event pojo of generic type T matching the provider's specification of the event. *
+   *     (e.g. GCSEvent is a pojo of GCS StorageObjectData event). Other providers have equivalent
+   *     events * such as AWS S3Event and Azure BlobTrigger. Different providers use slightly
+   *     different naming and * syntax for the event trigger (e.g. accept for GCS, handleRequest for
+   *     S3, run for Azure Blob * Storage)
+   * @throws Exception
+   */
+  public <T> T getEvent(Class<T> classOfT) throws Exception {
+    try {
+      return GsonWrapper.convertFromClass(GsonWrapper.getInstance().toJson(this.event), classOfT);
+    } catch (Exception e) {
+      logger.severe(e.getMessage());
+      throw e;
+    }
   }
 
   /**
