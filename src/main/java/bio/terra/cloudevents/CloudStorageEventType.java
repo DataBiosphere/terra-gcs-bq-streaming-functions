@@ -6,16 +6,12 @@ package bio.terra.cloudevents;
  */
 public enum CloudStorageEventType {
   GOOGLE_STORAGE_OBJECT_FINALIZE(
-      "google.storage.object.finalize", "Google Storage Object Finalize"),
-  GOOGLE_STORAGE_OBJECT_ARCHIVE("google.storage.object.archive", "Google Storage Object Archive"),
-  GOOGLE_STORAGE_OBJECT_DELETE("google.storage.object.delete", "Google Storage Object Delete"),
-  GOOGLE_STORAGE_OBJECT_V1_METADATAUPDATED(
-      "google.storage.object.metadataUpdate", "Google Storage Object Metadata Update");
+      "google.storage.object.finalize", "Google Storage Object Finalize");
 
   private String eType;
   private String eDesc;
 
-  private CloudStorageEventType(String eType, String eDesc) {
+  CloudStorageEventType(String eType, String eDesc) {
     this.eType = eType;
     this.eDesc = eDesc;
   }
@@ -23,13 +19,6 @@ public enum CloudStorageEventType {
   public static CloudStorageEventType fromCode(String eType) {
     for (int i = 0; i < CloudStorageEventType.class.getEnumConstants().length; i++)
       if (CloudStorageEventType.class.getEnumConstants()[i].getCode().equals(eType))
-        return CloudStorageEventType.class.getEnumConstants()[i];
-    return null;
-  }
-
-  public static CloudStorageEventType fromDescription(String eDesc) {
-    for (int i = 0; i < CloudStorageEventType.class.getEnumConstants().length; i++)
-      if (CloudStorageEventType.class.getEnumConstants()[i].getDesc().equals(eDesc))
         return CloudStorageEventType.class.getEnumConstants()[i];
     return null;
   }
