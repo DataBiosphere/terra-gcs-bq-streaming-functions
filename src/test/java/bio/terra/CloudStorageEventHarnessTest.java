@@ -13,7 +13,7 @@ public class CloudStorageEventHarnessTest extends BaseTest {
   public void acceptTest() {
     try {
       GCSEventHarnessImpl instance = new GCSEventHarnessImpl();
-      LinkedTreeMap m = GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, LinkedTreeMap.class);
+      LinkedTreeMap<?, ?> m = GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, LinkedTreeMap.class);
       instance.accept(m, new CFContext());
       GCSEvent event = instance.getEvent(GCSEvent.class);
       assertGCSEvent(event);
