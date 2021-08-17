@@ -1,5 +1,6 @@
 package bio.terra.cloudfunctions.common;
 
+import bio.terra.cloudevents.GCSEvent;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import java.util.logging.Logger;
@@ -18,7 +19,7 @@ import java.util.logging.Logger;
  * <p>Sub-classes of this class can be integrated with a DI framework to deploy Cloud Functions like
  * a Service.
  */
-public abstract class CloudStorageEventHarness<T> implements BackgroundFunction<T> {
+public abstract class CloudStorageEventHarness<T extends GCSEvent> implements BackgroundFunction<T> {
   private static final Logger logger = Logger.getLogger(CloudStorageEventHarness.class.getName());
 
   private Context context;
