@@ -4,7 +4,8 @@
 name: Build and deploy backend cloud function
 
 on:
-  push
+  push:
+    branches: [ main ]
 
 jobs:
   build-and-deploy:
@@ -33,7 +34,7 @@ jobs:
 
       # Set up ADC for credentials
       # Ideally this step should be part of action.yml but
-      # GHA does not yet support action within action so we're stuck.
+      # GHA does not yet support action within action, so we're stuck.
       # Please refer to https://github.com/actions/runner/pull/612 for updates.
       - uses: google-github-actions/setup-gcloud@master
         with:
