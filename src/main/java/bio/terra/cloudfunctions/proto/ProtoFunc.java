@@ -1,5 +1,6 @@
 package bio.terra.cloudfunctions.proto;
 
+import bio.terra.cloudevents.CloudStorageEventType;
 import bio.terra.cloudevents.GCSEvent;
 import bio.terra.cloudfunctions.common.CloudStorageEventHarness;
 import java.util.logging.Logger;
@@ -16,24 +17,12 @@ public class ProtoFunc extends CloudStorageEventHarness {
   // Can be injected through DI framework (Spring or Java CDI).
   private ProtoApp app;
 
-  public ProtoFunc() {}
-
-  public ProtoFunc(ProtoApp app) {
-    this.app = app;
-  }
-
-  public void setApp(ProtoApp app) {
-    this.app = app;
-  }
-
   @Override
   public void doAccept() throws Exception {
-    GCSEvent event = getEvent(GCSEvent.class);
-    logger.info(getContext().eventType());
-    logger.info(event.getBucket());
-    logger.info(event.getContentType());
-    doBusinessLogic();
+    // Business logic
+    app =
+        new ProtoApp(
+            CloudStorageEventType.fromCode(getContext().eventType()), getEvent(GCSEvent.class));
+    app.process();
   }
-
-  private void doBusinessLogic() {}
 }

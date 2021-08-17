@@ -1,6 +1,7 @@
 package bio.terra.cloudfunctions.common;
 
-import bio.terra.cloudevents.v1.CloudEventType;
+import bio.terra.cloudevents.CloudStorageEventType;
+import bio.terra.cloudevents.GCSEvent;
 
 /**
  * This abstract class represents the business application that interprets CloudEvent messages.
@@ -12,20 +13,20 @@ import bio.terra.cloudevents.v1.CloudEventType;
  * Service.
  */
 public abstract class App {
-  private CloudEventType cloudEventType;
-  private Object message;
+  private CloudStorageEventType cloudStorageEventType;
+  private GCSEvent cloudStorageEvent;
 
-  public App(CloudEventType cloudEventType, Object message) {
-    this.cloudEventType = cloudEventType;
-    this.message = message;
+  public App(CloudStorageEventType cloudStorageEventType, GCSEvent cloudStorageEvent) {
+    this.cloudStorageEventType = cloudStorageEventType;
+    this.cloudStorageEvent = cloudStorageEvent;
   }
 
-  public CloudEventType getCloudEventType() {
-    return cloudEventType;
+  public CloudStorageEventType getCloudStorageEventType() {
+    return cloudStorageEventType;
   }
 
-  public Object getMessage() {
-    return message;
+  public GCSEvent getCloudStorageEvent() {
+    return cloudStorageEvent;
   }
 
   public abstract void process() throws Exception;
