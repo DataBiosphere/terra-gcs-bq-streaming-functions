@@ -1,6 +1,5 @@
 package bio.terra.cloudfunctions.common;
 
-import bio.terra.cloudevents.GCSEvent;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import java.util.logging.Logger;
@@ -19,11 +18,11 @@ import java.util.logging.Logger;
  * <p>Sub-classes of this class can be integrated with a DI framework to deploy Cloud Functions like
  * a Service.
  */
-public abstract class CloudStorageEventHarness implements BackgroundFunction<GCSEvent> {
+public abstract class CloudStorageEventHarness<T> implements BackgroundFunction<T> {
   private static final Logger logger = Logger.getLogger(CloudStorageEventHarness.class.getName());
 
   private Context context;
-  private GCSEvent event;
+  private T event;
 
   /**
    * @param event String
@@ -31,10 +30,10 @@ public abstract class CloudStorageEventHarness implements BackgroundFunction<GCS
    * @throws Exception when something goes wrong
    */
   @Override
-  public void accept(GCSEvent event, Context context) throws Exception {
+  public void accept(T event, Context context) throws Exception {
     this.event = event;
     this.context = context;
-    logger.info("CloudStorageEventHarness " + event.getBucket());
+    logger.info("CloudStorageEventHarness T");
     doAccept();
   }
 
@@ -42,7 +41,7 @@ public abstract class CloudStorageEventHarness implements BackgroundFunction<GCS
     return context;
   }
 
-  public GCSEvent getEvent() {
+  public T getEvent() {
     return event;
   }
 
