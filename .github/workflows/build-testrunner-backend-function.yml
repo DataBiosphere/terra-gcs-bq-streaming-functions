@@ -51,7 +51,7 @@ jobs:
           dataset: simple_stream_dataset
 
       # This step will be replaced by deploying code from central dsp-artifact-registry
-      - name: Build and deploy the backend function
+      - name: Build and deploy the TestRunner backend function
         id: build-and-deploy
         uses: ./.github/actions/build-and-deploy-backend-function
         with:

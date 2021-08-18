@@ -42,7 +42,7 @@ jobs:
           service_account_key: ${{ secrets.DEPLOY_CF_SA_KEY_JSON }}
           export_default_credentials: true
 
-      - name: Build and deploy the backend function
+      - name: Build and deploy the ProtoFunc backend function
         id: build-and-deploy
         uses: ./.github/actions/build-and-deploy-backend-function
         with:
