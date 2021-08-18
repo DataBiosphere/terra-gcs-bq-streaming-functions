@@ -1,4 +1,4 @@
-package bio.terra.cloudfiletodatastore.testrunner.functions;
+package bio.terra.cloudfiletodatastore.testrunner.cloudfunctions;
 
 import bio.terra.cloudevents.CloudStorageEventType;
 import bio.terra.cloudfiletodatastore.FileUploadedMessage;
