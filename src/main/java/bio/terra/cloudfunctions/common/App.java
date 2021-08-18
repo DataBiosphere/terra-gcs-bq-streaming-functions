@@ -1,5 +1,7 @@
 package bio.terra.cloudfunctions.common;
 
+import bio.terra.cloudfiletodatastore.FileUploadedMessage;
+
 /**
  * This abstract class represents the business application that interprets CloudEvent messages.
  *
@@ -10,10 +12,10 @@ package bio.terra.cloudfunctions.common;
  * Service.
  */
 public abstract class App {
-  protected AppReceiver appReceiver;
+  protected FileUploadedMessage fileUploadedMessage;
 
-  public App(AppReceiver appReceiver) {
-    this.appReceiver = appReceiver;
+  public App(FileUploadedMessage fileUploadedMessage) {
+    this.fileUploadedMessage = fileUploadedMessage;
   }
 
   /**

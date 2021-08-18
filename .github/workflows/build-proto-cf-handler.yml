@@ -47,7 +47,7 @@ jobs:
         with:
           func: generic-cloudevent-handler
           module: testrunner
-          entry_point: bio.terra.cloudfunctions.proto.ProtoFunc
+          entry_point: bio.terra.cloudfiletodatastore.proto.ProtoFunc
           runtime_memory: 512MB
           bucket: testrunner-results
           trigger: google.storage.object.finalize

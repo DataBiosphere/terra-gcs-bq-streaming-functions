@@ -1,5 +1,6 @@
 package bio.terra.cloudfiletodatastore;
 
+import bio.terra.cloudevents.CloudStorageEventType;
 import java.time.OffsetDateTime;
 
 /**
@@ -7,7 +8,8 @@ import java.time.OffsetDateTime;
  * realm. All business logic should reference this class rather than Google classes.
  */
 public class FileUploadedMessage {
-
+  private CloudStorageEventType cloudStorageEventType;
+  private String contentType;
   private final String resourceName;
 
   private final String sourceBucket;
@@ -17,11 +19,34 @@ public class FileUploadedMessage {
   private final OffsetDateTime createdAt;
 
   public FileUploadedMessage(
+      CloudStorageEventType cloudStorageEventType,
+      String contentType,
+      String resourceName,
+      String sourceBucket,
+      long size,
+      OffsetDateTime createdAt) {
+    this.cloudStorageEventType = cloudStorageEventType;
+    this.contentType = contentType;
+    this.resourceName = resourceName;
+    this.sourceBucket = sourceBucket;
+    this.size = size;
+    this.createdAt = createdAt;
+  }
+
+  public FileUploadedMessage(
       String resourceName, String sourceBucket, long size, OffsetDateTime createdAt) {
     this.resourceName = resourceName;
     this.sourceBucket = sourceBucket;
     this.size = size;
     this.createdAt = createdAt;
+  }
+
+  public CloudStorageEventType getCloudStorageEventType() {
+    return cloudStorageEventType;
+  }
+
+  public String getContentType() {
+    return contentType;
   }
 
   public String getResourceName() {

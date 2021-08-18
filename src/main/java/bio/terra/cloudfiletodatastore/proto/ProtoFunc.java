@@ -1,7 +1,7 @@
-package bio.terra.cloudfunctions.proto;
+package bio.terra.cloudfiletodatastore.proto;
 
 import bio.terra.cloudevents.CloudStorageEventType;
-import bio.terra.cloudfunctions.common.AppReceiver;
+import bio.terra.cloudfiletodatastore.FileUploadedMessage;
 import bio.terra.cloudfunctions.common.GoogleCloudStorageEventHarness;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 
@@ -17,12 +17,15 @@ public class ProtoFunc extends GoogleCloudStorageEventHarness {
   public void doAccept() throws Exception {
     StorageObjectData event = getEvent(StorageObjectData.class);
     // App can be injected through DI framework (Spring or Java CDI).
-    AppReceiver appReceiver = new AppReceiver();
-    appReceiver.setCloudStorageEventType(CloudStorageEventType.fromCode(getContext().eventType()));
-    appReceiver.setContentType(event.getContentType());
-    appReceiver.setBucket(event.getBucket());
-    appReceiver.setName(event.getName());
-    ProtoApp app = new ProtoApp(appReceiver);
+    FileUploadedMessage fileUploadedMessage =
+        new FileUploadedMessage(
+            CloudStorageEventType.fromCode(getContext().eventType()),
+            event.getContentType(),
+            event.getName(),
+            event.getBucket(),
+            event.getSize(),
+            event.getTimeCreated());
+    ProtoApp app = new ProtoApp(fileUploadedMessage);
     app.process();
   }
 }
