@@ -2,7 +2,9 @@ package bio.terra.cloudfunctions.common;
 
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
+import com.google.gson.JsonSyntaxException;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -49,11 +51,11 @@ public abstract class GoogleCloudStorageEventHarness implements BackgroundFuncti
    *     S3, run for Azure Blob * Storage)
    * @throws Exception when something goes wrong
    */
-  public <T> T getEvent(Class<T> classOfT) throws Exception {
+  public <T> T getEvent(Class<T> classOfT) {
     try {
       return GsonWrapper.convertFromClass(this.event, classOfT);
-    } catch (Exception e) {
-      logger.severe(e.getMessage());
+    } catch (JsonSyntaxException e) {
+      logger.log(Level.SEVERE, "Could not convert from JSON", e);
       throw e;
     }
   }
