@@ -13,9 +13,8 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
 
 public class MediaTypeUtils {
   /**
-   * Create an compressor input stream from an input stream, autodetecting the compressor type from
-   * the first few bytes of the stream. The InputStream must support marks, like
-   * BufferedInputStream.
+   * Create a compressor input stream from an input stream, detect the compressor type from the
+   * first few bytes of the stream. The InputStream must support marks, like BufferedInputStream.
    *
    * @param in the InputStream
    * @return CompressorInputStream object
@@ -28,8 +27,8 @@ public class MediaTypeUtils {
         : compressor.createCompressorInputStream(new BufferedInputStream(in));
   }
   /**
-   * Create an archive input stream from an input stream, autodetecting the archive type from the
-   * first few bytes of the stream. The InputStream must support marks, like BufferedInputStream.
+   * Create an archive input stream from an input stream, detect the archive type from the first few
+   * bytes of the stream. The InputStream must support marks, like BufferedInputStream.
    *
    * @param in the InputStream
    * @return ArchiveInputStream object
