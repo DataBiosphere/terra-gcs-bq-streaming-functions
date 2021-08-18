@@ -1,6 +1,8 @@
 package bio.terra.cloudfunctions.utils;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
@@ -38,5 +40,19 @@ public class MediaTypeUtils {
     return in.markSupported()
         ? archiver.createArchiveInputStream(in)
         : archiver.createArchiveInputStream(new BufferedInputStream(in));
+  }
+
+  public static byte[] readEntry(InputStream input, final long size) throws IOException {
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    int bufferSize = 1024;
+    byte[] buffer = new byte[bufferSize + 1];
+    long remaining = size;
+    while (remaining > 0) {
+      int len = (int) Math.min(remaining, bufferSize);
+      int read = input.read(buffer, 0, len);
+      remaining -= read;
+      output.write(buffer, 0, read);
+    }
+    return output.toByteArray();
   }
 }
