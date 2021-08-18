@@ -3,7 +3,6 @@ package bio.terra.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import bio.terra.cloudevents.GCSEvent;
 import bio.terra.cloudfunctions.common.GoogleCloudStorageEventHarness;
 import bio.terra.cloudfunctions.common.GsonWrapper;
 import bio.terra.cloudfunctions.common.MediaTypeWrapper;
@@ -80,7 +79,7 @@ public class BaseTest {
     assertEquals("value2", data.getMetadata().get("key2"));
   }
 
-  public void assertGCSEvent(GCSEvent data) {
+  public void assertStorageObjectEvent(StorageObjectData data) {
     // Check String deserialization
     assertEquals("terra-kernel-k8s-testrunner-results", data.getBucket());
     // Check OffsetDateTime deserialization

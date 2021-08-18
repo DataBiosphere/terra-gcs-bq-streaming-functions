@@ -19,11 +19,11 @@ https://cloud.google.com/functions/docs/concepts/java-deploy#gradle
 
 This repository has the following cloud functions
 
-| Java Class     | Cloud Function             | Application |
-|----------------|----------------------------|-------------|
-| GcsBQ.java     | gcs-bq-function            | Test Runner |
-| ProtoFunc.java | generic-cloudevent-handler | For demo    |
-|                |                            | Delta Layer |
+| Java Class                                  | Cloud Function             | Application |
+|---------------------------------------------|----------------------------|-------------|
+| TestRunnerBackgroundFunction.java           | gcs-bq-function            | Test Runner |
+| ProtoFunc.java                              | generic-cloudevent-handler | For demo    |
+|                                             |                            | Delta Layer |
 
 #### Under Development: terra-gcs-bq-streaming-functions
 
@@ -34,7 +34,7 @@ This repository has the following cloud functions
 ## Deploying to serverless platforms with GitHub Actions
 
 The name of the GitHub Actions workflows are
-* `build-backend-function.yml` for Test Runner (GcsBQ).
+* `build-testrunner-backend-function.yml` for Test Runner (GcsBQ).
 * `build-proto-cf-handler.yml` for ProtoFunc.
 
 The Gradle task `shadowJar` builds the Uber JAR in the local default `build/libs` directory.

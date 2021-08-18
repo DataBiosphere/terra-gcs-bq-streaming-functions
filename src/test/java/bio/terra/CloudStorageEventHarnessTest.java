@@ -2,10 +2,10 @@ package bio.terra;
 
 import static org.junit.Assert.fail;
 
-import bio.terra.cloudevents.GCSEvent;
 import bio.terra.cloudfunctions.common.GsonWrapper;
 import bio.terra.common.BaseTest;
-import com.google.gson.internal.LinkedTreeMap;
+import com.google.events.cloud.storage.v1.StorageObjectData;
+import java.util.Map;
 import org.junit.Test;
 
 public class CloudStorageEventHarnessTest extends BaseTest {
@@ -13,10 +13,10 @@ public class CloudStorageEventHarnessTest extends BaseTest {
   public void acceptTest() {
     try {
       GCSEventHarnessImpl instance = new GCSEventHarnessImpl();
-      LinkedTreeMap<?, ?> m = GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, LinkedTreeMap.class);
+      Map<?, ?> m = GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, Map.class);
       instance.accept(m, new CFContext());
-      GCSEvent event = instance.getEvent(GCSEvent.class);
-      assertGCSEvent(event);
+      StorageObjectData event = instance.getEvent(StorageObjectData.class);
+      assertStorageObjectEvent(event);
     } catch (Exception e) {
       fail(e.getMessage());
     }
