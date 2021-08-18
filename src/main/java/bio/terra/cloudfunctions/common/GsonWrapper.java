@@ -39,15 +39,36 @@ public class GsonWrapper {
     return GsonSingleton._instance;
   }
 
+  /**
+   * @param s json string
+   * @param classOfT the class to cast the json string
+   * @param <T> the return type
+   * @return
+   * @throws JsonSyntaxException when something goes wrong
+   */
   public static <T> T convertFromClass(String s, Class<T> classOfT) throws JsonSyntaxException {
     return getInstance().fromJson(s, classOfT);
   }
 
+  /**
+   * @param j an JsonElement object (e.g. JsonObject)
+   * @param classOfT the class to cast the json object
+   * @param <T> the return type
+   * @return
+   * @throws JsonSyntaxException when something goes wrong
+   */
   public static <T> T convertFromClass(JsonElement j, Class<T> classOfT)
       throws JsonSyntaxException {
     return getInstance().fromJson(j, classOfT);
   }
 
+  /**
+   * @param obj a json object represented as a map
+   * @param classOfT the class to cast the json object
+   * @param <T> the return type
+   * @return
+   * @throws JsonSyntaxException when something goes wrong
+   */
   public static <T> T convertFromClass(Map<?, ?> obj, Class<T> classOfT)
       throws JsonSyntaxException {
     return convertFromClass(getInstance().toJsonTree(obj).getAsJsonObject(), classOfT);

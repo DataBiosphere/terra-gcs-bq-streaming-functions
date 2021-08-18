@@ -1,7 +1,10 @@
 package bio.terra.cloudevents;
 
 /**
- * For a enumeration of all Cloud Event types, please refer to
+ * Enums of Cloud Storage Event Types (Google, AWS, or Azure). Currently, only Google Storage Event
+ * Types are implemented.
+ *
+ * <p>For an enumeration of all Google Cloud Event types, please refer to
  * https://cloud.google.com/functions/docs/calling/storage
  */
 public enum CloudStorageEventType {

@@ -60,7 +60,7 @@ public abstract class GoogleCloudStorageEventHarness implements BackgroundFuncti
 
   /**
    * Subclasses of this class must implement this method to kick off application-specific functions
-   * downstream .
+   * downstream.
    *
    * @throws Exception when something wrong happened
    */
