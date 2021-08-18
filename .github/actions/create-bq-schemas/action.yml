@@ -24,16 +24,10 @@ runs:
             [ -f "$i" ] || break
             NOEXT=${i%.json}
             TBL=${NOEXT##*/}
-            echo ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL}
-            echo $i
             bq show --schema ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL} || \
                 bq mk --table ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL} $i
-            echo $i
             json=${i##*/}
-            echo $json
             JSON=${i%.json}
             TBL=${JSON##*/}
-            echo $JSON
-            echo $TBL
         done
       shell: bash
