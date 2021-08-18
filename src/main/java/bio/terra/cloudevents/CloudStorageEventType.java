@@ -11,8 +11,8 @@ public enum CloudStorageEventType {
   GOOGLE_STORAGE_OBJECT_FINALIZE(
       "google.storage.object.finalize", "Google Storage Object Finalize");
 
-  private String eType;
-  private String eDesc;
+  String eType;
+  String eDesc;
 
   CloudStorageEventType(String eType, String eDesc) {
     this.eType = eType;
