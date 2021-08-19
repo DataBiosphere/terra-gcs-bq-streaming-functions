@@ -1,12 +1,12 @@
 package bio.terra.cloudfunctions.utils;
 
 import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.FormatOptions;
 import com.google.cloud.bigquery.JobInfo;
 import com.google.cloud.bigquery.TableDataWriteChannel;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.WriteChannelConfiguration;
-import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class BigQueryUtils {
             .setFormatOptions(FormatOptions.json())
             .setCreateDisposition(JobInfo.CreateDisposition.CREATE_NEVER)
             .build();
-    BigQuery bigquery = RemoteBigQueryHelper.create().getOptions().getService();
+    BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
     TableDataWriteChannel channel = bigquery.writer(configuration);
 
     try {
