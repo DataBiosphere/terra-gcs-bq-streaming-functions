@@ -32,7 +32,7 @@ public class CloudStorageEventHarnessTest extends BaseTest {
       StorageObjectData event = instance.getEvent(StorageObjectData.class);
       assertMockTGZStorageObjectData(event);
     } catch (Exception e) {
-      assertEquals("Cloud Event Type 'unsupported.event' is not supported.", e.getMessage());
+      assertEquals("Unexpected event type: unsupported.event", e.getMessage());
     }
   }
 }

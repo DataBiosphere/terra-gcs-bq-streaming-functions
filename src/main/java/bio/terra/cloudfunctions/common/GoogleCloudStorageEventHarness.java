@@ -41,8 +41,7 @@ public abstract class GoogleCloudStorageEventHarness implements BackgroundFuncti
   private void parseCloudEvent() throws Exception {
     if (!context.eventType().equals(GOOGLE_STORAGE_OBJECT_FINALIZE)) {
       logger.log(Level.SEVERE, "Cloud Event Type '" + context.eventType() + "' is not supported.");
-      throw new UnSupportedCloudEventTypeException(
-          "Cloud Event Type '" + context.eventType() + "' is not supported.");
+      throw new UnSupportedCloudEventTypeException("Unexpected event type: " + context.eventType());
     }
   }
 
