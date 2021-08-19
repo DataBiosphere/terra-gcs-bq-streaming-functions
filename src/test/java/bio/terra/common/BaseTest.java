@@ -68,7 +68,7 @@ public class BaseTest {
   }
 
   /** @param data - the hardcoded values came from the file resources/mock_event_gzip.json */
-  public void assertStorageObjectData(StorageObjectData data) {
+  public void assertMockTGZStorageObjectData(StorageObjectData data) {
     // Check String deserialization
     assertEquals("terra-kernel-k8s-testrunner-results", data.getBucket());
     // Check OffsetDateTime deserialization

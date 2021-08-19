@@ -14,7 +14,7 @@ public class GsonWrapperTest extends BaseTest {
     try {
       StorageObjectData data =
           GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
-      assertStorageObjectData(data);
+      assertMockTGZStorageObjectData(data);
     } catch (Exception e) {
       logger.severe(e.getMessage());
     }
