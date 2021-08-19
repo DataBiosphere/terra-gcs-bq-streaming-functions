@@ -18,6 +18,7 @@ import java.util.logging.Logger;
  * a Service.
  */
 public abstract class GoogleCloudStorageEventHarness implements BackgroundFunction<Map<?, ?>> {
+  private static String GOOGLE_STORAGE_OBJECT_FINALIZE = "google.storage.object.finalize";
   private static final Logger logger =
       Logger.getLogger(GoogleCloudStorageEventHarness.class.getName());
 
@@ -33,7 +34,16 @@ public abstract class GoogleCloudStorageEventHarness implements BackgroundFuncti
   public void accept(Map<?, ?> event, Context context) throws Exception {
     this.event = event;
     this.context = context;
+    parseCloudEvent();
     doAccept();
+  }
+
+  private void parseCloudEvent() throws Exception {
+    if (!context.eventType().equals(GOOGLE_STORAGE_OBJECT_FINALIZE)) {
+      logger.log(Level.SEVERE, "Cloud Event Type '" + context.eventType() + "' is not supported.");
+      throw new UnSupportedCloudEventTypeException(
+          "Cloud Event Type '" + context.eventType() + "' is not supported.");
+    }
   }
 
   /** @return Google Cloud Storage Event Context */
