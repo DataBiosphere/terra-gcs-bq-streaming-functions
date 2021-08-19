@@ -1,5 +1,6 @@
 package bio.terra;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import bio.terra.cloudfunctions.common.GsonWrapper;
@@ -10,15 +11,28 @@ import org.junit.Test;
 
 public class CloudStorageEventHarnessTest extends BaseTest {
   @Test
-  public void acceptTest() {
+  public void acceptSupportedCloudEventTest() {
     try {
       GCSEventHarnessImpl instance = new GCSEventHarnessImpl();
       Map<?, ?> m = GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, Map.class);
-      instance.accept(m, new CFContext());
+      instance.accept(m, SUPPORTED_CLOUD_EVENT_CONTEXT);
       StorageObjectData event = instance.getEvent(StorageObjectData.class);
-      assertStorageObjectEvent(event);
+      assertStorageObjectData(event);
     } catch (Exception e) {
       fail(e.getMessage());
+    }
+  }
+
+  @Test
+  public void rejectUnSupportedCloudEventTest() {
+    try {
+      GCSEventHarnessImpl instance = new GCSEventHarnessImpl();
+      Map<?, ?> m = GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, Map.class);
+      instance.accept(m, UNSUPPORTED_CLOUD_EVENT_CONTEXT);
+      StorageObjectData event = instance.getEvent(StorageObjectData.class);
+      assertStorageObjectData(event);
+    } catch (Exception e) {
+      assertEquals("Cloud Event Type 'unsupported.event' is not supported.", e.getMessage());
     }
   }
 }

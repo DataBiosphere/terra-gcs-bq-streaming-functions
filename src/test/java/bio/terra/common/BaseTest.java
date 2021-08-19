@@ -17,7 +17,8 @@ public class BaseTest {
 
   protected static String MOCK_EVENT_GZIP;
   protected static String MOCK_EVENT_JSON;
-  protected static CFContext FAKE_CLOUD_FUNCTION_CONTEXT;
+  protected static SupportedCloudEventContext SUPPORTED_CLOUD_EVENT_CONTEXT;
+  protected static UnSupportedCloudEventContext UNSUPPORTED_CLOUD_EVENT_CONTEXT;
   protected static MediaTypeWrapper APPLICATION_GZIP;
   protected static MediaTypeWrapper APPLICATION_X_GZIP;
   protected static MediaTypeWrapper APPLICATION_JSON;
@@ -52,7 +53,8 @@ public class BaseTest {
                       .readAllBytes()),
               byte[].class);
 
-      FAKE_CLOUD_FUNCTION_CONTEXT = new CFContext();
+      SUPPORTED_CLOUD_EVENT_CONTEXT = new SupportedCloudEventContext();
+      UNSUPPORTED_CLOUD_EVENT_CONTEXT = new UnSupportedCloudEventContext();
       APPLICATION_GZIP = new MediaTypeWrapper("application/gzip");
       APPLICATION_X_GZIP = new MediaTypeWrapper("application/x-gzip");
       APPLICATION_JSON = new MediaTypeWrapper("application/json");
@@ -79,13 +81,6 @@ public class BaseTest {
     assertEquals("value2", data.getMetadata().get("key2"));
   }
 
-  public void assertStorageObjectEvent(StorageObjectData data) {
-    // Check String deserialization
-    assertEquals("terra-kernel-k8s-testrunner-results", data.getBucket());
-    // Check OffsetDateTime deserialization
-    assertEquals("2021-07-07T22:57:14.257Z", data.getTimeCreated().toInstant().toString());
-  }
-
   public void verifyMockTGZArchiveEntry(String filename, long bytes) {
     if (filename.contains("RENDERED")) {
       assertEquals(3584, bytes);
@@ -98,7 +93,7 @@ public class BaseTest {
     }
   }
 
-  public static class CFContext implements Context {
+  public static class UnSupportedCloudEventContext implements Context {
 
     @Override
     public String eventId() {
@@ -112,7 +107,30 @@ public class BaseTest {
 
     @Override
     public String eventType() {
+      return "unsupported.event";
+    }
+
+    @Override
+    public String resource() {
       return null;
+    }
+  }
+
+  public static class SupportedCloudEventContext implements Context {
+
+    @Override
+    public String eventId() {
+      return null;
+    }
+
+    @Override
+    public String timestamp() {
+      return null;
+    }
+
+    @Override
+    public String eventType() {
+      return "google.storage.object.finalize";
     }
 
     @Override

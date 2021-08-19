@@ -13,7 +13,7 @@ public class GsonWrapperTest extends BaseTest {
   public void parseStorageObjectData() {
     try {
       StorageObjectData data =
-          GsonWrapper.getInstance().fromJson(MOCK_EVENT_GZIP, StorageObjectData.class);
+          GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
       assertStorageObjectData(data);
     } catch (Exception e) {
       logger.severe(e.getMessage());
