@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * a Service.
  */
 public abstract class GoogleCloudStorageEventHarness implements BackgroundFunction<Map<?, ?>> {
-  private static String GOOGLE_STORAGE_OBJECT_FINALIZE = "google.storage.object.finalize";
+  private static final String GOOGLE_STORAGE_OBJECT_FINALIZE = "google.storage.object.finalize";
   private static final Logger logger =
       Logger.getLogger(GoogleCloudStorageEventHarness.class.getName());
 
@@ -59,9 +59,9 @@ public abstract class GoogleCloudStorageEventHarness implements BackgroundFuncti
    *     events * such as AWS S3Event and Azure BlobTrigger. Different providers use slightly
    *     different naming and * syntax for the event trigger (e.g. accept for GCS, handleRequest for
    *     S3, run for Azure Blob * Storage)
-   * @throws Exception when something goes wrong
+   * @throws JsonSyntaxException when something goes wrong
    */
-  public <T> T getEvent(Class<T> classOfT) {
+  public <T> T getEvent(Class<T> classOfT) throws JsonSyntaxException {
     try {
       return GsonWrapper.convertFromClass(this.event, classOfT);
     } catch (JsonSyntaxException e) {
