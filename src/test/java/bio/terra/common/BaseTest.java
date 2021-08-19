@@ -44,6 +44,8 @@ public class BaseTest {
                   .getResourceAsStream("testfiles/mock_event_json.json")
                   .readAllBytes());
 
+      // The file resources/testfiles/mock_storage_object_data.json is a byte[] array
+      // equivalent to the content of resources/testfiles/mock_event_gzip.json
       MOCK_STORAGE_OBJECT_DATASTREAM =
           GsonWrapper.convertFromClass(
               new String(
@@ -67,7 +69,9 @@ public class BaseTest {
     }
   }
 
-  /** @param data - the hardcoded values came from the file resources/mock_event_gzip.json */
+  /**
+   * @param data - the hardcoded values came from the file resources/testfiles/mock_event_gzip.json
+   */
   public void assertMockTGZStorageObjectData(StorageObjectData data) {
     // Check String deserialization
     assertEquals("terra-kernel-k8s-testrunner-results", data.getBucket());
