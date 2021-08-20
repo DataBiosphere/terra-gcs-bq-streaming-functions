@@ -6,12 +6,12 @@ import bio.terra.cloudfunctions.utils.BigQueryUtils;
 import bio.terra.cloudfunctions.utils.GcsUtils;
 import bio.terra.cloudfunctions.utils.MediaTypeUtils;
 import com.google.common.io.Files;
-import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
+import org.apache.commons.compress.compressors.CompressorInputStream;
 
 public class TestRunnerStreamingApp extends App {
   private static final Logger logger = Logger.getLogger(TestRunnerStreamingApp.class.getName());
@@ -31,10 +31,12 @@ public class TestRunnerStreamingApp extends App {
     InputStream in =
         GcsUtils.getStorageObjectDataAsInputStream(projectId, sourceBucket, resourceName);
 
-    // CompressorInputStream compressedInputStream = MediaTypeUtils.createCompressorInputStream(in);
+    // This intermediate step is necessary for ArchiveInputStream to recognize that the file being
+    // processed is a tar.gz
+    CompressorInputStream compressedInputStream = MediaTypeUtils.createCompressorInputStream(in);
 
     ArchiveInputStream archiveInputStream =
-        MediaTypeUtils.createArchiveInputStream(new BufferedInputStream(in));
+        MediaTypeUtils.createArchiveInputStream(compressedInputStream);
 
     /*
      * ArchiveInputStream is a special type of InputStream that emits an EOF when it gets to the end
