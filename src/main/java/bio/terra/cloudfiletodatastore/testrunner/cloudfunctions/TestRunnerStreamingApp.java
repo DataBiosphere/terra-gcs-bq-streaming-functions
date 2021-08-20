@@ -6,6 +6,7 @@ import bio.terra.cloudfunctions.utils.BigQueryUtils;
 import bio.terra.cloudfunctions.utils.GcsUtils;
 import bio.terra.cloudfunctions.utils.MediaTypeUtils;
 import com.google.common.io.Files;
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,7 +33,8 @@ public class TestRunnerStreamingApp extends App {
 
     // CompressorInputStream compressedInputStream = MediaTypeUtils.createCompressorInputStream(in);
 
-    ArchiveInputStream archiveInputStream = MediaTypeUtils.createArchiveInputStream(in);
+    ArchiveInputStream archiveInputStream =
+        MediaTypeUtils.createArchiveInputStream(new BufferedInputStream(in));
 
     /*
      * ArchiveInputStream is a special type of InputStream that emits an EOF when it gets to the end
