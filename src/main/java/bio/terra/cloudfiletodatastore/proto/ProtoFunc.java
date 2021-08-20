@@ -34,7 +34,7 @@ public class ProtoFunc extends GoogleCloudEventHarness {
       } else {
         logger.log(
             Level.SEVERE,
-            "Malformed event data: Expected '{0}' event from bucket '{1}' of content type '{2}' but received '{3}' event from bucket '{4}' of content type '{5}'.",
+            "Malformed event data: Expected {0} event from bucket {1} of content type {2} but received {3} event from bucket {4} of content type {5}.",
             new Object[] {
               GoogleCloudEventHarness.GOOGLE_STORAGE_OBJECT_FINALIZE,
               expectedBucket,
