@@ -3,7 +3,7 @@ package bio.terra.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import bio.terra.cloudfunctions.common.GoogleCloudStorageEventHarness;
+import bio.terra.cloudfunctions.common.GoogleCloudEventHarness;
 import bio.terra.cloudfunctions.common.GsonWrapper;
 import bio.terra.cloudfunctions.common.MediaTypeWrapper;
 import com.google.cloud.functions.Context;
@@ -15,9 +15,9 @@ import org.junit.Before;
 public class BaseTest {
   private static final Logger logger = Logger.getLogger(BaseTest.class.getName());
 
-  protected static String MOCK_EVENT_GZIP;
-  protected static String MOCK_EVENT_JSON;
-  protected static SupportedCloudEventContext SUPPORTED_CLOUD_EVENT_CONTEXT;
+  protected static String MOCK_GCS_EVENT_GZIP;
+  protected static String MOCK_GCS_EVENT_JSON;
+  protected static GCSCloudEventContext GCS_CLOUD_EVENT_CONTEXT;
   protected static UnSupportedCloudEventContext UNSUPPORTED_CLOUD_EVENT_CONTEXT;
   protected static MediaTypeWrapper APPLICATION_GZIP;
   protected static MediaTypeWrapper APPLICATION_X_GZIP;
@@ -30,37 +30,40 @@ public class BaseTest {
   @Before
   public void setUp() {
     try {
-      MOCK_EVENT_GZIP =
+      MOCK_GCS_EVENT_GZIP =
           new String(
               getClass()
                   .getClassLoader()
-                  .getResourceAsStream("testfiles/mock_event_gzip.json")
+                  .getResourceAsStream("testfiles/mock_gcs_event_gzip.json")
                   .readAllBytes());
 
-      MOCK_EVENT_JSON =
+      MOCK_GCS_EVENT_JSON =
           new String(
               getClass()
                   .getClassLoader()
-                  .getResourceAsStream("testfiles/mock_event_json.json")
+                  .getResourceAsStream("testfiles/mock_gcs_event_json.json")
                   .readAllBytes());
 
-      // The file resources/testfiles/mock_storage_object_data.json is a byte[] array
-      // equivalent to the content of resources/testfiles/mock_event_gzip.json
+      // The file resources/testfiles/mock_gcs_storage_object_data_bytes.json is a byte[] array
+      // equivalent to the content of resources/testfiles/mock_gcs_event_gzip.json
       MOCK_STORAGE_OBJECT_DATASTREAM =
           GsonWrapper.convertFromClass(
               new String(
                   getClass()
                       .getClassLoader()
-                      .getResourceAsStream("testfiles/mock_storage_object_data.json")
+                      .getResourceAsStream("testfiles/mock_gcs_storage_object_data_bytes.json")
                       .readAllBytes()),
               byte[].class);
 
-      SUPPORTED_CLOUD_EVENT_CONTEXT = new SupportedCloudEventContext();
+      GCS_CLOUD_EVENT_CONTEXT = new GCSCloudEventContext();
       UNSUPPORTED_CLOUD_EVENT_CONTEXT = new UnSupportedCloudEventContext();
       APPLICATION_GZIP = new MediaTypeWrapper("application/gzip");
       APPLICATION_X_GZIP = new MediaTypeWrapper("application/x-gzip");
       APPLICATION_JSON = new MediaTypeWrapper("application/json");
-      MOCK_TGZ = getClass().getClassLoader().getResourceAsStream("testfiles/mock_results.tar.gz");
+      MOCK_TGZ =
+          getClass()
+              .getClassLoader()
+              .getResourceAsStream("testfiles/mock_testrunner_results.tar.gz");
       MOCK_GZ =
           getClass().getClassLoader().getResourceAsStream("testfiles/SUMMARY_testRun.json.gz");
       MOCK_JSON = getClass().getClassLoader().getResourceAsStream("testfiles/SUMMARY_testRun.json");
@@ -70,7 +73,8 @@ public class BaseTest {
   }
 
   /**
-   * @param data - the hardcoded values came from the file resources/testfiles/mock_event_gzip.json
+   * @param data - the hardcoded values came from the file
+   *     resources/testfiles/mock_gcs_event_gzip.json
    */
   public void assertMockTGZStorageObjectData(StorageObjectData data) {
     // Check String deserialization
@@ -121,7 +125,7 @@ public class BaseTest {
     }
   }
 
-  public static class SupportedCloudEventContext implements Context {
+  public static class GCSCloudEventContext implements Context {
 
     @Override
     public String eventId() {
@@ -144,7 +148,7 @@ public class BaseTest {
     }
   }
 
-  public static class GCSEventHarnessImpl extends GoogleCloudStorageEventHarness {
+  public static class GCSEventHarnessImpl extends GoogleCloudEventHarness {
 
     @Override
     public void doAccept() {}

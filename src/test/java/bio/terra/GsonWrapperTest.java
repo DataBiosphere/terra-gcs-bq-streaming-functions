@@ -9,7 +9,8 @@ public class GsonWrapperTest extends BaseTest {
 
   @Test
   public void parseStorageObjectData() {
-    StorageObjectData data = GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
+    StorageObjectData data =
+        GsonWrapper.convertFromClass(MOCK_GCS_EVENT_GZIP, StorageObjectData.class);
     assertMockTGZStorageObjectData(data);
   }
 }

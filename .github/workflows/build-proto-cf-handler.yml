@@ -4,8 +4,7 @@
 name: Build and deploy ProtoFunc cloud function
 
 on:
-  push:
-    branches: [ main ]
+  push
 
 jobs:
   build-and-deploy:

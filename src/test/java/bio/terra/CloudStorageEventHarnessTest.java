@@ -14,8 +14,8 @@ public class CloudStorageEventHarnessTest extends BaseTest {
   public void acceptSupportedCloudEventTest() {
     try {
       GCSEventHarnessImpl instance = new GCSEventHarnessImpl();
-      Map<?, ?> m = GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, Map.class);
-      instance.accept(m, SUPPORTED_CLOUD_EVENT_CONTEXT);
+      Map<?, ?> m = GsonWrapper.convertFromClass(MOCK_GCS_EVENT_GZIP, Map.class);
+      instance.accept(m, GCS_CLOUD_EVENT_CONTEXT);
       StorageObjectData event = instance.getEvent(StorageObjectData.class);
       assertMockTGZStorageObjectData(event);
     } catch (Exception e) {
@@ -27,7 +27,7 @@ public class CloudStorageEventHarnessTest extends BaseTest {
   public void rejectUnSupportedCloudEventTest() {
     try {
       GCSEventHarnessImpl instance = new GCSEventHarnessImpl();
-      Map<?, ?> m = GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, Map.class);
+      Map<?, ?> m = GsonWrapper.convertFromClass(MOCK_GCS_EVENT_GZIP, Map.class);
       instance.accept(m, UNSUPPORTED_CLOUD_EVENT_CONTEXT);
       StorageObjectData event = instance.getEvent(StorageObjectData.class);
       assertMockTGZStorageObjectData(event);

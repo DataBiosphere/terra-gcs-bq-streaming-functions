@@ -19,7 +19,7 @@ inputs:
     required: false
     default: '256MB'
   bucket:
-    description: 'NGoogle Cloud Storage bucket name. Every change in files in this bucket will trigger function execution'
+    description: 'Google Cloud Storage bucket name. Every change in files in this bucket will trigger function execution'
     required: true
     default: 'testrunner-results'
   trigger:
@@ -52,7 +52,8 @@ runs:
       run: |
         cat src/main/resources/${{ inputs.module }}/envvars.yml | \
             sed "s|_GCLOUD_PROJECT_|${{ env.GCLOUD_PROJECT }}|g" | \
-            sed "s|_DATASET_|${{ inputs.dataset }}|g" > ${{ inputs.envvars_yml }}
+            sed "s|_GOOGLE_BUCKET_|${{ inputs.bucket }}|g" | \
+            sed "s|_BQ_DATASET_|${{ inputs.dataset }}|g" > ${{ inputs.envvars_yml }}
         more ${{ inputs.envvars_yml }}
         gcloud config set project ${{ env.GCLOUD_PROJECT }}
         gcloud functions deploy ${{ inputs.func }} \
