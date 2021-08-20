@@ -4,7 +4,7 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
@@ -51,14 +51,13 @@ public class GsonWrapper {
   }
 
   /**
-   * @param j an JsonElement object (e.g. JsonObject)
+   * @param j an JsonObject object
    * @param classOfT the class to cast the json object
    * @param <T> the return type
    * @return
    * @throws JsonSyntaxException when something goes wrong
    */
-  public static <T> T convertFromClass(JsonElement j, Class<T> classOfT)
-      throws JsonSyntaxException {
+  public static <T> T convertFromClass(JsonObject j, Class<T> classOfT) throws JsonSyntaxException {
     return getInstance().fromJson(j, classOfT);
   }
 
