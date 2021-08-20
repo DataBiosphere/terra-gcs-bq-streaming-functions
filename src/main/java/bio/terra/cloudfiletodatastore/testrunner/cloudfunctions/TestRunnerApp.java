@@ -5,7 +5,7 @@ import bio.terra.cloudfunctions.common.App;
 import bio.terra.cloudfunctions.utils.BigQueryUtils;
 import bio.terra.cloudfunctions.utils.GcsUtils;
 import bio.terra.cloudfunctions.utils.MediaTypeUtils;
-import java.io.File;
+import com.google.common.io.Files;
 import java.io.InputStream;
 import java.util.logging.Logger;
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -43,10 +43,13 @@ public class TestRunnerApp extends App {
     ArchiveEntry archiveEntry;
     while ((archiveEntry = archiveInputStream.getNextEntry()) != null) {
       if (!archiveEntry.isDirectory()) {
-        File f = new File(archiveEntry.getName());
-        if (table.equals(f.getName())) {
+        if (Files.getNameWithoutExtension(archiveEntry.getName()).equals(table)) {
           logger.info(
-              "Processing " + archiveEntry.getName() + " " + archiveEntry.getSize() + " bytes");
+              String.format(
+                  "Processing %s (%s bytes) for streaming to BQ table %s",
+                  archiveEntry.getName(),
+                  archiveEntry.getSize(),
+                  Files.getNameWithoutExtension(archiveEntry.getName())));
           byte[] data = MediaTypeUtils.readEntry(archiveInputStream, archiveEntry.getSize());
           BigQueryUtils.streamToBQ(projectId, dataSet, table, data);
         }

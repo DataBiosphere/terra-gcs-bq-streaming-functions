@@ -28,15 +28,14 @@ public class TestRunnerBackgroundFunction extends GoogleCloudEventHarness {
       } else {
         logger.log(
             Level.SEVERE,
-            "Malformed event data: Expected '{0}' event from bucket '{1}' of content type '{2}' but received '{3}' event from bucket '{4}' of content type '{5}'.",
-            new Object[] {
-              GoogleCloudEventHarness.GOOGLE_STORAGE_OBJECT_FINALIZE,
-              expectedBucket,
-              "application/gzip",
-              getContext().eventType(),
-              event.getBucket(),
-              event.getContentType()
-            });
+            String.format(
+                "Malformed event data: Expected %s event from bucket %s of content type %s but received %s event from bucket %s of content type %s",
+                GoogleCloudEventHarness.GOOGLE_STORAGE_OBJECT_FINALIZE,
+                expectedBucket,
+                "application/gzip",
+                getContext().eventType(),
+                event.getBucket(),
+                event.getContentType()));
         return;
       }
     } catch (Exception e) {
