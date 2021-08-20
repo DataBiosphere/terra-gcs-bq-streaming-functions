@@ -22,13 +22,10 @@ public class MediaTypeUtilsTest extends BaseTest {
   public void mockTGZTest() {
     CompressorInputStream cis = null;
     ArchiveInputStream ais = null;
-    BufferedInputStream bis = null;
     try {
       cis = MediaTypeUtils.createCompressorInputStream(MOCK_TGZ);
-      bis = new BufferedInputStream(cis);
       ais = MediaTypeUtils.createArchiveInputStream(cis);
       ArchiveEntry archiveEntry;
-      logger.info("mockTGZTest:");
       int numberOfFilesProcessed = 0;
       while ((archiveEntry = ais.getNextEntry()) != null) {
         if (!archiveEntry.isDirectory()) {
@@ -52,7 +49,6 @@ public class MediaTypeUtilsTest extends BaseTest {
       bis = new BufferedInputStream(cis);
       ais = MediaTypeUtils.createArchiveInputStream(bis);
       ArchiveEntry archiveEntry;
-      logger.info("mockGZTest:");
       while ((archiveEntry = ais.getNextEntry()) != null) {
         if (!archiveEntry.isDirectory()) {
           verifyMockTGZArchiveEntry(archiveEntry.getName(), archiveEntry.getSize());
@@ -64,7 +60,6 @@ public class MediaTypeUtilsTest extends BaseTest {
     } finally {
       if (bis != null) {
         try {
-          logger.info("mockGZTest: Verifying filesize.");
           assertEquals(bis.readAllBytes().length, 1350);
         } catch (IOException e) {
           fail(e.getMessage());
