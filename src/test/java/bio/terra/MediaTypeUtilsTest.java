@@ -1,16 +1,15 @@
 package bio.terra;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 import bio.terra.cloudfunctions.utils.MediaTypeUtils;
 import bio.terra.common.BaseTest;
 import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.util.logging.Logger;
 import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.junit.Test;
@@ -20,11 +19,9 @@ public class MediaTypeUtilsTest extends BaseTest {
 
   @Test
   public void mockTGZTest() {
-    CompressorInputStream cis = null;
-    ArchiveInputStream ais = null;
     try {
-      cis = MediaTypeUtils.createCompressorInputStream(MOCK_TGZ);
-      ais = MediaTypeUtils.createArchiveInputStream(cis);
+      CompressorInputStream cis = MediaTypeUtils.createCompressorInputStream(MOCK_TGZ);
+      ArchiveInputStream ais = MediaTypeUtils.createArchiveInputStream(cis);
       ArchiveEntry archiveEntry;
       int numberOfFilesProcessed = 0;
       while ((archiveEntry = ais.getNextEntry()) != null) {
@@ -41,30 +38,19 @@ public class MediaTypeUtilsTest extends BaseTest {
 
   @Test
   public void mockGZTest() {
-    CompressorInputStream cis = null;
-    ArchiveInputStream ais = null;
-    BufferedInputStream bis = null;
     try {
-      cis = MediaTypeUtils.createCompressorInputStream(MOCK_GZ);
-      bis = new BufferedInputStream(cis);
-      ais = MediaTypeUtils.createArchiveInputStream(bis);
-      ArchiveEntry archiveEntry;
-      while ((archiveEntry = ais.getNextEntry()) != null) {
-        if (!archiveEntry.isDirectory()) {
-          verifyMockTGZArchiveEntry(archiveEntry.getName(), archiveEntry.getSize());
-        }
-      }
+      CompressorInputStream cis = MediaTypeUtils.createCompressorInputStream(MOCK_GZ);
+      final BufferedInputStream bis = new BufferedInputStream(cis);
+      // Expect createArchiveInputStream to throws ArchiveException because MOCK_GZ is a gz file,
+      // not tar gz.
+      assertThrows(
+          ArchiveException.class,
+          () -> {
+            ArchiveInputStream ais = MediaTypeUtils.createArchiveInputStream(bis);
+          });
+      assertEquals(bis.readAllBytes().length, 1350);
     } catch (Exception e) {
-      assertNull(ais);
-      assertNotNull(bis);
-    } finally {
-      if (bis != null) {
-        try {
-          assertEquals(bis.readAllBytes().length, 1350);
-        } catch (IOException e) {
-          fail(e.getMessage());
-        }
-      }
+      fail(e.getMessage());
     }
   }
 }
