@@ -7,11 +7,8 @@ import com.google.cloud.bigquery.JobInfo;
 import com.google.cloud.bigquery.TableDataWriteChannel;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.WriteChannelConfiguration;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 
 public class BigQueryUtils {
   /**
@@ -34,8 +31,9 @@ public class BigQueryUtils {
     TableDataWriteChannel channel = bigquery.writer(configuration);
 
     try {
-      JsonElement element = JsonParser.parseString(new String(data));
-      channel.write(ByteBuffer.wrap(element.toString().getBytes(StandardCharsets.UTF_8)));
+      // JsonElement element = JsonParser.parseString(new String(data));
+      // channel.write(ByteBuffer.wrap(element.toString().getBytes(StandardCharsets.UTF_8)));
+      channel.write(ByteBuffer.wrap(data));
     } finally {
       channel.close();
     }

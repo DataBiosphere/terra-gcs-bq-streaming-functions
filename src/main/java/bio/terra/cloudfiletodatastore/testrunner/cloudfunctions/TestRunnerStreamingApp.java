@@ -52,7 +52,8 @@ public class TestRunnerStreamingApp extends App {
                   archiveEntry.getName(),
                   archiveEntry.getSize(),
                   Files.getNameWithoutExtension(archiveEntry.getName())));
-          byte[] data = MediaTypeUtils.readEntry(archiveInputStream, archiveEntry.getSize());
+          // byte[] data = MediaTypeUtils.readEntry(archiveInputStream, archiveEntry.getSize());
+          byte[] data = archiveInputStream.readAllBytes();
           BigQueryUtils.streamToBQ(projectId, dataSet, table, data);
         } else {
           logger.log(
