@@ -51,6 +51,8 @@ jobs:
           dataset: simple_stream_dataset
 
       # This step will be replaced by deploying code from central dsp-artifact-registry
+      # See also https://github.com/google-github-actions/deploy-cloud-functions/issues/55
+      # (reason why we are not using google-github-actions/deploy-cloud-functions just yet)
       - name: Build and deploy the TestRunner backend function
         id: build-and-deploy
         uses: ./.github/actions/build-and-deploy-backend-function
