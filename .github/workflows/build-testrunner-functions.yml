@@ -56,7 +56,7 @@ jobs:
         with:
           func: gcs-bq-function
           module: testrunner
-          entry_point: bio.terra.cloudfiletodatastore.testrunner.cloudfunctions.TestRunnerBackgroundFunction
+          entry_point: bio.terra.cloudfiletodatastore.testrunner.cloudfunctions.TestRunnerStreamingFunction
           runtime_memory: 512MB
           bucket: ${{ env.GCLOUD_PROJECT }}-testrunner-results
           trigger: google.storage.object.finalize

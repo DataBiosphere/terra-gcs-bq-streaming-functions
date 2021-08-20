@@ -21,7 +21,7 @@ This repository has the following cloud functions
 
 | Java Class                                  | Cloud Function             | Application |
 |---------------------------------------------|----------------------------|-------------|
-| TestRunnerBackgroundFunction.java           | gcs-bq-function            | Test Runner |
+| TestRunnerStreamingFunction.java            | gcs-bq-function            | Test Runner |
 | ProtoFunc.java                              | generic-cloudevent-handler | For demo    |
 |                                             |                            | Delta Layer |
 
@@ -34,7 +34,7 @@ This repository has the following cloud functions
 ## Deploying to serverless platforms with GitHub Actions
 
 The name of the GitHub Actions workflows are
-* `build-testrunner-backend-function.yml` for Test Runner (GcsBQ).
+* `build-testrunner-functions.yml` for Test Runner (GcsBQ).
 * `build-proto-cf-handler.yml` for ProtoFunc.
 
 The Gradle task `shadowJar` builds the Uber JAR in the local default `build/libs` directory.

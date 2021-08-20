@@ -7,15 +7,16 @@ import bio.terra.cloudfunctions.utils.GcsUtils;
 import bio.terra.cloudfunctions.utils.MediaTypeUtils;
 import com.google.common.io.Files;
 import java.io.InputStream;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 
-public class TestRunnerApp extends App {
-  private static final Logger logger = Logger.getLogger(TestRunnerApp.class.getName());
+public class TestRunnerStreamingApp extends App {
+  private static final Logger logger = Logger.getLogger(TestRunnerStreamingApp.class.getName());
 
-  public TestRunnerApp(FileUploadedMessage fileUploadedMessage) {
+  public TestRunnerStreamingApp(FileUploadedMessage fileUploadedMessage) {
     super(fileUploadedMessage);
   }
 
@@ -44,7 +45,8 @@ public class TestRunnerApp extends App {
     while ((archiveEntry = archiveInputStream.getNextEntry()) != null) {
       if (!archiveEntry.isDirectory()) {
         if (Files.getNameWithoutExtension(archiveEntry.getName()).equals(table)) {
-          logger.info(
+          logger.log(
+              Level.INFO,
               String.format(
                   "Processing %s (%s bytes) for streaming to BQ table %s",
                   archiveEntry.getName(),
@@ -52,6 +54,12 @@ public class TestRunnerApp extends App {
                   Files.getNameWithoutExtension(archiveEntry.getName())));
           byte[] data = MediaTypeUtils.readEntry(archiveInputStream, archiveEntry.getSize());
           BigQueryUtils.streamToBQ(projectId, dataSet, table, data);
+        } else {
+          logger.log(
+              Level.WARNING,
+              String.format(
+                  "Processing skipped for project %s: bucket %s and resource name %s.",
+                  projectId, sourceBucket, resourceName));
         }
       }
     }

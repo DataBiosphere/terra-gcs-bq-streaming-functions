@@ -7,9 +7,9 @@ import com.google.events.cloud.storage.v1.StorageObjectData;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TestRunnerBackgroundFunction extends GoogleCloudEventHarness {
+public class TestRunnerStreamingFunction extends GoogleCloudEventHarness {
   private static final Logger logger =
-      Logger.getLogger(TestRunnerBackgroundFunction.class.getName());
+      Logger.getLogger(TestRunnerStreamingFunction.class.getName());
 
   @Override
   public void doAccept() {
@@ -23,7 +23,7 @@ public class TestRunnerBackgroundFunction extends GoogleCloudEventHarness {
         FileUploadedMessage fileUploadedMessage =
             new FileUploadedMessage(
                 event.getName(), event.getBucket(), event.getSize(), event.getTimeCreated());
-        TestRunnerApp app = new TestRunnerApp(fileUploadedMessage);
+        TestRunnerStreamingApp app = new TestRunnerStreamingApp(fileUploadedMessage);
         app.process();
       } else {
         logger.log(
