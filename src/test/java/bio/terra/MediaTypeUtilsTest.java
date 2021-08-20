@@ -36,7 +36,7 @@ public class MediaTypeUtilsTest extends BaseTest {
           verifyMockTGZArchiveEntry(archiveEntry.getName(), archiveEntry.getSize());
         }
       }
-      assertEquals(3, numberOfFilesProcessed);
+      assertEquals("unexpected number of archive entries processed", 3, numberOfFilesProcessed);
     } catch (Exception e) {
       fail(e.getMessage());
     }
