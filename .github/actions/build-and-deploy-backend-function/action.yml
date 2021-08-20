@@ -62,6 +62,6 @@ runs:
           --source=./build/libs \
           --env-vars-file=${{ inputs.envvars_yml }} \
           --trigger-event=${{ inputs.trigger }}  \
-          --trigger-resource=${{ env.GCLOUD_PROJECT }}-${{ inputs.bucket }}
+          --trigger-resource=${{ inputs.bucket }}
       shell: bash
 
