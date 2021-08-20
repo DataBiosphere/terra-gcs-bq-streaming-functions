@@ -1,5 +1,7 @@
 package bio.terra;
 
+import static org.junit.Assert.fail;
+
 import bio.terra.cloudfunctions.common.GsonWrapper;
 import bio.terra.common.BaseTest;
 import com.google.events.cloud.storage.v1.StorageObjectData;
@@ -16,7 +18,7 @@ public class GsonWrapperTest extends BaseTest {
           GsonWrapper.convertFromClass(MOCK_EVENT_GZIP, StorageObjectData.class);
       assertMockTGZStorageObjectData(data);
     } catch (Exception e) {
-      logger.severe(e.getMessage());
+      fail(e.getMessage());
     }
   }
 }
