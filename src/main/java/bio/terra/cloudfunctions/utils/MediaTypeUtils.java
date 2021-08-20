@@ -20,9 +20,7 @@ public class MediaTypeUtils {
   public static CompressorInputStream createCompressorInputStream(InputStream in)
       throws CompressorException {
     CompressorStreamFactory compressor = CompressorStreamFactory.getSingleton();
-    return in.markSupported()
-        ? compressor.createCompressorInputStream(in)
-        : compressor.createCompressorInputStream(new BufferedInputStream(in));
+    return compressor.createCompressorInputStream(markableStream(in));
   }
   /**
    * Create an archive input stream from an input stream, detect the archive type from the first few
@@ -34,8 +32,10 @@ public class MediaTypeUtils {
   public static ArchiveInputStream createArchiveInputStream(InputStream in)
       throws ArchiveException {
     ArchiveStreamFactory archiver = new ArchiveStreamFactory();
-    return in.markSupported()
-        ? archiver.createArchiveInputStream(in)
-        : archiver.createArchiveInputStream(new BufferedInputStream(in));
+    return archiver.createArchiveInputStream(markableStream(in));
+  }
+
+  private static InputStream markableStream(InputStream in) {
+    return in.markSupported() ? in : new BufferedInputStream(in);
   }
 }
