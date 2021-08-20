@@ -7,10 +7,17 @@ import com.google.cloud.bigquery.JobInfo;
 import com.google.cloud.bigquery.TableDataWriteChannel;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.WriteChannelConfiguration;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BigQueryUtils {
+  private static final Logger logger = Logger.getLogger(BigQueryUtils.class.getName());
   /**
    * Stream the data representing the BigQuery table rows.
    *
@@ -31,9 +38,11 @@ public class BigQueryUtils {
     TableDataWriteChannel channel = bigquery.writer(configuration);
 
     try {
-      // JsonElement element = JsonParser.parseString(new String(data));
-      // channel.write(ByteBuffer.wrap(element.toString().getBytes(StandardCharsets.UTF_8)));
-      channel.write(ByteBuffer.wrap(data));
+      // This step removes pretty formatting from the raw json data before streaming takes place.
+      JsonElement element = JsonParser.parseString(new String(data));
+      channel.write(ByteBuffer.wrap(element.toString().getBytes(StandardCharsets.UTF_8)));
+    } catch (JsonSyntaxException e) {
+      logger.log(Level.SEVERE, "Invalid Json data: " + new String(data));
     } finally {
       channel.close();
     }
