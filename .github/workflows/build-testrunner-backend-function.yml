@@ -58,6 +58,6 @@ jobs:
           module: testrunner
           entry_point: bio.terra.cloudfiletodatastore.testrunner.cloudfunctions.TestRunnerBackgroundFunction
           runtime_memory: 512MB
-          bucket: testrunner-results
+          bucket: ${{ env.GCLOUD_PROJECT }}-testrunner-results
           trigger: google.storage.object.finalize
           dataset: simple_stream_dataset
