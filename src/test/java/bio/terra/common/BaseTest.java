@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import bio.terra.cloudfunctions.common.GoogleCloudEventHarness;
-import bio.terra.cloudfunctions.common.GsonWrapper;
 import bio.terra.cloudfunctions.common.MediaTypeWrapper;
 import com.google.cloud.functions.Context;
 import com.google.events.cloud.storage.v1.StorageObjectData;
@@ -16,7 +15,6 @@ public class BaseTest {
   private static final Logger logger = Logger.getLogger(BaseTest.class.getName());
 
   protected static String MOCK_GCS_EVENT_GZIP;
-  protected static String MOCK_GCS_EVENT_JSON;
   protected static GCSCloudEventContext GCS_CLOUD_EVENT_CONTEXT;
   protected static UnSupportedCloudEventContext UNSUPPORTED_CLOUD_EVENT_CONTEXT;
   protected static MediaTypeWrapper APPLICATION_GZIP;
@@ -25,7 +23,6 @@ public class BaseTest {
   protected static InputStream MOCK_TGZ;
   protected static InputStream MOCK_GZ;
   protected static InputStream MOCK_JSON;
-  protected static byte[] MOCK_STORAGE_OBJECT_DATASTREAM;
 
   @Before
   public void setUp() {
@@ -36,24 +33,6 @@ public class BaseTest {
                   .getClassLoader()
                   .getResourceAsStream("testfiles/mock_gcs_event_gzip.json")
                   .readAllBytes());
-
-      MOCK_GCS_EVENT_JSON =
-          new String(
-              getClass()
-                  .getClassLoader()
-                  .getResourceAsStream("testfiles/mock_gcs_event_json.json")
-                  .readAllBytes());
-
-      // The file resources/testfiles/mock_gcs_storage_object_data_bytes.json is a byte[] array
-      // equivalent to the content of resources/testfiles/mock_gcs_event_gzip.json
-      MOCK_STORAGE_OBJECT_DATASTREAM =
-          GsonWrapper.convertFromClass(
-              new String(
-                  getClass()
-                      .getClassLoader()
-                      .getResourceAsStream("testfiles/mock_gcs_storage_object_data_bytes.json")
-                      .readAllBytes()),
-              byte[].class);
 
       GCS_CLOUD_EVENT_CONTEXT = new GCSCloudEventContext();
       UNSUPPORTED_CLOUD_EVENT_CONTEXT = new UnSupportedCloudEventContext();
