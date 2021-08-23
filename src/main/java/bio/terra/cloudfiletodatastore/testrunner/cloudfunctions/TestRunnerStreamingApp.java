@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 
@@ -35,36 +36,40 @@ public class TestRunnerStreamingApp extends App {
     // processed is a tar.gz
     CompressorInputStream compressedInputStream = MediaTypeUtils.createCompressorInputStream(in);
 
-    ArchiveInputStream archiveInputStream =
-        MediaTypeUtils.createArchiveInputStream(compressedInputStream);
+    try (ArchiveInputStream archiveInputStream =
+        MediaTypeUtils.createArchiveInputStream(compressedInputStream)) {
+      /*
+       * ArchiveInputStream is a special type of InputStream that emits an EOF when it gets to the end
+       * of a file in the archive. Once it’s done, call getNextEntry to reset the stream and start
+       * reading the next file. When getNextEntry returns null, you’re at the end of the archive.
+       */
+      ArchiveEntry archiveEntry;
+      while ((archiveEntry = archiveInputStream.getNextEntry()) != null) {
+        if (archiveEntry.isDirectory()) {
+          continue;
+        }
 
-    /*
-     * ArchiveInputStream is a special type of InputStream that emits an EOF when it gets to the end
-     * of a file in the archive. Once it’s done, call getNextEntry to reset the stream and start
-     * reading the next file. When getNextEntry returns null, you’re at the end of the archive.
-     */
-    ArchiveEntry archiveEntry;
-    while ((archiveEntry = archiveInputStream.getNextEntry()) != null) {
-      if (!archiveEntry.isDirectory()) {
-        if (Files.getNameWithoutExtension(archiveEntry.getName()).equals(table)) {
-          logger.log(
-              Level.INFO,
-              String.format(
-                  "Processing %s (%s bytes) for streaming to BQ table %s",
-                  archiveEntry.getName(),
-                  archiveEntry.getSize(),
-                  Files.getNameWithoutExtension(archiveEntry.getName())));
-
-          byte[] data = archiveInputStream.readAllBytes();
-          BigQueryUtils.streamToBQ(projectId, dataSet, table, data);
-        } else {
+        if (!Files.getNameWithoutExtension(archiveEntry.getName()).equals(table)) {
           logger.log(
               Level.WARNING,
               String.format(
                   "Processing skipped for project %s: bucket %s and resource name %s.",
                   projectId, sourceBucket, resourceName));
+          continue;
         }
+        logger.log(
+            Level.INFO,
+            String.format(
+                "Processing %s (%s bytes) for streaming to BQ table %s",
+                archiveEntry.getName(),
+                archiveEntry.getSize(),
+                Files.getNameWithoutExtension(archiveEntry.getName())));
+
+        byte[] data = archiveInputStream.readAllBytes();
+        BigQueryUtils.streamToBQ(projectId, dataSet, table, data);
       }
+    } catch (ArchiveException e) {
+      logger.log(Level.SEVERE, e.getMessage());
     }
   }
 }
