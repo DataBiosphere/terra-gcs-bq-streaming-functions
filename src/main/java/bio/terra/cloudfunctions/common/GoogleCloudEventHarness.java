@@ -37,7 +37,7 @@ public abstract class GoogleCloudEventHarness implements BackgroundFunction<Map<
     doAccept();
   }
 
-  private void validateCloudEvent() throws Exception {
+  private void validateCloudEvent() throws IllegalArgumentException {
     if (!isGoogleStorageObjectFinalize()) {
       logger.log(Level.SEVERE, "Cloud Event Type '" + context.eventType() + "' is not supported.");
       throw new IllegalArgumentException("Unexpected event type: " + context.eventType());
@@ -57,7 +57,7 @@ public abstract class GoogleCloudEventHarness implements BackgroundFunction<Map<
   /**
    * @param classOfT - generic type of Google Cloud Event pojo
    * @param <T> - Google Cloud Event pojo
-   * @return - an Google Cloud Event pojo of generic type T matching the provider's specification of
+   * @return - a Google Cloud Event pojo of generic type T matching the provider's specification of
    *     the event (e.g. Google Cloud StorageObjectData, MessagePublishedData event data etc.).
    *     Other providers have equivalent events such as AWS S3Event and Azure BlobTrigger. Different
    *     providers use slightly different naming and syntax for the event trigger (e.g. 'accept' for
