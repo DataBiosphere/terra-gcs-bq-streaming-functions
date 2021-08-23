@@ -35,16 +35,13 @@ public class BigQueryUtils {
             .setCreateDisposition(JobInfo.CreateDisposition.CREATE_NEVER)
             .build();
     BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
-    TableDataWriteChannel channel = bigquery.writer(configuration);
 
-    try {
+    try (TableDataWriteChannel channel = bigquery.writer(configuration)) {
       // This step removes pretty formatting from the raw json data before streaming takes place.
       JsonElement element = JsonParser.parseString(new String(data));
       channel.write(ByteBuffer.wrap(element.toString().getBytes(StandardCharsets.UTF_8)));
     } catch (JsonSyntaxException e) {
       logger.log(Level.SEVERE, "Invalid Json data: " + new String(data));
-    } finally {
-      channel.close();
     }
   }
 }
