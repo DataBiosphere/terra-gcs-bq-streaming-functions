@@ -1,6 +1,7 @@
 package bio.terra.cloudfunctions.common;
 
 import com.google.common.net.MediaType;
+import java.util.Objects;
 
 public class MediaTypeWrapper {
   // Workaround for Mime types not found in Guava MediaType
@@ -30,8 +31,7 @@ public class MediaTypeWrapper {
    * @return true/false
    */
   public boolean is(MediaType mediaTypeRange) {
-    assert (mediaTypeRange != null);
-    return mediaType.is(mediaTypeRange);
+    return mediaType.is(Objects.requireNonNull(mediaTypeRange));
   }
   /**
    * Check whether the MediaType represented by the wrapper object is equivalent to GZIP type.
