@@ -4,7 +4,8 @@ import com.google.common.net.MediaType;
 
 public class MediaTypeWrapper {
   // Workaround for Mime types not found in Guava MediaType
-  // See issue https://github.com/google/guava/issues/3946
+  // See issues https://github.com/google/guava/issues/3946
+  // and https://github.com/google/guava/issues/3414.
   private static final MediaType APPLICATION_GZIP = MediaType.create(MediaType.GZIP.type(), "gzip");
   private static final MediaType APPLICATION_JSON =
       MediaType.create(MediaType.JSON_UTF_8.type(), "json");
