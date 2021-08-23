@@ -22,7 +22,6 @@ public class BaseTest {
   protected static MediaTypeWrapper APPLICATION_JSON;
   protected static InputStream MOCK_TGZ;
   protected static InputStream MOCK_GZ;
-  protected static InputStream MOCK_JSON;
 
   @Before
   public void setUp() {
@@ -45,7 +44,6 @@ public class BaseTest {
               .getResourceAsStream("testfiles/mock_testrunner_results.tar.gz");
       MOCK_GZ =
           getClass().getClassLoader().getResourceAsStream("testfiles/SUMMARY_testRun.json.gz");
-      MOCK_JSON = getClass().getClassLoader().getResourceAsStream("testfiles/SUMMARY_testRun.json");
     } catch (Exception e) {
       logger.severe(e.getMessage());
     }
