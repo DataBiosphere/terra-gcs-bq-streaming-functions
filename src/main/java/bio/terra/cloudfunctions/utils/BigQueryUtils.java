@@ -34,7 +34,7 @@ public class BigQueryUtils {
             .setFormatOptions(FormatOptions.json())
             .setCreateDisposition(JobInfo.CreateDisposition.CREATE_NEVER)
             .build();
-    BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
+    BigQuery bigquery = BigQueryOptions.newBuilder().setProjectId(projectId).build().getService();
 
     try (TableDataWriteChannel channel = bigquery.writer(configuration)) {
       // This step removes pretty formatting from the raw json data before streaming takes place.
