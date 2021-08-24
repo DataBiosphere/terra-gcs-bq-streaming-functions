@@ -41,6 +41,13 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Load Environment Variables
+      id: load-envvars
+      run: |
+        cat src/main/resources/testrunner/${{ env.GCLOUD_PROJECT }}/envvars.yml | \
+            sed "s|:|=|g" >> $GITHUB_ENV
+      shell: bash
+
     - name: Build Cloud Function
       id: build-step
       run: |
@@ -50,18 +57,14 @@ runs:
     - name: Deploy Cloud Function
       id: deploy-step
       run: |
-        cat src/main/resources/${{ inputs.module }}/envvars.yml | \
-            sed "s|_GCLOUD_PROJECT_|${{ env.GCLOUD_PROJECT }}|g" | \
-            sed "s|_GOOGLE_BUCKET_|${{ inputs.bucket }}|g" | \
-            sed "s|_BQ_DATASET_|${{ inputs.dataset }}|g" > ${{ inputs.envvars_yml }}
-        more ${{ inputs.envvars_yml }}
         gcloud config set project ${{ env.GCLOUD_PROJECT }}
         gcloud functions deploy ${{ inputs.func }} \
+          --project=${{ env.GCLOUD_PROJECT }} --region=${{ inputs.region }} \
           --runtime=java11 --entry-point=${{ inputs.entry_point }} \
-          --memory=${{ inputs.runtime_memory }} --region=${{ inputs.region }} \
+          --memory=${{ inputs.runtime_memory }} \
           --source=./build/libs \
-          --env-vars-file=${{ inputs.envvars_yml }} \
+          --env-vars-file=./src/main/resources/${{ inputs.module }}/envvars.yml \
           --trigger-event=${{ inputs.trigger }}  \
-          --trigger-resource=${{ inputs.bucket }}
+          --trigger-resource=${{ env.GOOGLE_BUCKET }}
       shell: bash
 

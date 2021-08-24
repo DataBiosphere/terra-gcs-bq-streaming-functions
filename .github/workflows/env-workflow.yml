@@ -1,7 +1,8 @@
 name: Test envvars
 
 on:
-  push
+  push:
+    branches: [ main ]
 
 jobs:
   deploy-env:
