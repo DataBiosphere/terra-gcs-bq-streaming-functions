@@ -35,8 +35,9 @@ public class TestRunnerStreamingFunction extends GoogleCloudEventHarness {
       FileUploadedMessage fileUploadedMessage =
           new FileUploadedMessage(
               event.getName(), event.getBucket(), event.getSize(), event.getTimeCreated());
-      TestRunnerStreamingApp app = new TestRunnerStreamingApp(fileUploadedMessage);
-      app.process();
+      TestRunnerStreamingProcessor processor =
+          new TestRunnerStreamingProcessor(fileUploadedMessage);
+      processor.processMessage();
     } catch (Exception e) {
       logger.log(Level.SEVERE, "An unexpected error occurred.", e);
       throw new RuntimeException(e);

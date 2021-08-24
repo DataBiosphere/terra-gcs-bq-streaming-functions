@@ -60,11 +60,11 @@ For more information on `deltalayer`, please refer to
 package bio.terra.cloudfiletodatastore.proto;
 
 import bio.terra.cloudfiletodatastore.FileUploadedMessage;
-import bio.terra.cloudfunctions.common.App;
+import bio.terra.cloudfiletodatastore.MessageProcessor;;
 import java.util.logging.Logger;
 
 /** This class is a subclass of App with a custom implementation of the process() logic. */
-public class ProtoApp extends App {
+public class ProtoApp extends MessageProcessor {
   private static final Logger logger = Logger.getLogger(ProtoApp.class.getName());
 
   public ProtoApp(FileUploadedMessage fileUploadedMessage) {
@@ -73,9 +73,9 @@ public class ProtoApp extends App {
 
   // Business logic
   @Override
-  public void process() throws Exception {
-    String sourceBucket = fileUploadedMessage.getSourceBucket();
-    String resourceName = fileUploadedMessage.getResourceName();
+  public void processMessage() {
+    String sourceBucket = message.getSourceBucket();
+    String resourceName = message.getResourceName();
     String projectId = System.getenv("GCLOUD_PROJECT");
     String dataSet = System.getenv("BQ_DATASET");
     String table = System.getenv("BQ_TABLE");
