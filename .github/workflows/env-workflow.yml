@@ -1,0 +1,26 @@
+name: Test envvars
+
+on:
+  push
+
+jobs:
+  deploy-env:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup
+        id: setup-step
+        run: |
+          echo "BUCKET=testrunner-results" >> $GITHUB_ENV
+          echo "DATASET=testRun" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Use Env
+        id: use-step
+        run: |
+          more $GITHUB_ENV
+          echo ${{ env.BUCKKET }}
+        shell: bash
