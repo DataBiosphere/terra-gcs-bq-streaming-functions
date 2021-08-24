@@ -14,7 +14,8 @@ jobs:
       - name: Setup
         id: setup-step
         run: |
-          cat src/main/resources/testrunner/terra-kernel-k8s/envvars.yml >> $GITHUB_ENV
+          cat src/main/resources/testrunner/terra-kernel-k8s/envvars.yml | \
+              sed "s|:|=|g" >> $GITHUB_ENV
         shell: bash
 
       - name: Use Env
