@@ -23,6 +23,6 @@ jobs:
         run: |
           more $GITHUB_ENV
           echo "->${{ env.GOOGLE_BUCKET }}<-"
-          echo ${{ env.BQ_DATASET }}
-          echo ${{ env.BQ_TABLE }}
+          echo "->${{ env.BQ_DATASET }}<-"
+          echo "->${{ env.BQ_TABLE }}<-"
         shell: bash

@@ -46,7 +46,7 @@ runs:
       id: load-envvars
       run: |
         cat src/main/resources/${{ inputs.module }}/${{ env.GCLOUD_PROJECT }}/envvars.yml | \
-            sed "s|:|=|g" >> $GITHUB_ENV
+            sed "s|\s*:\s*|=|g" >> $GITHUB_ENV
       shell: bash
 
     - name: Build Cloud Function
