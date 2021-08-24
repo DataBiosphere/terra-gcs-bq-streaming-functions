@@ -14,13 +14,14 @@ jobs:
       - name: Setup
         id: setup-step
         run: |
-          echo "BUCKET=testrunner-results" >> $GITHUB_ENV
-          echo "DATASET=testRun" >> $GITHUB_ENV
+          cat src/main/resources/testrunner/terra-kernel-k8s/envvars.yml >> $GITHUB_ENV
         shell: bash
 
       - name: Use Env
         id: use-step
         run: |
           more $GITHUB_ENV
-          echo ${{ env.BUCKET }}
+          echo ${{ env.GOOGLE_BUCKET }}
+          echo ${{ env.BQ_DATASET }}
+          echo ${{ env.BQ_TABLE }}
         shell: bash
