@@ -41,10 +41,11 @@ inputs:
 runs:
   using: "composite"
   steps:
+    # This step loads envvars from a resource yml that belongs to the specific module and GCP
     - name: Load Environment Variables
       id: load-envvars
       run: |
-        cat src/main/resources/testrunner/${{ env.GCLOUD_PROJECT }}/envvars.yml | \
+        cat src/main/resources/${{ inputs.module }}/${{ env.GCLOUD_PROJECT }}/envvars.yml | \
             sed "s|:|=|g" >> $GITHUB_ENV
       shell: bash
 
@@ -63,7 +64,7 @@ runs:
           --runtime=java11 --entry-point=${{ inputs.entry_point }} \
           --memory=${{ inputs.runtime_memory }} \
           --source=./build/libs \
-          --env-vars-file=./src/main/resources/${{ inputs.module }}/envvars.yml \
+          --env-vars-file=./src/main/resources/${{ inputs.module }}/${{ env.GCLOUD_PROJECT }}/envvars.yml \
           --trigger-event=${{ inputs.trigger }}  \
           --trigger-resource=${{ env.GOOGLE_BUCKET }}
       shell: bash
