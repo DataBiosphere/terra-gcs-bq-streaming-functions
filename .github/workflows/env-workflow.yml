@@ -22,5 +22,5 @@ jobs:
         id: use-step
         run: |
           more $GITHUB_ENV
-          echo ${{ env.BUCKKET }}
+          echo ${{ env.BUCKET }}
         shell: bash
