@@ -21,7 +21,7 @@ inputs:
   bucket:
     description: 'Google Cloud Storage bucket name. Every change in files in this bucket will trigger function execution'
     required: false
-    default: 'testrunner-results'
+    default: 'terra-kernel-k8s-testrunner-results'
   trigger:
     description: 'Specifies which action should trigger the function'
     required: true
@@ -34,10 +34,7 @@ inputs:
     description: 'Name of the BigQuery dataset'
     required: false
     default: 'simple_stream_dataset'
-  envvars_yml:
-    description: 'Full path to a local YAML file with definitions for all environment variables'
-    required: false
-    default: '/tmp/_envvars_.yml'
+
 runs:
   using: "composite"
   steps:
