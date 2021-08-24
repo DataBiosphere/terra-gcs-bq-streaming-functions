@@ -23,9 +23,6 @@ public class CloudStorageEventHarnessTest extends BaseTest {
     GCSEventHarnessImpl instance = new GCSEventHarnessImpl();
     Map<?, ?> m = GsonWrapper.convertFromClass(MOCK_GCS_EVENT_GZIP, Map.class);
     assertThrows(
-        IllegalArgumentException.class,
-        () -> {
-          instance.accept(m, UNSUPPORTED_CLOUD_EVENT_CONTEXT);
-        });
+        IllegalArgumentException.class, () -> instance.accept(m, UNSUPPORTED_CLOUD_EVENT_CONTEXT));
   }
 }
