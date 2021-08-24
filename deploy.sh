@@ -61,9 +61,7 @@ docker run \
     "${GCLOUD_IMAGE}" \
     -c \
     "gcloud auth activate-service-account --key-file ${APP_PATH}/${SERVICE_ACCT_KEY_FILE} &&
-      echo ${DEPLOY_PROJECT_NAME} &&
       gcloud config set project ${DEPLOY_PROJECT_NAME} &&
-      gcloud auth list &&
       cd ${APP_PATH} &&
       gcloud functions deploy delta-layer-listener --trigger-bucket=terra-deltalayer-source-${SOURCE_ENV} \\
         --entry-point=bio.terra.cloudfiletodatastore.deltalayer.functions.DeltaLayerRawFunction \\
