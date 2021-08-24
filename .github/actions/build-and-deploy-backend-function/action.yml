@@ -20,7 +20,7 @@ inputs:
     default: '256MB'
   bucket:
     description: 'Google Cloud Storage bucket name. Every change in files in this bucket will trigger function execution'
-    required: true
+    required: false
     default: 'testrunner-results'
   trigger:
     description: 'Specifies which action should trigger the function'
@@ -32,7 +32,7 @@ inputs:
     default: 'us-central1'
   dataset:
     description: 'Name of the BigQuery dataset'
-    required: true
+    required: false
     default: 'simple_stream_dataset'
   envvars_yml:
     description: 'Full path to a local YAML file with definitions for all environment variables'
