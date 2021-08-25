@@ -34,12 +34,12 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
 
     loadEnvVars();
 
-    InputStream in = getStorageObjectDataAsInputStream(projectId, sourceBucket, resourceName);
-
     // The intermediate step is necessary for ArchiveInputStream to recognize that the file being
     // processed is a tar.gz
     try (ArchiveInputStream archiveInputStream =
-        MediaTypeUtils.createArchiveInputStream(MediaTypeUtils.createCompressorInputStream(in))) {
+        MediaTypeUtils.createArchiveInputStream(
+            MediaTypeUtils.createCompressorInputStream(
+                getStorageObjectDataAsInputStream(projectId, sourceBucket, resourceName)))) {
       /*
        * ArchiveInputStream is a special type of InputStream that emits an EOF when it gets to the end
        * of a file in the archive. Once it’s done, call getNextEntry to reset the stream and start
