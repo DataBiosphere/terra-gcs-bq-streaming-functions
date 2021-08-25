@@ -3,9 +3,6 @@ package bio.terra.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import bio.terra.cloudfiletodatastore.FileUploadedMessage;
-import bio.terra.cloudfiletodatastore.testrunner.cloudfunctions.TestRunnerStreamingFunction;
-import bio.terra.cloudfiletodatastore.testrunner.cloudfunctions.TestRunnerStreamingProcessor;
 import bio.terra.cloudfunctions.common.GoogleCloudEventHarness;
 import bio.terra.cloudfunctions.common.MediaTypeWrapper;
 import com.google.cloud.functions.Context;
@@ -145,52 +142,5 @@ public class BaseTest {
 
     @Override
     public void doAccept() {}
-  }
-
-  public static class MockTestRunnerStreamingProcessor extends TestRunnerStreamingProcessor {
-    private static final Logger logger =
-        Logger.getLogger(MockTestRunnerStreamingProcessor.class.getName());
-
-    public MockTestRunnerStreamingProcessor(FileUploadedMessage fileUploadedMessage) {
-      super(fileUploadedMessage);
-    }
-
-    @Override
-    public void loadEnvVars() {
-      projectId = CF_ENV.get("GCLOUD_PROJECT");
-      dataSet = CF_ENV.get("BQ_DATASET");
-      table = CF_ENV.get("BQ_TABLE");
-    }
-
-    @Override
-    public InputStream getStorageObjectDataAsInputStream(
-        String projectId, String sourceBucket, String resourceName) {
-      return MOCK_TGZ;
-    }
-
-    @Override
-    public void streamToBQ(String projectId, String dataset, String table, byte[] data) {
-      assertEquals("terra-kernel-k8s", projectId);
-      assertEquals("simple_data_set", dataset);
-      assertEquals("SUMMARY_testRun", table);
-      assertEquals(1350, data.length);
-    }
-  }
-
-  public static class MockTestRunnerStreamingFunction extends TestRunnerStreamingFunction {
-    private static final Logger logger =
-        Logger.getLogger(MockTestRunnerStreamingFunction.class.getName());
-
-    @Override
-    public void loadEnvVars() {
-      expectedBucket = CF_ENV.get("GOOGLE_BUCKET");
-    }
-
-    @Override
-    public void processMessage(FileUploadedMessage fileUploadedMessage) {
-      MockTestRunnerStreamingProcessor processor =
-          new MockTestRunnerStreamingProcessor(fileUploadedMessage);
-      processor.processMessage();
-    }
   }
 }
