@@ -6,8 +6,10 @@ import static org.junit.Assert.fail;
 import bio.terra.cloudfunctions.common.GoogleCloudEventHarness;
 import bio.terra.cloudfunctions.common.MediaTypeWrapper;
 import com.google.cloud.functions.Context;
+import com.google.common.collect.ImmutableMap;
 import com.google.events.cloud.storage.v1.StorageObjectData;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.logging.Logger;
 import org.junit.Before;
 
@@ -20,8 +22,9 @@ public class BaseTest {
   protected static MediaTypeWrapper APPLICATION_GZIP;
   protected static MediaTypeWrapper APPLICATION_X_GZIP;
   protected static MediaTypeWrapper APPLICATION_JSON;
-  protected static InputStream MOCK_TGZ;
+  public static InputStream MOCK_TGZ;
   protected static InputStream MOCK_GZ;
+  public static Map<String, String> CF_ENV;
 
   @Before
   public void setUp() {
@@ -44,6 +47,16 @@ public class BaseTest {
               .getResourceAsStream("testfiles/mock_testrunner_results.tar.gz");
       MOCK_GZ =
           getClass().getClassLoader().getResourceAsStream("testfiles/SUMMARY_testRun.json.gz");
+      CF_ENV =
+          ImmutableMap.of(
+              "GCLOUD_PROJECT",
+              "terra-kernel-k8s",
+              "GOOGLE_BUCKET",
+              "terra-kernel-k8s-testrunner-results",
+              "BQ_DATASET",
+              "simple_data_set",
+              "BQ_TABLE",
+              "SUMMARY_testRun");
     } catch (Exception e) {
       logger.severe(e.getMessage());
     }
