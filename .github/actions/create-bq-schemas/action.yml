@@ -22,12 +22,11 @@ runs:
       run: |
         for i in src/main/resources/${{ inputs.module }}/${{ inputs.schemas_dir }}/*.json; do
             [ -f "$i" ] || break
-            NOEXT=${i%.json}
-            TBL=${NOEXT##*/}
+            NOEXT=${i%.json} # trim .json extension from filepath $i and store results in $NOEXT
+            echo $NOEXT
+            TBL=${NOEXT##*/} # trim eveything before the last / leaving base filename without extension
+            echo $TBL
             bq show --schema ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL} || \
                 bq mk --table ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL} $i
-            json=${i##*/}
-            JSON=${i%.json}
-            TBL=${JSON##*/}
         done
       shell: bash
