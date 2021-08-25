@@ -1,6 +1,5 @@
-package bio.terra.cloudfiletodatastore.testrunner;
+package bio.terra.cloudfiletodatastore.testrunner.cloudfunctions;
 
-import bio.terra.cloudfiletodatastore.testrunner.cloudfunctions.MockTestRunnerStreamerFunction;
 import bio.terra.cloudfunctions.common.GsonWrapper;
 import bio.terra.common.BaseTest;
 import com.google.gson.internal.LinkedTreeMap;
@@ -12,6 +11,6 @@ public class TestRunnerStreamerFunctionTest extends BaseTest {
   public void processMessageTest() throws Exception {
     GCSCloudEventContext context = GCS_CLOUD_EVENT_CONTEXT;
     Map<?, ?> event = GsonWrapper.convertFromClass(MOCK_GCS_EVENT_GZIP, LinkedTreeMap.class);
-    new MockTestRunnerStreamerFunction().accept(event, context);
+    new BaseTest.MockTestRunnerStreamingFunction().accept(event, context);
   }
 }

@@ -19,6 +19,10 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
   private static final Logger logger =
       Logger.getLogger(TestRunnerStreamingProcessor.class.getName());
 
+  protected String projectId;
+  protected String dataSet;
+  protected String table;
+
   public TestRunnerStreamingProcessor(FileUploadedMessage fileUploadedMessage) {
     super(fileUploadedMessage);
   }
@@ -27,12 +31,10 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
   public void processMessage() {
     String sourceBucket = message.getSourceBucket();
     String resourceName = message.getResourceName();
-    String projectId = System.getenv("GCLOUD_PROJECT");
-    String dataSet = System.getenv("BQ_DATASET");
-    String table = System.getenv("BQ_TABLE");
 
-    InputStream in =
-        GcsUtils.getStorageObjectDataAsInputStream(projectId, sourceBucket, resourceName);
+    loadEnvVars();
+
+    InputStream in = getStorageObjectDataAsInputStream(projectId, sourceBucket, resourceName);
 
     // The intermediate step is necessary for ArchiveInputStream to recognize that the file being
     // processed is a tar.gz
@@ -66,10 +68,26 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
                 Files.getNameWithoutExtension(archiveEntry.getName())));
 
         byte[] data = archiveInputStream.readAllBytes();
-        BigQueryUtils.streamToBQ(projectId, dataSet, table, data);
+        streamToBQ(projectId, dataSet, table, data);
       }
     } catch (ArchiveException | IOException | CompressorException e) {
       logger.log(Level.SEVERE, e.getMessage());
     }
+  }
+
+  public void loadEnvVars() {
+    projectId = System.getenv("GCLOUD_PROJECT");
+    dataSet = System.getenv("BQ_DATASET");
+    table = System.getenv("BQ_TABLE");
+  }
+
+  public InputStream getStorageObjectDataAsInputStream(
+      String projectId, String sourceBucket, String resourceName) {
+    return GcsUtils.getStorageObjectDataAsInputStream(projectId, sourceBucket, resourceName);
+  }
+
+  public void streamToBQ(String projectId, String dataSet, String table, byte[] data)
+      throws IOException {
+    BigQueryUtils.streamToBQ(projectId, dataSet, table, data);
   }
 }

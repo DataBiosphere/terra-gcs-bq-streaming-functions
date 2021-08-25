@@ -11,10 +11,12 @@ public class TestRunnerStreamingFunction extends GoogleCloudEventHarness {
   private static final Logger logger =
       Logger.getLogger(TestRunnerStreamingFunction.class.getName());
 
+  protected String expectedBucket;
+
   @Override
   public void doAccept() {
     try {
-      String expectedBucket = System.getenv("GOOGLE_BUCKET");
+      loadEnvVars();
       StorageObjectData event = getEvent(StorageObjectData.class);
       MediaTypeWrapper mediaType = new MediaTypeWrapper(event.getContentType());
       if (!expectedBucket.equals(event.getBucket()) || !mediaType.isApplicationGzip()) {
@@ -33,12 +35,19 @@ public class TestRunnerStreamingFunction extends GoogleCloudEventHarness {
       FileUploadedMessage fileUploadedMessage =
           new FileUploadedMessage(
               event.getName(), event.getBucket(), event.getSize(), event.getTimeCreated());
-      TestRunnerStreamingProcessor processor =
-          new TestRunnerStreamingProcessor(fileUploadedMessage);
-      processor.processMessage();
+      processMessage(fileUploadedMessage);
     } catch (Exception e) {
       logger.log(Level.SEVERE, "An unexpected error occurred.", e);
       throw new RuntimeException(e);
     }
+  }
+
+  public void loadEnvVars() {
+    expectedBucket = System.getenv("GOOGLE_BUCKET");
+  }
+
+  public void processMessage(FileUploadedMessage fileUploadedMessage) {
+    TestRunnerStreamingProcessor processor = new TestRunnerStreamingProcessor(fileUploadedMessage);
+    processor.processMessage();
   }
 }
