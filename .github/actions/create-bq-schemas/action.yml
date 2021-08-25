@@ -26,7 +26,7 @@ runs:
             echo $NOEXT
             TBL=${NOEXT##*/} # trim eveything before the last / leaving base filename without extension
             echo $TBL
-            BASENAME=basename $i
+            BASENAME=$(basename "$i")
             echo $BASENAME
             bq show --schema ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL} || \
                 bq mk --table ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL} $i
