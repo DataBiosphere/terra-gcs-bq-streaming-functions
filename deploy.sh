@@ -7,25 +7,6 @@ GIT_BRANCH="$2"
 DEPLOY_ENV="$3"
 
 set +x
-
-if [[ -z "${DEPLOY_ENV}" ]]; then
-    echo "DEPLOY_ENV argument not supplied; inferring from GIT_BRANCH '${GIT_BRANCH}'."
-
-    #TODO
-    if [[ "${GIT_BRANCH}" == "main" ]]; then
-        DEPLOY_ENV="dev"
-    elif [[ "${GIT_BRANCH}" == "alpha" ]]; then
-        DEPLOY_ENV="alpha"
-    elif [[ "${GIT_BRANCH}" == "perf" ]]; then
-        DEPLOY_ENV="perf"
-    elif [[ "${GIT_BRANCH}" == "staging" ]]; then
-        DEPLOY_ENV="staging"
-    else
-        echo "Git branch '${GIT_BRANCH}' is not configured to automatically deploy to an environment"
-        exit 1
-    fi
-fi
-
 set -u
 
 APP_PATH=/app
