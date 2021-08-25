@@ -17,9 +17,7 @@ public class TestRunnerStreamingFunction extends GoogleCloudEventHarness {
       String expectedBucket = System.getenv("GOOGLE_BUCKET");
       StorageObjectData event = getEvent(StorageObjectData.class);
       MediaTypeWrapper mediaType = new MediaTypeWrapper(event.getContentType());
-      if (!isGoogleStorageObjectFinalize()
-          || !expectedBucket.equals(event.getBucket())
-          || !mediaType.isApplicationGzip()) {
+      if (!expectedBucket.equals(event.getBucket()) || !mediaType.isApplicationGzip()) {
         logger.log(
             Level.SEVERE,
             String.format(
