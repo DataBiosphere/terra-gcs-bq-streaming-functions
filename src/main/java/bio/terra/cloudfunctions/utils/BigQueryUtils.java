@@ -7,7 +7,6 @@ import com.google.cloud.bigquery.JobInfo;
 import com.google.cloud.bigquery.TableDataWriteChannel;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.WriteChannelConfiguration;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
@@ -28,6 +27,10 @@ public class BigQueryUtils {
    */
   public static void streamToBQ(String projectId, String dataset, String table, byte[] data)
       throws IOException {
+    // remove any formatting from the incoming byte array, which we expect to be json
+    byte[] compactData =
+        JsonParser.parseString(new String(data)).toString().getBytes(StandardCharsets.UTF_8);
+
     TableId tableId = TableId.of(projectId, dataset, table);
     WriteChannelConfiguration configuration =
         WriteChannelConfiguration.newBuilder(tableId)
@@ -37,9 +40,7 @@ public class BigQueryUtils {
     BigQuery bigquery = BigQueryOptions.newBuilder().setProjectId(projectId).build().getService();
 
     try (TableDataWriteChannel channel = bigquery.writer(configuration)) {
-      // This step removes pretty formatting from the raw json data before streaming takes place.
-      JsonElement element = JsonParser.parseString(new String(data));
-      channel.write(ByteBuffer.wrap(element.toString().getBytes(StandardCharsets.UTF_8)));
+      channel.write(ByteBuffer.wrap(compactData));
     } catch (JsonSyntaxException e) {
       logger.log(Level.SEVERE, "Invalid Json data: " + new String(data));
     }
