@@ -4,7 +4,9 @@
 name: Build and stage all cloud functions
 
 on:
-  push
+  push:
+    branches:
+      - main
 
 jobs:
   build-and-stage:
