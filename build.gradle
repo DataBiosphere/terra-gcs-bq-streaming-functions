@@ -80,6 +80,16 @@ dependencies {
     testImplementation "org.mockito:mockito-core:3.+"
 }
 
+// When deploying cloud functions from a remote bucket.
+// The cloud functions have to be packaged as a zip archive.
+tasks.register("buildCloudFunctionsArchive", Zip) {
+    archiveClassifier = shadowJar.archiveClassifier
+    destinationDirectory = jar.destinationDirectory
+    from(jar.destinationDirectory) {
+        include "*.jar"
+    }
+}
+
 // For more info, please refer to https://cloud.google.com/functions/docs/first-java#gradle_1
 // Register a "runFunction" task to run the function locally
 tasks.register("runFunction", JavaExec) {
@@ -106,6 +116,8 @@ spotless {
 // https://cloud.google.com/functions/docs/concepts/java-deploy#gradle
 shadowJar {
     mergeServiceFiles()
+    minimize()
 }
 
 compileJava.dependsOn spotlessApply
+buildCloudFunctionsArchive.dependsOn shadowJar
