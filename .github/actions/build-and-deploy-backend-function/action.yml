@@ -19,9 +19,9 @@ inputs:
     required: false
     default: '256MB'
   bucket:
-    description: 'NGoogle Cloud Storage bucket name. Every change in files in this bucket will trigger function execution'
-    required: true
-    default: 'testrunner-results'
+    description: 'Google Cloud Storage bucket name. Every change in files in this bucket will trigger function execution'
+    required: false
+    default: 'terra-kernel-k8s-testrunner-results'
   trigger:
     description: 'Specifies which action should trigger the function'
     required: true
@@ -32,15 +32,20 @@ inputs:
     default: 'us-central1'
   dataset:
     description: 'Name of the BigQuery dataset'
-    required: true
-    default: 'simple_stream_dataset'
-  envvars_yml:
-    description: 'Full path to a local YAML file with definitions for all environment variables'
     required: false
-    default: '/tmp/_envvars_.yml'
+    default: 'simple_stream_dataset'
+
 runs:
   using: "composite"
   steps:
+    # This step loads envvars from a resource yml that belongs to the specific module and GCP
+    - name: Load Environment Variables
+      id: load-envvars
+      run: |
+        cat src/main/resources/${{ inputs.module }}/${{ env.GCLOUD_PROJECT }}/envvars.yml | \
+            sed "s|\s*:\s*|=|g" >> $GITHUB_ENV
+      shell: bash
+
     - name: Build Cloud Function
       id: build-step
       run: |
@@ -50,16 +55,14 @@ runs:
     - name: Deploy Cloud Function
       id: deploy-step
       run: |
-        cat src/main/resources/${{ inputs.module }}/envvars.yml | \
-            sed "s|_GCLOUD_PROJECT_|${{ env.GCLOUD_PROJECT }}|g" | \
-            sed "s|_DATASET_|${{ inputs.dataset }}|g" > ${{ inputs.envvars_yml }}
-        more ${{ inputs.envvars_yml }}
         gcloud config set project ${{ env.GCLOUD_PROJECT }}
         gcloud functions deploy ${{ inputs.func }} \
+          --project=${{ env.GCLOUD_PROJECT }} --region=${{ inputs.region }} \
           --runtime=java11 --entry-point=${{ inputs.entry_point }} \
-          --memory=${{ inputs.runtime_memory }} --region=${{ inputs.region }} \
+          --memory=${{ inputs.runtime_memory }} \
           --source=./build/libs \
-          --env-vars-file=${{ inputs.envvars_yml }} \
+          --env-vars-file=./src/main/resources/${{ inputs.module }}/${{ env.GCLOUD_PROJECT }}/envvars.yml \
           --trigger-event=${{ inputs.trigger }}  \
-          --trigger-resource=${{ env.GCLOUD_PROJECT }}-${{ inputs.bucket }}
+          --trigger-resource=${{ env.GOOGLE_BUCKET }}
       shell: bash
+

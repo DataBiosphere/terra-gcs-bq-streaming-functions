@@ -1,0 +1,44 @@
+{
+  "id" : "57a09fc1-1a3e-4712-ad4d-129d7613c7c1",
+  "startTime" : 1615492955764,
+  "startUserJourneyTime" : 1615492964199,
+  "endUserJourneyTime" : 1615493055036,
+  "endTime" : 1615493055068,
+  "testScriptResultSummaries" : [ {
+    "testScriptDescription" : "ServiceStatus: 90",
+    "elapsedTimeStatistics" : {
+      "min" : 90000.792349,
+      "max" : 90000.792349,
+      "mean" : 90000.792349,
+      "standardDeviation" : 0.0,
+      "median" : 90000.792349,
+      "percentile95" : 90000.792349,
+      "percentile99" : 90000.792349,
+      "sum" : 90000.792349
+    },
+    "totalRun" : 1,
+    "numCompleted" : 1,
+    "numExceptionsThrown" : 1,
+    "isFailure" : true
+  }, {
+    "testScriptDescription" : "ServiceStatus: 90",
+    "elapsedTimeStatistics" : {
+      "min" : 90834.391428,
+      "max" : 90834.391428,
+      "mean" : 90834.391428,
+      "standardDeviation" : 0.0,
+      "median" : 90834.391428,
+      "percentile95" : 90834.391428,
+      "percentile99" : 90834.391428,
+      "sum" : 90834.391428
+    },
+    "totalRun" : 1,
+    "numCompleted" : 1,
+    "numExceptionsThrown" : 0,
+    "isFailure" : false
+  } ],
+  "startTimestamp" : "2021-03-11T20:02:35.0000764Z",
+  "startUserJourneyTimestamp" : "2021-03-11T20:02:44.0000199Z",
+  "endUserJourneyTimestamp" : "2021-03-11T20:04:15.0000036Z",
+  "endTimestamp" : "2021-03-11T20:04:15.0000068Z"
+}

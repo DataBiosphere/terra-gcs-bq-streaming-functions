@@ -1,11 +1,12 @@
 # This workflow will build a backend cloud function with Gradle
 # For more information see: https://github.com/google-github-actions/deploy-cloud-functions
 
-name: Build and deploy backend cloud function
+name: Build and deploy TestRunner cloud function
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build-and-deploy:
@@ -34,7 +35,7 @@ jobs:
 
       # Set up ADC for credentials
       # Ideally this step should be part of action.yml but
-      # GHA does not yet support action within action so we're stuck.
+      # GHA does not yet support action within action, so we're stuck.
       # Please refer to https://github.com/actions/runner/pull/612 for updates.
       - uses: google-github-actions/setup-gcloud@master
         with:
@@ -50,16 +51,15 @@ jobs:
           module: testrunner
           dataset: simple_stream_dataset
 
-      # Commented out as GcsBQ is removed.
       # This step will be replaced by deploying code from central dsp-artifact-registry
-      # - name: Build and deploy the backend function
-      #  id: build-and-deploy
-      #  uses: ./.github/actions/build-and-deploy-backend-function
-      #  with:
-      #    func: gcs-bq-function
-      #    module: testrunner
-      #    entry_point: bio.terra.cloudfunctions.streaming.GcsBQ
-      #    runtime_memory: 512MB
-      #    bucket: testrunner-results
-      #    trigger: google.storage.object.finalize
-      #    dataset: simple_stream_dataset
+      # See also https://github.com/google-github-actions/deploy-cloud-functions/issues/55
+      # (reason why we are not using google-github-actions/deploy-cloud-functions just yet)
+      - name: Build and deploy the TestRunner backend function
+        id: build-and-deploy
+        uses: ./.github/actions/build-and-deploy-backend-function
+        with:
+          func: gcs-bq-function
+          module: testrunner
+          entry_point: bio.terra.cloudfiletodatastore.testrunner.cloudfunctions.TestRunnerStreamingFunction
+          runtime_memory: 512MB
+          trigger: google.storage.object.finalize

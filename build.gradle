@@ -28,12 +28,37 @@ dependencies {
         googleFunctionsInvoker = '1.0.2'
         googleBigQuery = '1.131.1'
         googleStorage = '1.115.0'
+        apacheCompress = "1.20"
         gson = "2.8.7"
+        googleBigQuery = '1.131.1'
+        slf4j = '1.7.30'
+        apacheLang3 = "3.12.0"
+        gson = "2.8.7"
+        guava = "30.1.1-jre"
     }
+
+    implementation group: 'org.openjdk.jol', name: 'jol-core', version: '0.16'
 
     // Gson for Java serialization/deserialization
     implementation group: 'com.google.code.gson', name: 'gson', version: "${gson}"
 
+    // This lets you make logging calls to SLF4J’s org.slf4j.Logger in the code.
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4j}"
+    // According to https://cloud.google.com/functions/docs/concepts/java-logging,
+    // SLF4J can write logs to the Java Logging API by using the slf4j-jdk14 logging framework binding.
+    // See the SLF4J documentation (http://www.slf4j.org/docs.html) for details.
+    // Make sure you do not have the jul-to-slf4j bridge.
+    implementation group: 'org.slf4j', name: 'slf4j-jdk14', version: "${slf4j}"
+
+    // Apache Commons Lang3
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: "${apacheLang3}"
+
+    // To decompress .gz, .tar.gz
+    implementation group: 'org.apache.commons', name: 'commons-compress', version: "${apacheCompress}"
+
+    // Google Core Libraries For Java
+    implementation group: 'com.google.guava', name: 'guava', version: "${guava}"
+    
     // Every function needs this dependency to get the Functions Framework API.
     implementation group: 'com.google.cloud.functions', name: 'functions-framework-api', version: "${googleFunctions}"
 
@@ -53,6 +78,21 @@ dependencies {
     // These dependencies are only used by the tests.
     testImplementation group: 'junit', name: 'junit', version: '4.12'
     testImplementation "org.mockito:mockito-core:3.+"
+}
+
+// For more info, please refer to https://cloud.google.com/functions/docs/first-java#gradle_1
+// Register a "runFunction" task to run the function locally
+tasks.register("runFunction", JavaExec) {
+    mainClass = 'com.google.cloud.functions.invoker.runner.Invoker'
+    classpath(configurations.invoker)
+    inputs.files(configurations.runtimeClasspath, sourceSets.main.output)
+    args(
+            '--target', project.findProperty('run.functionTarget') ?: '',
+            '--port', project.findProperty('run.port') ?: 8080
+    )
+    doFirst {
+        args('--classpath', files(configurations.runtimeClasspath, sourceSets.main.output).asPath)
+    }
 }
 
 spotless {
