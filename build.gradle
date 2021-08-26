@@ -83,6 +83,8 @@ dependencies {
 // When using the gcloud functions deploy --source option to specify the location of the cloud functions source code
 // and when the location is in Google Cloud Storage, the cloud functions must be packaged as a zip archive.
 // Please refer to https://cloud.google.com/sdk/gcloud/reference/functions/deploy#--source for more details.
+// In addition, if we use Terraform to deploy cloud functions, the only option is to stage the cloud functions in a bucket
+// as documented in https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloudfunctions_function#source_archive_bucket
 tasks.register("buildCloudFunctionsArchive", Zip) {
     archiveClassifier = shadowJar.archiveClassifier
     destinationDirectory = jar.destinationDirectory
