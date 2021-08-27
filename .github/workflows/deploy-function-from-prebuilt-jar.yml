@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Set up ADC for credentials
+      # Set up ADC for accessing GCS bucket cloudfunctions-dsp-artifact-registry
       - uses: google-github-actions/setup-gcloud@master
         with:
           service_account_email: ${{ secrets.DSP_CF_STAGE_SA_EMAIL }}
@@ -22,16 +22,36 @@ jobs:
           export_default_credentials: true
 
       # Pull the Prebuilt Jars
-      - name: Stage Cloud Functions Archive in project dsp-artifact-registry under bucket cloudfunctions-dsp-artifact-registry
-        id: stage-cloud-functions-archive-step
+      - name: Download the prebuilt Jars from GCP dsp-artifact-registry under bucket cloudfunctions-dsp-artifact-registry
+        id: download-prebuilt-jars-step
         run: |
           # Make a random directory under /tmp to store the Jars
           LIBS=$RANDOM
           mkdir -p /tmp/$LIBS
           rm -fr /tmp/$LIBS/*
-          ls -l /tmp/$LIBS | wc -l
           cd /tmp/$LIBS/
           gsutil cp gs://cloudfunctions-dsp-artifact-registry/terra-gcs-bq-streaming-functions-0.0.1-SNAPSHOT-all.zip .
           unzip /tmp/$LIBS/terra-gcs-bq-streaming-functions-0.0.1-SNAPSHOT-all.zip
           rm *.zip
-          ls -l
+          echo ::set-output name=jars-folder::/tmp/$LIBS/
+
+      # Set up ADC for deploying cloud functions
+      - uses: google-github-actions/setup-gcloud@master
+        with:
+          service_account_email: ${{ secrets.DEPLOY_CF_SA_EMAIL }}
+          service_account_key: ${{ secrets.DEPLOY_CF_SA_KEY_JSON }}
+          export_default_credentials: true
+
+      # This step will be replaced by deploying code from central dsp-artifact-registry
+      # See also https://github.com/google-github-actions/deploy-cloud-functions/issues/55
+      # (reason why we are not using google-github-actions/deploy-cloud-functions just yet)
+      - name: Build and deploy the TestRunner backend function
+        id: build-and-deploy
+        uses: ./.github/actions/build-and-deploy-backend-function
+        with:
+          func: gcs-bq-function
+          module: testrunner
+          entry_point: bio.terra.cloudfiletodatastore.testrunner.cloudfunctions.TestRunnerStreamingFunction
+          runtime_memory: 512MB
+          trigger: google.storage.object.finalize
+          source: ${{ steps.download-prebuilt-jars-step.outputs.jars-folder }}

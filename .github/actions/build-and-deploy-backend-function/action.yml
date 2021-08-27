@@ -34,6 +34,10 @@ inputs:
     description: 'Name of the BigQuery dataset'
     required: false
     default: 'simple_stream_dataset'
+  source:
+    description: 'local directory of cloud function source'
+    required: false
+    default: './build/libs'
 
 runs:
   using: "composite"
@@ -60,7 +64,7 @@ runs:
           --project=${{ env.GCLOUD_PROJECT }} --region=${{ inputs.region }} \
           --runtime=java11 --entry-point=${{ inputs.entry_point }} \
           --memory=${{ inputs.runtime_memory }} \
-          --source=./build/libs \
+          --source=${{ inputs.source }} \
           --env-vars-file=./src/main/resources/${{ inputs.module }}/${{ env.GCLOUD_PROJECT }}/envvars.yml \
           --trigger-event=${{ inputs.trigger }}  \
           --trigger-resource=${{ env.GOOGLE_BUCKET }}
