@@ -30,6 +30,8 @@ jobs:
           mkdir -p /tmp/$LIBS
           rm -fr /tmp/$LIBS/*
           ls -l /tmp/$LIBS | wc -l
-          gsutil cp gs://cloudfunctions-dsp-artifact-registry/terra-gcs-bq-streaming-functions-0.0.1-SNAPSHOT-all.zip /tmp/$LIBS
+          cd /tmp/$LIBS/
+          gsutil cp gs://cloudfunctions-dsp-artifact-registry/terra-gcs-bq-streaming-functions-0.0.1-SNAPSHOT-all.zip .
           unzip /tmp/$LIBS/terra-gcs-bq-streaming-functions-0.0.1-SNAPSHOT-all.zip
-          ls -l /tmp/$LIBS
+          rm *.zip
+          ls -l
