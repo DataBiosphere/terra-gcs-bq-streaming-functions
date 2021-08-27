@@ -4,7 +4,9 @@
 name: Deploy Cloud Functions from prebuilt jars
 
 on:
-  push
+  push:
+    branches:
+      - main
 
 jobs:
   deploy-from-prebuilt-jars:
@@ -15,13 +17,14 @@ jobs:
       - uses: actions/checkout@v2
 
       # Set up ADC for accessing GCS bucket cloudfunctions-dsp-artifact-registry
+      # The vault path for this secret is secret/dsde/terra/cloudfunctions/cloudfunctions-publisher-sa
       - uses: google-github-actions/setup-gcloud@master
         with:
           service_account_email: ${{ secrets.DSP_CF_STAGE_SA_EMAIL }}
           service_account_key: ${{ secrets.DSP_CF_STAGE_SA_KEY }}
           export_default_credentials: true
 
-      # Pull the Prebuilt Jars
+      # Pull the Prebuilt Zip that contains the Jar files and store it in a random folder under /tmp
       - name: Download the prebuilt Jars from GCP dsp-artifact-registry under bucket cloudfunctions-dsp-artifact-registry
         id: download-prebuilt-jars-step
         run: |
@@ -42,9 +45,7 @@ jobs:
           service_account_key: ${{ secrets.DEPLOY_CF_SA_KEY_JSON }}
           export_default_credentials: true
 
-      # This step will be replaced by deploying code from central dsp-artifact-registry
-      # See also https://github.com/google-github-actions/deploy-cloud-functions/issues/55
-      # (reason why we are not using google-github-actions/deploy-cloud-functions just yet)
+      # Deploy cloud function from the prebuilt Jar from download-prebuilt-jars-step
       - name: Build and deploy the TestRunner backend function
         id: build-and-deploy
         uses: ./.github/actions/build-and-deploy-backend-function

@@ -41,6 +41,7 @@ jobs:
           export_default_credentials: true
 
       # Build the Cloud Function Archive and create a Zip archive
+      # Using Zip gives us about 10% savings in size
       - name: Build Cloud Functions Archive
         id: build-cloud-functions-archive-step
         run: |
