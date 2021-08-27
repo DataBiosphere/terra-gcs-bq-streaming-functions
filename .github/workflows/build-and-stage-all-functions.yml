@@ -4,7 +4,9 @@
 name: Build and stage all cloud functions
 
 on:
-  push
+  push:
+    branches:
+      - main
 
 jobs:
   build-and-stage:
@@ -32,9 +34,6 @@ jobs:
         run: chmod +x gradlew
 
       # Set up ADC for credentials
-      # Ideally this step should be part of action.yml but
-      # GHA does not yet support action within action so we're stuck.
-      # Please refer to https://github.com/actions/runner/pull/612 for updates.
       - uses: google-github-actions/setup-gcloud@master
         with:
           service_account_email: ${{ secrets.DSP_CF_STAGE_SA_EMAIL }}
@@ -45,10 +44,10 @@ jobs:
       - name: Build Cloud Functions Archive
         id: build-cloud-functions-archive-step
         run: |
-            ./gradlew shadowJar
+            ./gradlew buildCloudFunctionsArchive
 
       # Stage the Cloud Function Archive in
       - name: Stage Cloud Functions Archive in project dsp-artifact-registry under bucket cloudfunctions-dsp-artifact-registry
         id: stage-cloud-functions-archive-step
         run: |
-          gsutil cp build/libs/*.jar gs://cloudfunctions-dsp-artifact-registry
+          gsutil cp build/libs/*.zip gs://cloudfunctions-dsp-artifact-registry
