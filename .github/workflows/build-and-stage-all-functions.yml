@@ -4,9 +4,7 @@
 name: Build and stage all cloud functions
 
 on:
-  push:
-    branches:
-      - main
+  push
 
 jobs:
   build-and-stage:
@@ -47,10 +45,10 @@ jobs:
       - name: Build Cloud Functions Archive
         id: build-cloud-functions-archive-step
         run: |
-            ./gradlew buildCloudFunctionsArchive
+            ./gradlew shadowJar
 
       # Stage the Cloud Function Archive in
       - name: Stage Cloud Functions Archive in project dsp-artifact-registry under bucket cloudfunctions-dsp-artifact-registry
         id: stage-cloud-functions-archive-step
         run: |
-          gsutil cp build/libs/*.zip gs://cloudfunctions-dsp-artifact-registry
+          gsutil cp build/libs/*.jar gs://cloudfunctions-dsp-artifact-registry
