@@ -50,12 +50,6 @@ runs:
             sed "s|\s*:\s*|=|g" >> $GITHUB_ENV
       shell: bash
 
-    - name: Build Cloud Function
-      id: build-step
-      run: |
-        ./gradlew shadowJar
-      shell: bash
-
     - name: Deploy Cloud Function
       id: deploy-step
       run: |
