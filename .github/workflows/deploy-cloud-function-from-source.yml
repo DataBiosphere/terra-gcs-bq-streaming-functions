@@ -18,12 +18,12 @@ jobs:
       # The vault path for this secret is secret/dsde/terra/cloudfunctions/cloudfunctions-publisher-sa
       - uses: google-github-actions/setup-gcloud@master
         with:
-          service_account_email: ${{ secrets.DSP_CF_STAGE_SA_EMAIL }}
-          service_account_key: ${{ secrets.DSP_CF_STAGE_SA_KEY }}
+          service_account_email: ${{ secrets.DEPLOY_CF_SA_EMAIL }}
+          service_account_key: ${{ secrets.DEPLOY_CF_SA_EMAIL }}
           export_default_credentials: true
 
       # Deploy cloud function from the prebuilt Jar from download-prebuilt-jars-step
-      - name: Ddeploy the TestRunner backend function
+      - name: Deploy the TestRunner backend function
         id: deploy-testrunner
         uses: ./.github/actions/build-and-deploy-backend-function
         with:
