@@ -58,15 +58,25 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # Set up ADC for cloud function deployment
-    - uses: google-github-actions/setup-gcloud@master
+    # Configure ADC for cloud function deployment
+    - id: auth
+      uses: google-github-actions/setup-gcloud@master
       with:
         service_account_email: ${{ inputs.deployer_sa_email }}
         service_account_key: ${{ inputs.deployer_sa_key }}
         export_default_credentials: true
 
-    - name: Echo Env
-      id: echo-envvars
-      run: |
-        echo ${{ env.GCLOUD_PROJECT }}
-      shell: bash
+   - id: deploy
+     uses: google-github-actions/deploy-cloud-functions@main
+     with:
+       name: ${{ inputs.func }}
+       runtime: java11
+       entry_point: ${{ inputs.entry_point }}
+       memory_mb: ${{ inputs.runtime_memory }}
+       region: ${{ inputs.region }}
+       env_vars_file: ./src/main/resources/${{ inputs.module }}/${{ env.GCLOUD_PROJECT }}/envvars.yml
+       source_dir: ${{ inputs.source }}
+       project_id: ${{ env.GCLOUD_PROJECT }}
+       service_account_email: ${{ inputs.func_sa_email }}
+       event_trigger_type: ${{ inputs.trigger }}
+       event_trigger_resource: ${{ inputs.bucket }}
