@@ -58,10 +58,15 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # Set up ADC for accessing GCS bucket cloudfunctions-dsp-artifact-registry
-    # The vault path for this secret is secret/dsde/terra/cloudfunctions/cloudfunctions-publisher-sa
+    # Set up ADC for cloud function deployment
     - uses: google-github-actions/setup-gcloud@master
       with:
         service_account_email: ${{ inputs.deployer_sa_email }}
         service_account_key: ${{ inputs.deployer_sa_key }}
         export_default_credentials: true
+
+    - name: Echo Env
+      id: echo-envvars
+      run: |
+        echo ${{ env.GCP_PROJECT }}
+      shell: bash
