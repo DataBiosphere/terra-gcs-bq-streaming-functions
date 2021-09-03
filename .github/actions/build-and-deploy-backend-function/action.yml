@@ -77,4 +77,4 @@ runs:
           --env-vars-file=./src/main/resources/${{ inputs.module }}/${{ env.GCLOUD_PROJECT }}/envvars.yml \
           --trigger-bucket=${{ inputs.bucket }} \
           --service-account=${{ inputs.func_sa_key }}
-   shell: bash
+      shell: bash
