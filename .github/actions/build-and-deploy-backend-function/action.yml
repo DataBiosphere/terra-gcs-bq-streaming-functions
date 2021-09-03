@@ -68,5 +68,5 @@ runs:
     - name: Echo Env
       id: echo-envvars
       run: |
-        echo ${{ env.GCP_PROJECT }}
+        echo ${{ env.GCLOUD_PROJECT }}
       shell: bash
