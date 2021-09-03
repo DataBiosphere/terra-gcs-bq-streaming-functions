@@ -14,22 +14,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Set up ADC for accessing GCS bucket cloudfunctions-dsp-artifact-registry
-      # The vault path for this secret is secret/dsde/terra/cloudfunctions/cloudfunctions-publisher-sa
-      - uses: google-github-actions/setup-gcloud@master
-        with:
-          service_account_email: ${{ secrets.DEPLOY_CF_SA_EMAIL }}
-          service_account_key: ${{ secrets.DEPLOY_CF_SA_KEY_JSON }}
-          export_default_credentials: true
-
       # Deploy cloud function from the prebuilt Jar from download-prebuilt-jars-step
-      - name: Deploy the TestRunner backend function
+      - name: Deploy the TestRunner streamer function
         id: deploy-testrunner
         uses: ./.github/actions/build-and-deploy-backend-function
         with:
+          deployer_sa_email: ${{ secrets.DEPLOY_CF_SA_EMAIL }}
+          deployer_sa_key: ${{ secrets.DEPLOY_CF_SA_KEY_JSON }}
+          func_sa_email: ${{ secrets.DEPLOY_CF_SA_EMAIL }}
           func: gcs-bq-function
           module: testrunner
           entry_point: bio.terra.cloudfiletodatastore.testrunner.cloudfunctions.TestRunnerStreamingFunction
           runtime_memory: 512MB
           trigger: google.storage.object.finalize
-          source: .
+          project: terra-kernel-k8s
+          bucket: terra-kernel-k8s-testrunner-results

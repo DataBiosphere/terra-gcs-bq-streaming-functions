@@ -2,6 +2,18 @@ name: 'build-and-deploy-backend-function'
 description: 'Build and deploy a backend function to Java 11 runtime'
 author: ''
 inputs:
+  deployer_sa_email:
+    description: 'The email address of the IAM service account used for deploying the cloud function'
+    required: true
+    default: ''
+  deployer_sa_key:
+    description: 'The IAM service account key used for deploying the cloud function'
+    required: true
+    default: ''
+  func_sa_email:
+    description: 'The email address of the IAM service account associated with the function at runtime'
+    required: true
+    default: ''
   func:
     description: 'The fully specified name of the cloud function'
     required: true
@@ -20,12 +32,16 @@ inputs:
     default: '256MB'
   bucket:
     description: 'Google Cloud Storage bucket name. Every change in files in this bucket will trigger function execution'
-    required: false
-    default: 'terra-kernel-k8s-testrunner-results'
+    required: required
+    default: ''
   trigger:
     description: 'Specifies which action should trigger the function'
-    required: true
+    required: false
     default: 'google.storage.object.finalize'
+  project:
+    description: 'GCP Project'
+    required: true
+    default: ''
   region:
     description: 'The Cloud region for the function. Overrides the default functions/region property value for this command invocation'
     required: false
@@ -37,30 +53,15 @@ inputs:
   source:
     description: 'local directory of cloud function source'
     required: false
-    default: './build/libs'
+    default: '.'
 
 runs:
   using: "composite"
   steps:
-    # This step loads envvars from a resource yml that belongs to the specific module and GCP
-    - name: Load Environment Variables
-      id: load-envvars
-      run: |
-        cat src/main/resources/${{ inputs.module }}/${{ env.GCLOUD_PROJECT }}/envvars.yml | \
-            sed "s|\s*:\s*|=|g" >> $GITHUB_ENV
-      shell: bash
-
-    - name: Deploy Cloud Function
-      id: deploy-step
-      run: |
-        gcloud config set project ${{ env.GCLOUD_PROJECT }}
-        gcloud functions deploy ${{ inputs.func }} \
-          --project=${{ env.GCLOUD_PROJECT }} --region=${{ inputs.region }} \
-          --runtime=java11 --entry-point=${{ inputs.entry_point }} \
-          --memory=${{ inputs.runtime_memory }} \
-          --source=${{ inputs.source }} \
-          --env-vars-file=./src/main/resources/${{ inputs.module }}/${{ env.GCLOUD_PROJECT }}/envvars.yml \
-          --trigger-event=${{ inputs.trigger }}  \
-          --trigger-resource=${{ env.GOOGLE_BUCKET }}
-      shell: bash
-
+    # Set up ADC for accessing GCS bucket cloudfunctions-dsp-artifact-registry
+    # The vault path for this secret is secret/dsde/terra/cloudfunctions/cloudfunctions-publisher-sa
+    - uses: google-github-actions/setup-gcloud@master
+      with:
+        service_account_email: ${{ inputs.deployer_sa_email }}
+        service_account_key: ${{ inputs.deployer_sa_key }}
+        export_default_credentials: true
