@@ -4,7 +4,9 @@
 name: Deploy Cloud Functions from source
 
 on:
-  push
+  push:
+    branches:
+      - main
 
 jobs:
   deploy-from-source:
