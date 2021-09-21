@@ -54,6 +54,10 @@ inputs:
     description: 'local directory of cloud function source'
     required: false
     default: '.'
+  has_envvars:
+    description: 'Whether to include path to a local YAML file with definitions for all environment variables. All existing environment variables will be removed before the new environment variables are added.'
+    required: false
+    default: false
 
 runs:
   using: "composite"
@@ -65,8 +69,9 @@ runs:
         service_account_key: ${{ inputs.deployer_sa_key }}
         export_default_credentials: true
 
-    - name: Deploy Cloud Function
-      id: deploy-step
+    - name: Deploy Cloud Function with envvars
+      id: deploy-step-with-envars
+      if: ${{ inputs.has_envvars }}
       run: |
         gcloud config set project ${{ env.GCLOUD_PROJECT }}
         gcloud functions deploy ${{ inputs.func }} \
