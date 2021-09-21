@@ -71,15 +71,16 @@ runs:
 
     - name: Deploy Cloud Function with envvars
       id: deploy-step-with-envars
-      if: ${{ inputs.has_envvars }}
       run: |
         gcloud config set project ${{ env.GCLOUD_PROJECT }}
-        gcloud functions deploy ${{ inputs.func }} \
-          --project=${{ env.GCLOUD_PROJECT }} --region=${{ inputs.region }} \
-          --runtime=java11 --entry-point=${{ inputs.entry_point }} \
-          --memory=${{ inputs.runtime_memory }} \
-          --source=${{ inputs.source }} \
-          --env-vars-file=./src/main/resources/${{ inputs.module }}/${{ env.GCLOUD_PROJECT }}/envvars.yml \
-          --trigger-bucket=${{ inputs.bucket }} \
-          --service-account=${{ inputs.func_sa_key }}
+        if [ ${{ inputs.has_envvars }} = true ] ; then
+          gcloud functions deploy ${{ inputs.func }} \
+            --project=${{ env.GCLOUD_PROJECT }} --region=${{ inputs.region }} \
+            --runtime=java11 --entry-point=${{ inputs.entry_point }} \
+            --memory=${{ inputs.runtime_memory }} \
+            --source=${{ inputs.source }} \
+            --env-vars-file=./src/main/resources/${{ inputs.module }}/${{ env.GCLOUD_PROJECT }}/envvars.yml \
+            --trigger-bucket=${{ inputs.bucket }} \
+            --service-account=${{ inputs.func_sa_key }}
+        fi
       shell: bash
