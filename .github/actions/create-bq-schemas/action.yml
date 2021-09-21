@@ -2,11 +2,11 @@ name: 'create-bq-schemas'
 description: 'Create BigQuery Schemas'
 author: ''
 inputs:
-  bigquery_admin_email:
+  bigquery_admin_sa_email:
     description: 'The email address of the IAM service account used for creating the BigQuery dataset'
     required: true
     default: ''
-  bigquery_admin_key:
+  bigquery_admin_sa_key:
     description: 'The IAM service account key used for creating the BigQuery dataset'
     required: true
     default: ''
@@ -29,8 +29,8 @@ runs:
     # Configure ADC for cloud function deployment
     - uses: google-github-actions/setup-gcloud@master
       with:
-        service_account_email: ${{ inputs.bigquery_admin_email }}
-        service_account_key: ${{ inputs.bigquery_admin_key }}
+        service_account_email: ${{ inputs.bigquery_admin_sa_email }}
+        service_account_key: ${{ inputs.bigquery_admin_sa_key }}
         export_default_credentials: true
 
     - name: Create BigQuery schemas
