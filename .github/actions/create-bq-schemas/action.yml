@@ -36,6 +36,7 @@ runs:
     - name: Create BigQuery schemas
       id: create-schemas-step
       run: |
+        bq show ${{ inputs.dataset }} || bq mk ${{ inputs.dataset }}
         for i in src/main/resources/${{ inputs.module }}/${{ inputs.schemas_dir }}/*.json; do
             [ -f "$i" ] || break
             TBL=$(basename ${i%.json})
