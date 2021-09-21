@@ -2,15 +2,15 @@ name: 'build-and-deploy-backend-function'
 description: 'Build and deploy a backend function to Java 11 runtime'
 author: ''
 inputs:
-  deployer_sa_email:
+  deployer-sa-email:
     description: 'The email address of the IAM service account used for deploying the cloud function'
     required: true
     default: ''
-  deployer_sa_key:
+  deployer-sa-key:
     description: 'The IAM service account key used for deploying the cloud function'
     required: true
     default: ''
-  func_sa_email:
+  service-account:
     description: 'The email address of the IAM service account associated with the function at runtime'
     required: true
     default: ''
@@ -18,26 +18,18 @@ inputs:
     description: 'The fully specified name of the cloud function'
     required: true
     default: 'backend-function'
-  module:
-    description: 'Name of the module deployment'
-    required: true
-    default: 'testrunner'
-  entry_point:
+  entry-point:
     description: 'Name of a Google Cloud Function (as defined in source code) that will be executed'
     required: true
-    default: 'bio.terra.cloudfunctions.streaming.GcsBQ'
-  runtime_memory:
+    default: ''
+  memory:
     description: 'Limit on the amount of memory the function can use (128MB, 256MB, 512MB, 1024MB, 2048MB, 4096MB, and 8192MB)'
     required: false
     default: '256MB'
-  bucket:
+  trigger-bucket:
     description: 'Google Cloud Storage bucket name. Every change in files in this bucket will trigger function execution'
-    required: required
+    required: true
     default: ''
-  trigger:
-    description: 'Specifies which action should trigger the function'
-    required: false
-    default: 'google.storage.object.finalize'
   project:
     description: 'GCP Project'
     required: true
@@ -46,18 +38,14 @@ inputs:
     description: 'The Cloud region for the function. Overrides the default functions/region property value for this command invocation'
     required: false
     default: 'us-central1'
-  dataset:
-    description: 'Name of the BigQuery dataset'
-    required: false
-    default: 'simple_stream_dataset'
   source:
     description: 'local directory of cloud function source'
     required: false
     default: '.'
-  has_envvars:
-    description: 'Whether to include path to a local YAML file with definitions for all environment variables. All existing environment variables will be removed before the new environment variables are added.'
+  env-vars-file:
+    description: 'Path to a local YAML file with definitions for all environment variables. All existing environment variables will be removed before the new environment variables are added.'
     required: false
-    default: false
+    default: ''
 
 runs:
   using: "composite"
@@ -65,31 +53,35 @@ runs:
     # Configure ADC for cloud function deployment
     - uses: google-github-actions/setup-gcloud@master
       with:
-        service_account_email: ${{ inputs.deployer_sa_email }}
-        service_account_key: ${{ inputs.deployer_sa_key }}
+        service_account_email: ${{ inputs.deployer-sa-email }}
+        service_account_key: ${{ inputs.deployer-sa-key }}
         export_default_credentials: true
 
     - name: Deploy Cloud Function with envvars
       id: deploy-step-with-envars
       run: |
         gcloud config set project ${{ env.GCLOUD_PROJECT }}
-        if [ ${{ inputs.has_envvars }} = true ]
+        if [ -z ${{ inputs.env-vars-file }} ]
         then
           gcloud functions deploy ${{ inputs.func }} \
-            --project=${{ env.GCLOUD_PROJECT }} --region=${{ inputs.region }} \
-            --runtime=java11 --entry-point=${{ inputs.entry_point }} \
-            --memory=${{ inputs.runtime_memory }} \
+            --trigger-bucket=${{ inputs.trigger-bucket }} \
+            --entry-point=${{ inputs.entry-point }} \
+            --memory=${{ inputs.memory }} \
             --source=${{ inputs.source }} \
-            --env-vars-file=./src/main/resources/${{ inputs.module }}/${{ env.GCLOUD_PROJECT }}/envvars.yml \
-            --trigger-bucket=${{ inputs.bucket }} \
-            --service-account=${{ inputs.func_sa_key }}
+            --runtime=java11 \
+            --project=${{ inputs.project }} \
+            --region=${{ inputs.region }} \
+            --service-account=${{ inputs.service-account }}
         else
           gcloud functions deploy ${{ inputs.func }} \
-            --project=${{ env.GCLOUD_PROJECT }} --region=${{ inputs.region }} \
-            --runtime=java11 --entry-point=${{ inputs.entry_point }} \
-            --memory=${{ inputs.runtime_memory }} \
+            --trigger-bucket=${{ inputs.trigger-bucket }} \
+            --entry-point=${{ inputs.entry-point }} \
+            --memory=${{ inputs.memory }} \
             --source=${{ inputs.source }} \
-            --trigger-bucket=${{ inputs.bucket }} \
-            --service-account=${{ inputs.func_sa_key }}
+            --runtime=java11 \
+            --project=${{ inputs.project }} \
+            --region=${{ inputs.region }} \
+            --service-account=${{ inputs.service-account }} \
+            --env-vars-file=${{ inputs.env-vars-file }}
         fi
       shell: bash

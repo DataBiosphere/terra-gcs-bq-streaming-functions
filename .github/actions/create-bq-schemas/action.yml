@@ -2,26 +2,22 @@ name: 'create-bq-schemas'
 description: 'Create BigQuery Schemas'
 author: ''
 inputs:
-  bigquery_admin_sa_email:
+  bigquery-admin-sa-email:
     description: 'The email address of the IAM service account used for creating the BigQuery dataset'
     required: true
     default: ''
-  bigquery_admin_sa_key:
+  bigquery-admin-sa-key:
     description: 'The IAM service account key used for creating the BigQuery dataset'
     required: true
     default: ''
-  schemas_dir:
+  schemas-dir:
     description: 'The relative path that contains definitions of BigQuery schema json files'
-    required: false
-    default: 'schemas'
-  module:
-    description: 'Name of the module deployment'
     required: true
-    default: 'testrunner'
+    default: ''
   dataset:
     description: 'Name of the BigQuery dataset'
     required: true
-    default: 'simple_stream_dataset'
+    default: ''
 
 runs:
   using: "composite"
@@ -29,15 +25,15 @@ runs:
     # Configure ADC for cloud function deployment
     - uses: google-github-actions/setup-gcloud@master
       with:
-        service_account_email: ${{ inputs.bigquery_admin_sa_email }}
-        service_account_key: ${{ inputs.bigquery_admin_sa_key }}
+        service_account_email: ${{ inputs.bigquery-admin-sa-email }}
+        service_account_key: ${{ inputs.bigquery-admin-sa-key }}
         export_default_credentials: true
 
     - name: Create BigQuery schemas
       id: create-schemas-step
       run: |
         bq show ${{ inputs.dataset }} || bq mk ${{ inputs.dataset }}
-        for i in src/main/resources/${{ inputs.module }}/${{ inputs.schemas_dir }}/*.json; do
+        for i in ${{ inputs.schemas_dir }}/*.json; do
             [ -f "$i" ] || break
             TBL=$(basename ${i%.json})
             bq show --schema ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL} || \
