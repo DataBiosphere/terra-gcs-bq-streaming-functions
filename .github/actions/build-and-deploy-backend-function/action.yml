@@ -61,7 +61,7 @@ runs:
       id: deploy-step-with-envars
       run: |
         gcloud config set project ${{ env.GCLOUD_PROJECT }}
-        if [ -z ${{ inputs.env-vars-file }} ]
+        if [ -z "${{ inputs.env-vars-file }}" ]
         then
           gcloud functions deploy ${{ inputs.func }} \
             --trigger-bucket=${{ inputs.trigger-bucket }} \
