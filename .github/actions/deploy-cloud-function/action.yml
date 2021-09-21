@@ -1,5 +1,5 @@
-name: 'build-and-deploy-backend-function'
-description: 'Build and deploy a backend function to Java 11 runtime'
+name: 'deploy-cloud-function'
+description: 'Deploy a cloud function to Java 11 runtime'
 author: ''
 inputs:
   deployer-sa-email:
@@ -57,8 +57,8 @@ runs:
         service_account_key: ${{ inputs.deployer-sa-key }}
         export_default_credentials: true
 
-    - name: Deploy Cloud Function with envvars
-      id: deploy-step-with-envars
+    - name: Deploy Cloud Function
+      id: deploy-step
       run: |
         gcloud config set project ${{ env.GCLOUD_PROJECT }}
         if [ -z "${{ inputs.env-vars-file }}" ]

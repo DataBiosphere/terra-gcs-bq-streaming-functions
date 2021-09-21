@@ -31,9 +31,6 @@ jobs:
           echo ::add-mask::$STREAMER_SA_EMAIL
           echo ::add-mask::$TESTRUNNER_SA_KEY
           echo ::add-mask::$TESTRUNNER_SA_EMAIL
-          echo $DEPLOYER_SA_EMAIL
-          echo $STREAMER_SA_EMAIL
-          echo $TESTRUNNER_SA_EMAIL
           echo ::set-output name=deployer-sa-email::$DEPLOYER_SA_EMAIL
           echo ::set-output name=deployer-sa-key::$DEPLOYER_SA_KEY
           echo ::set-output name=project-id::$PROJECT_ID
@@ -55,7 +52,7 @@ jobs:
       # Deploy cloud function from the source
       - name: Deploy the TestRunner streamer function
         id: deploy-testrunner
-        uses: ./.github/actions/build-and-deploy-backend-function
+        uses: ./.github/actions/deploy-cloud-function
         with:
           func: gcs-bq-function
           trigger-bucket: ${{ steps.config-step.outputs.project-id }}-testrunner-results
