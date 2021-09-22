@@ -31,6 +31,7 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
   public void processMessage() {
     String sourceBucket = message.getSourceBucket();
     String resourceName = message.getResourceName();
+    logger.log(Level.INFO, resourceName);
 
     loadEnvVars();
 

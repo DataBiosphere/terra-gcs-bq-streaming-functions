@@ -36,6 +36,7 @@ public class TestRunnerStreamingFunction extends GoogleCloudEventHarness {
                 event.getContentType()));
         return;
       }
+      logger.log(Level.INFO, "--"+ event.getName());
       FileUploadedMessage fileUploadedMessage =
           new FileUploadedMessage(
               event.getName(), event.getBucket(), event.getSize(), event.getTimeCreated());
