@@ -2,8 +2,11 @@ package bio.terra.cloudfiletodatastore.testrunner.cloudfunctions;
 
 import bio.terra.cloudfiletodatastore.FileUploadedMessage;
 import bio.terra.cloudfunctions.common.GoogleCloudEventHarness;
+import bio.terra.cloudfunctions.common.GsonWrapper;
 import bio.terra.cloudfunctions.common.MediaTypeWrapper;
 import com.google.events.cloud.storage.v1.StorageObjectData;
+import io.grpc.Context;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +21,7 @@ public class TestRunnerStreamingFunction extends GoogleCloudEventHarness {
     try {
       loadEnvVars();
       StorageObjectData event = getEvent(StorageObjectData.class);
+      logger.log(Level.INFO, event.toString());
       MediaTypeWrapper mediaType = new MediaTypeWrapper(event.getContentType());
       if (!expectedBucket.equals(event.getBucket()) || !mediaType.isApplicationGzip()) {
         logger.log(
