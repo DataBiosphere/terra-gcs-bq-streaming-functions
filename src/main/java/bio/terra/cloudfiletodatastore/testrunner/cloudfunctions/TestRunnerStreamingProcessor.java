@@ -79,6 +79,7 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
     projectId = System.getenv("GCLOUD_PROJECT");
     dataSet = System.getenv("BQ_DATASET");
     table = System.getenv("BQ_TABLE");
+    logger.log(Level.INFO, String.format("%s %s %s", projectId, dataSet, table));
   }
 
   public InputStream getStorageObjectDataAsInputStream(
