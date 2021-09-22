@@ -31,9 +31,7 @@ public class GcsUtils {
       String projectId, String bucket, String objectName) {
     try {
       Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
-      logger.log(Level.INFO, "getStorageObjectDataAsInputStream");
       ReadChannel reader = storage.reader(bucket, objectName);
-      logger.log(Level.INFO, "getStorageObjectDataAsInputStream 2");
       return Channels.newInputStream(reader);
     } catch (StorageException e) {
       logger.log(Level.SEVERE, "StorageException: " + e.getMessage());

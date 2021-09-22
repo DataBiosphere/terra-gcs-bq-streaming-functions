@@ -31,7 +31,6 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
   public void processMessage() {
     String sourceBucket = message.getSourceBucket();
     String resourceName = message.getResourceName();
-    logger.log(Level.INFO, resourceName);
 
     loadEnvVars();
 
@@ -41,7 +40,6 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
         MediaTypeUtils.createArchiveInputStream(
             MediaTypeUtils.createCompressorInputStream(
                 getStorageObjectDataAsInputStream(projectId, sourceBucket, resourceName)))) {
-
       /*
        * ArchiveInputStream is a special type of InputStream that emits an EOF when it gets to the end
        * of a file in the archive. Once it’s done, call getNextEntry to reset the stream and start
@@ -49,7 +47,6 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
        */
       ArchiveEntry archiveEntry;
       while ((archiveEntry = archiveInputStream.getNextEntry()) != null) {
-        logger.log(Level.INFO, "--" + archiveEntry.getName());
         if (archiveEntry.isDirectory()) {
           continue;
         }
@@ -82,12 +79,10 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
     projectId = System.getenv("GCLOUD_PROJECT");
     dataSet = System.getenv("BQ_DATASET");
     table = System.getenv("BQ_TABLE");
-    logger.log(Level.INFO, String.format("%s %s %s", projectId, dataSet, table));
   }
 
   public InputStream getStorageObjectDataAsInputStream(
       String projectId, String sourceBucket, String resourceName) {
-    logger.log(Level.INFO, String.format("%s %s %s", projectId, sourceBucket, resourceName));
     return GcsUtils.getStorageObjectDataAsInputStream(projectId, sourceBucket, resourceName);
   }
 
