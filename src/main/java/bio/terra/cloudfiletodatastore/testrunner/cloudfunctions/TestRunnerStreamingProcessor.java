@@ -42,7 +42,6 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
             MediaTypeUtils.createCompressorInputStream(
                 getStorageObjectDataAsInputStream(projectId, sourceBucket, resourceName)))) {
 
-      logger.log(Level.INFO, "--" + archiveInputStream.available());
       /*
        * ArchiveInputStream is a special type of InputStream that emits an EOF when it gets to the end
        * of a file in the archive. Once it’s done, call getNextEntry to reset the stream and start
