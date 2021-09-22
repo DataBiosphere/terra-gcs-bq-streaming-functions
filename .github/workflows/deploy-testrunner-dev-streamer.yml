@@ -36,16 +36,16 @@ jobs:
           echo ::set-output name=project-id::$PROJECT_ID
           echo ::set-output name=streamer-sa-email::$STREAMER_SA_EMAIL
           echo ::set-output name=project-id::$PROJECT_ID
-          echo ::set-output name=bigquery-admin-sa-email::$TESTRUNNER_SA_EMAIL
-          echo ::set-output name=bigquery-admin-sa-key::$TESTRUNNER_SA_KEY
+          echo ::set-output name=bigquery-data-owner-sa-email::$STREAMER_SA_EMAIL
+          echo ::set-output name=bigquery-data-owner-sa-key::$STREAMER_SA_KEY
 
       # Deploy TestRunner results BigQuery dataset
       - name: Deploy TestRunner results BigQuery dataset
         id: deploy-testrunner-results-dataset
         uses: ./.github/actions/create-bq-schemas
         with:
-          bigquery-admin-sa-email: ${{ steps.config-step.outputs.bigquery-admin-sa-email }}
-          bigquery-admin-sa-key: ${{ steps.config-step.outputs.bigquery-admin-sa-key }}
+          bigquery-admin-sa-email: ${{ steps.config-step.outputs.bigquery-data-owner-sa-email }}
+          bigquery-admin-sa-key: ${{ steps.config-step.outputs.bigquery-data-owner-sa-key }}
           schemas-dir: ./src/main/resources/testrunner/schemas
           dataset: testrunner_results_dataset
 
