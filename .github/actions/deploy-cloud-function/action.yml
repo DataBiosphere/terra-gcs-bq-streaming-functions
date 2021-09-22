@@ -73,6 +73,7 @@ runs:
             --region=${{ inputs.region }} \
             --service-account=${{ inputs.service-account }}
         else
+          echo "Using env-vars-file ${{ inputs.env-vars-file }}"
           gcloud functions deploy ${{ inputs.func }} \
             --trigger-bucket=${{ inputs.trigger-bucket }} \
             --entry-point=${{ inputs.entry-point }} \
