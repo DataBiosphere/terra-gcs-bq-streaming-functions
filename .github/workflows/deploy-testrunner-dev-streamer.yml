@@ -1,13 +1,13 @@
 # This workflow is used to deploy GCP cloud functions from source
 # For more information see: https://github.com/google-github-actions/deploy-cloud-functions
 
-name: Deploy TestRunner Streamer Function
+name: Deploy TestRunner Results Streamer Function
 
 on:
   push
 
 jobs:
-  deploy-from-source:
+  deploy-testrunner-streamer-from-source:
 
     runs-on: ubuntu-latest
     env:
@@ -50,11 +50,11 @@ jobs:
           dataset: testrunner_results_dataset
 
       # Deploy cloud function from the source
-      - name: Deploy the TestRunner streamer function
-        id: deploy-testrunner
+      - name: Deploy the TestRunner Results Streamer function
+        id: deploy-testrunner-results-streamer
         uses: ./.github/actions/deploy-cloud-function
         with:
-          func: gcs-bq-function
+          func: testrunner-results-streamer
           trigger-bucket: ${{ steps.config-step.outputs.project-id }}-testrunner-results
           entry-point: bio.terra.cloudfiletodatastore.testrunner.cloudfunctions.TestRunnerStreamingFunction
           memory: 512MB
