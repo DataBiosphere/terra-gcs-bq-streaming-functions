@@ -84,6 +84,7 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
 
   public InputStream getStorageObjectDataAsInputStream(
       String projectId, String sourceBucket, String resourceName) {
+    logger.log(Level.INFO, String.format("%s %s", projectId, sourceBucket, resourceName));
     return GcsUtils.getStorageObjectDataAsInputStream(projectId, sourceBucket, resourceName);
   }
 
