@@ -48,6 +48,7 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
        */
       ArchiveEntry archiveEntry;
       while ((archiveEntry = archiveInputStream.getNextEntry()) != null) {
+        logger.log(Level.INFO, "--" + archiveEntry.getName());
         if (archiveEntry.isDirectory()) {
           continue;
         }
@@ -85,7 +86,7 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
 
   public InputStream getStorageObjectDataAsInputStream(
       String projectId, String sourceBucket, String resourceName) {
-    logger.log(Level.INFO, String.format("%s %s", projectId, sourceBucket, resourceName));
+    logger.log(Level.INFO, String.format("%s %s %s", projectId, sourceBucket, resourceName));
     return GcsUtils.getStorageObjectDataAsInputStream(projectId, sourceBucket, resourceName);
   }
 
