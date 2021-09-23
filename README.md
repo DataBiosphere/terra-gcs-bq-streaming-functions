@@ -7,7 +7,7 @@ The open source Java Functions Framework provides an API that can be used to aut
 
 Cloud Build resources that enable remote builds to take place in the cloud can be customized in `cloudbuild.yaml`.
 
-There are a number of Java Deployment options for deploying cloud functions. For portability purpose, we have chosen to package cloud functions and all dependencies as Uber JAR archives.
+There are a number of Java Deployment options for deploying cloud functions.
 
 For more details, please refer to the following articles
 
