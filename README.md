@@ -167,12 +167,13 @@ name: Build and deploy ProtoFunc cloud function
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   deploy-protofunc:
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       DEPLOY_ENV: DEV
     steps:
