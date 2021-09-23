@@ -18,6 +18,10 @@ inputs:
     description: 'Name of the BigQuery dataset'
     required: true
     default: ''
+  project:
+    description: 'GCP Project'
+    required: true
+    default: ''
 
 runs:
   using: "composite"
@@ -32,11 +36,12 @@ runs:
     - name: Create BigQuery schemas
       id: create-schemas-step
       run: |
+        gcloud config set project ${{{ inputs.project }}
         bq show ${{ inputs.dataset }} || bq mk ${{ inputs.dataset }}
         for i in ${{ inputs.schemas-dir }}/*.json; do
             [ -f "$i" ] || break
             TBL=$(basename ${i%.json})
-            bq show --schema ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL} || \
-                bq mk --table ${{ env.GCLOUD_PROJECT }}:${{ inputs.dataset }}.${TBL} $i
+            bq show --schema ${{ inputs.project }}:${{ inputs.dataset }}.${TBL} || \
+                bq mk --table ${{ inputs.project }}:${{ inputs.dataset }}.${TBL} $i
         done
       shell: bash

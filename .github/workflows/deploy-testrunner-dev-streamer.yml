@@ -48,6 +48,7 @@ jobs:
           bigquery-admin-sa-key: ${{ steps.config-step.outputs.bigquery-data-owner-sa-key }}
           schemas-dir: ./src/main/resources/testrunner/schemas
           dataset: testrunner_results_dataset
+          project: ${{ steps.config-step.outputs.project-id }}
 
       # Deploy cloud function from the source
       - name: Deploy the TestRunner Results Streamer function

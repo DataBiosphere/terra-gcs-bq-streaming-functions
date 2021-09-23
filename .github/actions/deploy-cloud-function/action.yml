@@ -60,7 +60,7 @@ runs:
     - name: Deploy Cloud Function
       id: deploy-step
       run: |
-        gcloud config set project ${{ env.GCLOUD_PROJECT }}
+        gcloud config set project ${{ inputs.project }}
         if [ -z "${{ inputs.env-vars-file }}" ]
         then
           gcloud functions deploy ${{ inputs.func }} \
