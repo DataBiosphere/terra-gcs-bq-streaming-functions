@@ -36,7 +36,7 @@ runs:
     - name: Create BigQuery schemas
       id: create-schemas-step
       run: |
-        gcloud config set project ${{{ inputs.project }}
+        gcloud config set project ${{ inputs.project }}
         bq show ${{ inputs.dataset }} || bq mk ${{ inputs.dataset }}
         for i in ${{ inputs.schemas-dir }}/*.json; do
             [ -f "$i" ] || break
