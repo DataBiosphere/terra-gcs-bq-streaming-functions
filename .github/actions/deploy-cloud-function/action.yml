@@ -17,7 +17,7 @@ inputs:
   func:
     description: 'The fully specified name of the cloud function'
     required: true
-    default: 'backend-function'
+    default: ''
   entry-point:
     description: 'Name of a Google Cloud Function (as defined in source code) that will be executed'
     required: true
@@ -39,7 +39,7 @@ inputs:
     required: false
     default: 'us-central1'
   source:
-    description: 'local directory of cloud function source'
+    description: 'Local directory of cloud function source'
     required: false
     default: '.'
   env-vars-file:

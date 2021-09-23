@@ -17,39 +17,50 @@ https://cloud.google.com/functions/docs/first-java#gradle_1
 
 https://cloud.google.com/functions/docs/concepts/java-deploy#gradle
 
-This repository has the following cloud functions
+This repository contains the following Java sources for various Cloud Function applications
 
-| Java Class                                  | Cloud Function             | Application |
-|---------------------------------------------|----------------------------|-------------|
-| TestRunnerStreamingFunction.java            | gcs-bq-function            | Test Runner |
-| DeltaLayerRawFunction.java                  |                            | Delta Layer |
+| Java Class                                  | Cloud Function              | Application |
+|---------------------------------------------|-----------------------------|-------------|
+| TestRunnerStreamingFunction.java            | testrunner-results-streamer | TestRunner results streamer function |
+| DeltaLayerRawFunction.java                  |                             | Delta Layer |
 
-## Deploying Cloud Functions to serverless platforms with GitHub Actions
+## Deploying Cloud Functions to Java 11 Runtime with GitHub Actions
 
-The name of the GitHub Actions workflows are
-* `build-testrunner-functions.yml` for Test Runner (`TestRunnerStreamingFunction`).
-* `???` for Delta Layer.
+The `deploy-cloud-function` action deploys a Cloud Function to the appropriate environment, it accepts the following input parameters
 
-The Gradle task `shadowJar` builds the Uber JAR in the local default `build/libs` directory.
-The UBER JAR contains the expected file structure for successful cloud functions deployment.
+| Input                        | Description                | Required    | Default |
+|------------------------------|----------------------------|-------------|---------|
+| deployer-sa-email            | The email address of the IAM service account used for deploying the cloud function                                    | Yes | n/a |
+| deployer-sa-key              | The IAM service account key used for deploying the cloud function                                                     | Yes | n/a |
+| service-account              | The email address of the IAM service account associated with the function at runtime                                  | Yes | n/a |
+| func                         | The fully specified name of the cloud function                                                                        | Yes | n/a |
+| entry-point                  | Name of a Google Cloud Function (as defined in source code) that will be executed                                     | Yes | n/a |
+| memory                       | Limit on the amount of memory the function can use (128MB, 256MB, 512MB, 1024MB, 2048MB, 4096MB, and 8192MB)          | No  | 256MB |
+| trigger-bucket               | Google Cloud Storage bucket name. Every change in files in this bucket will trigger function execution                | Yes | n/a |
+| project                      | GCP Project                                                                                                           | Yes | n/a |
+| region                       | The Cloud region for the function. Overrides the default functions/region property value for this command invocation  | No  | us-central1 |
+| source                       | Local directory of cloud function source                                                                              | No  | . |
+| env-vars-file                | Path to a local YAML file with definitions for all environment variables. All existing environment variables will be removed before the new environment variables are added | No | n/a |                                                                                                 | Yes |
 
-This workflow made certain assumptions about the cloud function runtime service account that users should be familiar with.
-It also made certain custom parameters available to `java11` runtime as `envvar`'s that overcomes some limitations in the current Google Cloud Function `java11` binding.
-Ultimately all custom values will come from `deltalayer` as `tfvar`'s so that the cloud function code can be built once and deployed as various cloud functions across different environments.
-For more information on `deltalayer`, please refer to
-* [terraform-ap-modules](https://github.com/broadinstitute/terraform-ap-modules/tree/master/deltalayer) and
-* [terraform-ap-deployments](https://github.com/broadinstitute/terraform-ap-deployments/tree/master/deltalayer).
+Please refer to `deploy-testrunner-dev-streamer.yml` for a working example.
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| `GCLOUD_PROJECT` | Specify the Google Project ID that the Cloud Function deploys to. | `string` | n/a | yes |
-| `service-account` | The runtime Service Account email assumed by Cloud Function | `string` | `PROJECT_ID@appspot.gserviceaccount.com` | no |
-| `GOOGLE_APPLICATION_CREDENTIALS` | The Application Default Credentials that possess `cloudfunction.admin` role | `string` | n/a | yes |
-| `NAME` | The ID of the function or fully qualified identifier for the function | `string` | n/a | yes |
-| `trigger-resource` | The name of the google storage bucket (the string after gs://) that triggers cloud function for consumption. | `string` | n/a | yes |
-| `trigger-event` | Specifies which action should trigger the function. For a list of acceptable values, call `gcloud functions event-types list`. | `string` | n/a | yes |
-| `entry-point` | The fully qualified Java class name of the function. | `string` | n/a | yes |
-| `set-env-vars` | List of comma-separated key-value pairs to set as environment variables. All existing environment variables will be removed first. | `string` | n/a | no |
+The `deploy-cloud-function` action requires a deployer service account (identified as `deployer-sa-key`, `deployer-sa-email`) for cloud function deployment and an identity (`service-account`) that the cloud function assumes at runtime.
+These service accounts are provisioned by Terraform and their secrets are stored in the vault.
+
+For more information, please refer to
+* [deltalayer module](https://github.com/broadinstitute/terraform-ap-modules/tree/master/deltalayer)
+* [deltalayer deployments](https://github.com/broadinstitute/terraform-ap-deployments/tree/master/deltalayer)
+* [testrunner module](https://github.com/broadinstitute/terraform-ap-modules/tree/master/testrunner)
+* [testrunner deployments](https://github.com/broadinstitute/terraform-ap-deployments/tree/master/testrunner)
+
+## Moving Vault secrets to Github via Atlantis
+
+For the purpose of Cloud Function deployment using the `deploy-cloud-function` action. 
+The required vault secrets need to be moved to this Github repo via Atlantis, the process is documented [here](https://docs.google.com/document/d/1JbjV4xjAlSOuZY-2bInatl4av3M-y_LmHQkLYyISYns/edit#heading=h.kor6m5ppv2u).
+
+For a working example of moving the secrets tto this repo, please see
+
+[github/tfvars/databiosphere-terra-gcs-bq-streaming-functions.tfvars](https://github.com/broadinstitute/terraform-ap-deployments/blob/master/github/tfvars/databiosphere-terra-gcs-bq-streaming-functions.tfvars)
 
 ## Tutorial
 
@@ -145,6 +156,8 @@ public class ProtoFunc extends GoogleCloudEventHarness {
 
 #### A Sample GitHub Action workflow for deploying Cloud Function
 
+The following workflow assumes that the Github secrets (e.g. DEV_PROTO_CF_DEPLOYER_SA, DEV_PROTO_FUNC_SA) already exists in the repo.
+
 ```build-proto-cf-handler.yml```
 ```shell
 # This workflow will build a backend cloud function with Gradle
@@ -157,50 +170,44 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-deploy:
+  deploy-protofunc:
 
     runs-on: ubuntu-latest
-
+    env:
+      DEPLOY_ENV: DEV
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up AdoptOpenJDK 11
-        uses: joschi/setup-jdk@v2
-        with:
-          java-version: 11
+      - name: Configure secrets, SA, Project ID
+        id: config-step
+        run: |
+          DEPLOYER_SA_KEY=$(echo -n ${{ secrets[format('{0}_PROTO_CF_DEPLOYER_SA', env.DEPLOY_ENV)] }} | base64 -d)
+          DEPLOYER_SA_EMAIL=$(echo -n $DEPLOYER_SA_KEY | jq -r .client_email)
+          PROJECT_ID=$(echo -n $DEPLOYER_SA_KEY | jq -r .project_id)
+          FUNC_SA_KEY=$(echo -n ${{ secrets[format('{0}_PROTO_FUNC_SA', env.DEPLOY_ENV)] }} | base64 -d)
+          FUNC_SA_EMAIL=$(echo -n $FUNC_SA_KEY | jq -r .client_email)
+          echo ::add-mask::$DEPLOYER_SA_KEY
+          echo ::add-mask::$DEPLOYER_SA_EMAIL
+          echo ::add-mask::$FUNC_SA_KEY
+          echo ::add-mask::$FUNC_SA_EMAIL
+          echo ::set-output name=deployer-sa-email::$DEPLOYER_SA_EMAIL
+          echo ::set-output name=deployer-sa-key::$DEPLOYER_SA_KEY
+          echo ::set-output name=project-id::$PROJECT_ID
+          echo ::set-output name=func-sa-email::$FUNC_SA_EMAIL
+          echo ::set-output name=project-id::$PROJECT_ID
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
+      # Deploy cloud function from the source
+      - name: Deploy the ProtoFunc function
+        id: deploy-proto-cloudfunc
+        uses: ./.github/actions/deploy-cloud-function
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: v1-${{ runner.os }}-gradle-${{ hashfiles('**/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle') }}
-          restore-keys: v1-${{ runner.os }}-gradle-${{ hashfiles('**/gradle-wrapper.properties') }}
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      # Set up ADC for credentials
-      # Ideally this step should be part of action.yml but
-      # GHA does not yet support action within action, so we're stuck.
-      # Please refer to https://github.com/actions/runner/pull/612 for updates.
-      - uses: google-github-actions/setup-gcloud@master
-        with:
-          service_account_email: ${{ secrets.DEPLOY_CF_SA_EMAIL }}
-          service_account_key: ${{ secrets.DEPLOY_CF_SA_KEY_JSON }}
-          export_default_credentials: true
-
-      - name: Build and deploy the ProtoFunc backend function
-        id: build-and-deploy
-        uses: ./.github/actions/build-and-deploy-backend-function
-        with:
-          func: generic-cloudevent-handler
-          module: testrunner
-          entry_point: bio.terra.cloudfiletodatastore.proto.ProtoFunc
-          runtime_memory: 512MB
-          bucket: ${{ env.GCLOUD_PROJECT }}-testrunner-results
-          trigger: google.storage.object.finalize
-          dataset: simple_stream_dataset
+          func: proto-cloudfunc
+          trigger-bucket: ${{ steps.config-step.outputs.project-id }}-proto-bucket
+          entry-point: bio.terra.cloudfiletodatastore.proto.ProtoFunc
+          memory: 512MB
+          project: ${{ steps.config-step.outputs.project-id }}
+          service-account: ${{ steps.config-step.outputs.func-sa-email }}
+          deployer-sa-email: ${{ steps.config-step.outputs.deployer-sa-email }}
+          deployer-sa-key: ${{ steps.config-step.outputs.deployer-sa-key }}
 
 ```
