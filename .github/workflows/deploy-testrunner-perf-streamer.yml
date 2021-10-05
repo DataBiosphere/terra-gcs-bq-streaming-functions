@@ -7,9 +7,9 @@ on:
   push
 
 jobs:
-  deploy-perf-testrunner-streamer-from-source:
+  deploy-testrunner-streamer-from-source:
 
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     env:
       DEPLOY_ENV: PERF
     steps:
