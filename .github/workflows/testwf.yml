@@ -4,7 +4,9 @@
 name: Test Workflow
 
 on:
-  push
+  push:
+    branches:
+      - QA-1526-1
 
 jobs:
   test-workflow:
