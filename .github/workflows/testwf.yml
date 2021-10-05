@@ -1,0 +1,21 @@
+# This workflow is used to deploy GCP cloud functions from source
+# For more information see: https://github.com/google-github-actions/deploy-cloud-functions
+
+name: Test Workflow
+
+on:
+  push
+
+jobs:
+  test-workflow:
+
+    runs-on: self-hosted
+    env:
+      DEPLOY_ENV: PERF
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Echoing
+        id: echo-step
+        run: |
+          echo ${{ env.DEPLOY_ENV }}
