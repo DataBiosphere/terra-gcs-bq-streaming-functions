@@ -7,7 +7,7 @@ on:
   push
 
 jobs:
-  deploy-testrunner-streamer-from-source:
+  deploy-perf-testrunner-streamer-from-source:
 
     runs-on: self-hosted
     env:
