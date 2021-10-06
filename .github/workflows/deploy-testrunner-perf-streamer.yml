@@ -4,13 +4,14 @@
 name: Deploy TestRunner Results Streamer Function
 
 on:
-  branches:
-    - main
+  push:
+    branches:
+      - main
 
 jobs:
   deploy-testrunner-streamer-from-source:
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       DEPLOY_ENV: PERF
     steps:
