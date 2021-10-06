@@ -45,7 +45,7 @@ The `deploy-cloud-function` action deploys a Cloud Function to the appropriate e
 Please refer to `deploy-testrunner-dev-streamer.yml` for a working example.
 
 The `deploy-cloud-function` action requires a deployer service account (identified as `deployer-sa-key`, `deployer-sa-email`) for cloud function deployment and an identity (`service-account`) that the cloud function assumes at runtime.
-These service accounts are provisioned by Terraform and their secrets are stored in the vault.
+These service accounts are provisioned by Terraform and their secrets are stored in the Vault.
 
 For more information, please refer to
 * [deltalayer module](https://github.com/broadinstitute/terraform-ap-modules/tree/master/deltalayer)
@@ -53,10 +53,10 @@ For more information, please refer to
 * [testrunner module](https://github.com/broadinstitute/terraform-ap-modules/tree/master/testrunner)
 * [testrunner deployments](https://github.com/broadinstitute/terraform-ap-deployments/tree/master/testrunner)
 
-## Moving Vault secrets to Github via Atlantis
+## Syncing secrets from Vault to GitHub via Atlantis
 
 For the purpose of Cloud Function deployment using the `deploy-cloud-function` action. 
-The required vault secrets need to be moved to this Github repo via Atlantis, the process is documented [here](https://docs.google.com/document/d/1JbjV4xjAlSOuZY-2bInatl4av3M-y_LmHQkLYyISYns/edit#heading=h.kor6m5ppv2u).
+The required Vault secrets need to be synced to this GitHub repo via Atlantis, the process is documented [here](https://docs.google.com/document/d/1JbjV4xjAlSOuZY-2bInatl4av3M-y_LmHQkLYyISYns/edit#heading=h.kor6m5ppv2u).
 
 For a working example of moving the secrets tto this repo, please see
 
@@ -156,7 +156,7 @@ public class ProtoFunc extends GoogleCloudEventHarness {
 
 #### A Sample GitHub Action workflow for deploying Cloud Function
 
-The following workflow assumes that the Github secrets (e.g. DEV_PROTO_CF_DEPLOYER_SA, DEV_PROTO_FUNC_SA) already exists in the repo.
+The following workflow assumes that the GitHub secrets (e.g. DEV_PROTO_CF_DEPLOYER_SA, DEV_PROTO_FUNC_SA) already exists in the repo.
 
 ```build-proto-cf-handler.yml```
 ```shell
