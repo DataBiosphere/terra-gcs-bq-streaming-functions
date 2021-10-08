@@ -1,0 +1,4 @@
+GCLOUD_PROJECT: broad-dsde-alpha
+GOOGLE_BUCKET: broad-dsde-alpha-testrunner-results
+BQ_DATASET: testrunner_results_dataset
+BQ_TABLE: SUMMARY_testRun

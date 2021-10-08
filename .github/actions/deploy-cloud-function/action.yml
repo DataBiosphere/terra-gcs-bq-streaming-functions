@@ -1,0 +1,88 @@
+name: 'deploy-cloud-function'
+description: 'Deploy a cloud function to Java 11 runtime'
+author: ''
+inputs:
+  deployer-sa-email:
+    description: 'The email address of the IAM service account used for deploying the cloud function'
+    required: true
+    default: ''
+  deployer-sa-key:
+    description: 'The IAM service account key used for deploying the cloud function'
+    required: true
+    default: ''
+  service-account:
+    description: 'The email address of the IAM service account associated with the function at runtime'
+    required: true
+    default: ''
+  func:
+    description: 'The fully specified name of the cloud function'
+    required: true
+    default: ''
+  entry-point:
+    description: 'Name of a Google Cloud Function (as defined in source code) that will be executed'
+    required: true
+    default: ''
+  memory:
+    description: 'Limit on the amount of memory the function can use (128MB, 256MB, 512MB, 1024MB, 2048MB, 4096MB, and 8192MB)'
+    required: false
+    default: '256MB'
+  trigger-bucket:
+    description: 'Google Cloud Storage bucket name. Every change in files in this bucket will trigger function execution'
+    required: true
+    default: ''
+  project:
+    description: 'GCP Project'
+    required: true
+    default: ''
+  region:
+    description: 'The Cloud region for the function. Overrides the default functions/region property value for this command invocation'
+    required: false
+    default: 'us-central1'
+  source:
+    description: 'Local directory of cloud function source'
+    required: false
+    default: '.'
+  env-vars-file:
+    description: 'Path to a local YAML file with definitions for all environment variables. All existing environment variables will be removed before the new environment variables are added.'
+    required: false
+    default: ''
+
+runs:
+  using: "composite"
+  steps:
+    # Configure ADC for cloud function deployment
+    - uses: google-github-actions/setup-gcloud@master
+      with:
+        service_account_email: ${{ inputs.deployer-sa-email }}
+        service_account_key: ${{ inputs.deployer-sa-key }}
+        export_default_credentials: true
+
+    - name: Deploy Cloud Function
+      id: deploy-step
+      run: |
+        gcloud config set project ${{ inputs.project }}
+        if [ -z "${{ inputs.env-vars-file }}" ]
+        then
+          gcloud functions deploy ${{ inputs.func }} \
+            --trigger-bucket=${{ inputs.trigger-bucket }} \
+            --entry-point=${{ inputs.entry-point }} \
+            --memory=${{ inputs.memory }} \
+            --source=${{ inputs.source }} \
+            --runtime=java11 \
+            --project=${{ inputs.project }} \
+            --region=${{ inputs.region }} \
+            --service-account=${{ inputs.service-account }}
+        else
+          echo "Using env-vars-file ${{ inputs.env-vars-file }}"
+          gcloud functions deploy ${{ inputs.func }} \
+            --trigger-bucket=${{ inputs.trigger-bucket }} \
+            --entry-point=${{ inputs.entry-point }} \
+            --memory=${{ inputs.memory }} \
+            --source=${{ inputs.source }} \
+            --runtime=java11 \
+            --project=${{ inputs.project }} \
+            --region=${{ inputs.region }} \
+            --service-account=${{ inputs.service-account }} \
+            --env-vars-file=${{ inputs.env-vars-file }}
+        fi
+      shell: bash

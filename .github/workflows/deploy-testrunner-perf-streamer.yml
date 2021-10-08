@@ -1,0 +1,68 @@
+# This workflow is used to deploy GCP cloud functions from source
+# For more information see: https://github.com/google-github-actions/deploy-cloud-functions
+
+name: Deploy TestRunner Results Streamer Function
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-testrunner-streamer-from-source:
+
+    runs-on: self-hosted
+    env:
+      DEPLOY_ENV: PERF
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure secrets, SA, Project ID
+        id: config-step
+        run: |
+          DEPLOYER_SA_KEY=$(echo -n ${{ secrets[format('{0}_TESTRUNNER_CF_DEPLOYER_SA', env.DEPLOY_ENV)] }} | base64 -d)
+          DEPLOYER_SA_EMAIL=$(echo -n $DEPLOYER_SA_KEY | jq -r .client_email)
+          PROJECT_ID=$(echo -n $DEPLOYER_SA_KEY | jq -r .project_id)
+          STREAMER_SA_KEY=$(echo -n ${{ secrets[format('{0}_TESTRUNNER_STREAMER_SA', env.DEPLOY_ENV)] }} | base64 -d)
+          STREAMER_SA_EMAIL=$(echo -n $STREAMER_SA_KEY | jq -r .client_email)
+          TESTRUNNER_SA_KEY=$(echo -n ${{ secrets[format('{0}_TESTRUNNER_SA', env.DEPLOY_ENV)] }} | base64 -d)
+          TESTRUNNER_SA_EMAIL=$(echo -n $TESTRUNNER_SA_KEY | jq -r .client_email)
+          echo ::add-mask::$DEPLOYER_SA_KEY
+          echo ::add-mask::$DEPLOYER_SA_EMAIL
+          echo ::add-mask::$STREAMER_SA_KEY
+          echo ::add-mask::$STREAMER_SA_EMAIL
+          echo ::add-mask::$TESTRUNNER_SA_KEY
+          echo ::add-mask::$TESTRUNNER_SA_EMAIL
+          echo ::set-output name=deployer-sa-email::$DEPLOYER_SA_EMAIL
+          echo ::set-output name=deployer-sa-key::$DEPLOYER_SA_KEY
+          echo ::set-output name=project-id::$PROJECT_ID
+          echo ::set-output name=streamer-sa-email::$STREAMER_SA_EMAIL
+          echo ::set-output name=project-id::$PROJECT_ID
+          echo ::set-output name=bigquery-data-owner-sa-email::$STREAMER_SA_EMAIL
+          echo ::set-output name=bigquery-data-owner-sa-key::$STREAMER_SA_KEY
+
+      # Deploy TestRunner results BigQuery dataset
+      - name: Deploy TestRunner results BigQuery dataset
+        id: deploy-testrunner-results-dataset
+        uses: ./.github/actions/create-bq-schemas
+        with:
+          bigquery-admin-sa-email: ${{ steps.config-step.outputs.bigquery-data-owner-sa-email }}
+          bigquery-admin-sa-key: ${{ steps.config-step.outputs.bigquery-data-owner-sa-key }}
+          schemas-dir: ./src/main/resources/testrunner/schemas
+          dataset: testrunner_results_dataset
+          project: ${{ steps.config-step.outputs.project-id }}
+
+      # Deploy cloud function from the source
+      - name: Deploy the TestRunner Results Streamer function
+        id: deploy-testrunner-results-streamer
+        uses: ./.github/actions/deploy-cloud-function
+        with:
+          func: testrunner-results-streamer
+          trigger-bucket: ${{ steps.config-step.outputs.project-id }}-testrunner-results
+          entry-point: bio.terra.cloudfiletodatastore.testrunner.cloudfunctions.TestRunnerStreamingFunction
+          memory: 512MB
+          project: ${{ steps.config-step.outputs.project-id }}
+          service-account: ${{ steps.config-step.outputs.streamer-sa-email }}
+          deployer-sa-email: ${{ steps.config-step.outputs.deployer-sa-email }}
+          deployer-sa-key: ${{ steps.config-step.outputs.deployer-sa-key }}
+          env-vars-file: ./src/main/resources/testrunner/${{ steps.config-step.outputs.project-id }}/envvars.yml
