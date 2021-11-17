@@ -5,7 +5,7 @@ name: Deploy TestRunner Results Streamer Function
 
 on:
   push
-#    branches:
+##    branches:
 #      - main
 
 jobs:
