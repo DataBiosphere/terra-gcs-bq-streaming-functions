@@ -1,131 +1,674 @@
-[
-  {
-    "mode": "REQUIRED",
-    "name": "id",
-    "type": "STRING"
-  },
-  {
-    "mode": "REQUIRED",
-    "name": "startTime",
-    "type": "INTEGER"
-  },
-  {
-    "mode": "REQUIRED",
-    "name": "endTime",
-    "type": "INTEGER"
-  },
-  {
-    "mode": "REQUIRED",
-    "name": "startUserJourneyTime",
-    "type": "INTEGER"
-  },
-  {
-    "mode": "REQUIRED",
-    "name": "endUserJourneyTime",
-    "type": "INTEGER"
-  },
-  {
-    "mode": "REQUIRED",
-    "name": "startTimestamp",
-    "type": "TIMESTAMP"
-  },
-  {
-    "mode": "REQUIRED",
-    "name": "endTimestamp",
-    "type": "TIMESTAMP"
-  },
-  {
-    "mode": "REQUIRED",
-    "name": "startUserJourneyTimestamp",
-    "type": "TIMESTAMP"
-  },
-  {
-    "mode": "REQUIRED",
-    "name": "endUserJourneyTimestamp",
-    "type": "TIMESTAMP"
-  },
-  {
-    "fields": [
-      {
-        "mode": "NULLABLE",
-        "name": "testScriptDescription",
-        "type": "STRING"
-      },
-      {
-        "mode": "REQUIRED",
-        "name": "testScriptName",
-        "type": "STRING"
-      },
-      {
-        "fields": [
-          {
-            "mode": "REQUIRED",
-            "name": "min",
-            "type": "FLOAT"
-          },
-          {
-            "mode": "REQUIRED",
-            "name": "max",
-            "type": "FLOAT"
-          },
-          {
-            "mode": "REQUIRED",
-            "name": "mean",
-            "type": "FLOAT"
-          },
-          {
-            "mode": "REQUIRED",
-            "name": "standardDeviation",
-            "type": "FLOAT"
-          },
-          {
-            "mode": "REQUIRED",
-            "name": "median",
-            "type": "FLOAT"
-          },
-          {
-            "mode": "REQUIRED",
-            "name": "percentile95",
-            "type": "FLOAT"
-          },
-          {
-            "mode": "REQUIRED",
-            "name": "percentile99",
-            "type": "FLOAT"
-          },
-          {
-            "mode": "REQUIRED",
-            "name": "sum",
-            "type": "FLOAT"
-          }
-        ],
-        "mode": "REQUIRED",
-        "name": "elapsedTimeStatistics",
-        "type": "RECORD"
-      },
-      {
-        "mode": "NULLABLE",
-        "name": "totalRun",
-        "type": "INTEGER"
-      },
-      {
-        "mode": "NULLABLE",
-        "name": "numCompleted",
-        "type": "INTEGER"
-      },
-      {
-        "mode": "NULLABLE",
-        "name": "numExceptionsThrown",
-        "type": "INTEGER"
-      },
-      {
-        "mode": "NULLABLE",
-        "name": "isFailure",
-        "type": "BOOLEAN"
-      }
-    ],
-    "mode": "REPEATED",
-    "name": "testScriptResultSummaries",
-    "type": "RECORD"
-  }
-]
+{
+  "fields": [
+    {
+      "mode": "REQUIRED",
+      "name": "id",
+      "type": "STRING"
+    },
+    {
+      "mode": "REQUIRED",
+      "name": "startTime",
+      "type": "INTEGER"
+    },
+    {
+      "mode": "REQUIRED",
+      "name": "endTime",
+      "type": "INTEGER"
+    },
+    {
+      "mode": "REQUIRED",
+      "name": "startUserJourneyTime",
+      "type": "INTEGER"
+    },
+    {
+      "mode": "REQUIRED",
+      "name": "endUserJourneyTime",
+      "type": "INTEGER"
+    },
+    {
+      "mode": "REQUIRED",
+      "name": "startTimestamp",
+      "type": "TIMESTAMP"
+    },
+    {
+      "mode": "REQUIRED",
+      "name": "endTimestamp",
+      "type": "TIMESTAMP"
+    },
+    {
+      "mode": "REQUIRED",
+      "name": "startUserJourneyTimestamp",
+      "type": "TIMESTAMP"
+    },
+    {
+      "mode": "REQUIRED",
+      "name": "endUserJourneyTimestamp",
+      "type": "TIMESTAMP"
+    },
+    {
+      "fields": [
+        {
+          "mode": "NULLABLE",
+          "name": "testScriptDescription",
+          "type": "STRING"
+        },
+        {
+          "mode": "REQUIRED",
+          "name": "testScriptName",
+          "type": "STRING"
+        },
+        {
+          "fields": [
+            {
+              "mode": "REQUIRED",
+              "name": "min",
+              "type": "FLOAT"
+            },
+            {
+              "mode": "REQUIRED",
+              "name": "max",
+              "type": "FLOAT"
+            },
+            {
+              "mode": "REQUIRED",
+              "name": "mean",
+              "type": "FLOAT"
+            },
+            {
+              "mode": "REQUIRED",
+              "name": "standardDeviation",
+              "type": "FLOAT"
+            },
+            {
+              "mode": "REQUIRED",
+              "name": "median",
+              "type": "FLOAT"
+            },
+            {
+              "mode": "REQUIRED",
+              "name": "percentile95",
+              "type": "FLOAT"
+            },
+            {
+              "mode": "REQUIRED",
+              "name": "percentile99",
+              "type": "FLOAT"
+            },
+            {
+              "mode": "REQUIRED",
+              "name": "sum",
+              "type": "FLOAT"
+            }
+          ],
+          "mode": "REQUIRED",
+          "name": "elapsedTimeStatistics",
+          "type": "RECORD"
+        },
+        {
+          "mode": "NULLABLE",
+          "name": "totalRun",
+          "type": "INTEGER"
+        },
+        {
+          "mode": "NULLABLE",
+          "name": "numCompleted",
+          "type": "INTEGER"
+        },
+        {
+          "mode": "NULLABLE",
+          "name": "numExceptionsThrown",
+          "type": "INTEGER"
+        },
+        {
+          "mode": "NULLABLE",
+          "name": "isFailure",
+          "type": "BOOLEAN"
+        }
+      ],
+      "mode": "REPEATED",
+      "name": "testScriptResultSummaries",
+      "type": "RECORD"
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "resourceFileName",
+      "type": "STRING"
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "testSuiteName",
+      "type": "STRING"
+    },
+    {
+      "fields": [
+        {
+          "mode": "NULLABLE",
+          "name": "name",
+          "type": "STRING"
+        },
+        {
+          "mode": "NULLABLE",
+          "name": "description",
+          "type": "STRING"
+        },
+        {
+          "mode": "NULLABLE",
+          "name": "serverSpecificationFile",
+          "type": "STRING"
+        },
+        {
+          "mode": "NULLABLE",
+          "name": "billingAccount",
+          "type": "STRING"
+        },
+        {
+          "mode": "NULLABLE",
+          "name": "isFunctional",
+          "type": "BOOLEAN"
+        },
+        {
+          "mode": "NULLABLE",
+          "name": "resourceFileName",
+          "type": "STRING"
+        },
+        {
+          "mode": "REPEATED",
+          "name": "testUserFiles",
+          "type": "STRING"
+        },
+        {
+          "fields": [
+            {
+              "mode": "NULLABLE",
+              "name": "name",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "description",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "samUri",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "datarepoUri",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "samResourceIdForDatarepo",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "bufferUri",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "bufferClientServiceAccountFile",
+              "type": "STRING"
+            },
+            {
+              "fields": [
+                {
+                  "mode": "NULLABLE",
+                  "name": "name",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "jsonKeyDirectoryPath",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "jsonKeyFilename",
+                  "type": "STRING"
+                }
+              ],
+              "mode": "NULLABLE",
+              "name": "bufferClientServiceAccount",
+              "type": "RECORD"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "workspaceManagerUri",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "policyManagerUri",
+              "type": "STRING"
+            },
+            {
+              "fields": [
+                {
+                  "mode": "NULLABLE",
+                  "name": "clusterName",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "clusterShortName",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "region",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "zone",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "project",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "namespace",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "containerName",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "componentLabel",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "apiComponentLabel",
+                  "type": "STRING"
+                }
+              ],
+              "mode": "NULLABLE",
+              "name": "cluster",
+              "type": "RECORD"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "testRunnerServiceAccountFile",
+              "type": "STRING"
+            },
+            {
+              "fields": [
+                {
+                  "mode": "NULLABLE",
+                  "name": "name",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "jsonKeyDirectoryPath",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "jsonKeyFilename",
+                  "type": "STRING"
+                }
+              ],
+              "mode": "NULLABLE",
+              "name": "testRunnerServiceAccount",
+              "type": "RECORD"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "testRunnerK8SServiceAccountFile",
+              "type": "STRING"
+            },
+            {
+              "fields": [
+                {
+                  "mode": "NULLABLE",
+                  "name": "name",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "clientKeyDirectoryPath",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "clientKeyFilename",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "tokenFilename",
+                  "type": "STRING"
+                }
+              ],
+              "mode": "NULLABLE",
+              "name": "testRunnerK8SServiceAccount",
+              "type": "RECORD"
+            },
+            {
+              "fields": [
+                {
+                  "mode": "NULLABLE",
+                  "name": "name",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "REPEATED",
+                  "name": "parameters",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "scriptClass",
+                  "type": "STRING"
+                }
+              ],
+              "mode": "NULLABLE",
+              "name": "deploymentScript",
+              "type": "RECORD"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "skipKubernetes",
+              "type": "BOOLEAN"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "skipDeployment",
+              "type": "BOOLEAN"
+            }
+          ],
+          "mode": "NULLABLE",
+          "name": "server",
+          "type": "RECORD"
+        },
+        {
+          "fields": [
+            {
+              "mode": "NULLABLE",
+              "name": "numberOfInitialPods",
+              "type": "INTEGER"
+            }
+          ],
+          "mode": "NULLABLE",
+          "name": "kubernetes",
+          "type": "RECORD"
+        },
+        {
+          "fields": [
+            {
+              "mode": "NULLABLE",
+              "name": "maxStairwayThreads",
+              "type": "INTEGER"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "maxBulkFileLoad",
+              "type": "INTEGER"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "maxBulkFileLoadArray",
+              "type": "INTEGER"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "loadConcurrentFiles",
+              "type": "INTEGER"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "loadConcurrentIngests",
+              "type": "INTEGER"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "loadDriverWaitSeconds",
+              "type": "INTEGER"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "loadHistoryCopyChunkSize",
+              "type": "INTEGER"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "loadHistoryWaitSeconds",
+              "type": "INTEGER"
+            }
+          ],
+          "mode": "NULLABLE",
+          "name": "application",
+          "type": "RECORD"
+        },
+        {
+          "fields": [
+            {
+              "mode": "NULLABLE",
+              "name": "name",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "numberOfUserJourneyThreadsToRun",
+              "type": "INTEGER"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "userJourneyThreadPoolSize",
+              "type": "INTEGER"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "expectedTimeForEach",
+              "type": "INTEGER"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "expectedTimeForEachUnit",
+              "type": "STRING"
+            },
+            {
+              "mode": "REPEATED",
+              "name": "parameters",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "expectedTimeForEachUnitObj",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "description",
+              "type": "STRING"
+            }
+          ],
+          "mode": "REPEATED",
+          "name": "testScripts",
+          "type": "RECORD"
+        },
+        {
+          "fields": [
+            {
+              "mode": "NULLABLE",
+              "name": "name",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "userEmail",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "delegatorServiceAccountFile",
+              "type": "STRING"
+            },
+            {
+              "fields": [
+                {
+                  "mode": "NULLABLE",
+                  "name": "name",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "jsonKeyDirectoryPath",
+                  "type": "STRING"
+                },
+                {
+                  "mode": "NULLABLE",
+                  "name": "jsonKeyFilename",
+                  "type": "STRING"
+                }
+              ],
+              "mode": "NULLABLE",
+              "name": "delegatorServiceAccount",
+              "type": "RECORD"
+            }
+          ],
+          "mode": "REPEATED",
+          "name": "testUsers",
+          "type": "RECORD"
+        },
+        {
+          "fields": [
+            {
+              "mode": "NULLABLE",
+              "name": "name",
+              "type": "STRING"
+            },
+            {
+              "mode": "REPEATED",
+              "name": "parameters",
+              "type": "STRING"
+            }
+          ],
+          "mode": "NULLABLE",
+          "name": "disruptiveScript",
+          "type": "RECORD"
+        }
+      ],
+      "mode": "NULLABLE",
+      "name": "testConfiguration",
+      "type": "RECORD"
+    },
+    {
+      "fields": [
+        {
+          "fields": [
+            {
+              "mode": "NULLABLE",
+              "name": "appName",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "helmAppVersion",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "helmChartVersion",
+              "type": "STRING"
+            }
+          ],
+          "mode": "REPEATED",
+          "name": "helmVersions",
+          "type": "RECORD"
+        },
+        {
+          "fields": [
+            {
+              "mode": "NULLABLE",
+              "name": "remoteOriginUrl",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "branch",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "refHeadCommit",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "shortRefHeadCommit",
+              "type": "STRING"
+            }
+          ],
+          "mode": "REPEATED",
+          "name": "gitVersions",
+          "type": "RECORD"
+        }
+      ],
+      "mode": "REPEATED",
+      "name": "versionScriptResults",
+      "type": "RECORD"
+    },
+    {
+      "fields": [
+        {
+          "fields": [
+            {
+              "mode": "NULLABLE",
+              "name": "userJourneyDescription",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "threadName",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "completed",
+              "type": "BOOLEAN"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "elapsedTimeNS",
+              "type": "INTEGER"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "exceptionWasThrown",
+              "type": "BOOLEAN"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "exceptionStackTrace",
+              "type": "STRING"
+            },
+            {
+              "mode": "NULLABLE",
+              "name": "exceptionMessage",
+              "type": "STRING"
+            }
+          ],
+          "mode": "REPEATED",
+          "name": "userJourneyResults",
+          "type": "RECORD"
+        }
+      ],
+      "mode": "REPEATED",
+      "name": "testScriptResults",
+      "type": "RECORD"
+    }
+  ]
+}
