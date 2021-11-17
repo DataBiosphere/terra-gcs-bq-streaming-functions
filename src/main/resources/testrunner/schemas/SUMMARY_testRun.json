@@ -386,6 +386,33 @@
             "mode": "NULLABLE",
             "name": "skipDeployment",
             "type": "BOOLEAN"
+          },
+          {
+            "fields" : [
+              {
+                "mode": "NULLABLE",
+                "name": "name",
+                "type": "STRING"
+              },
+              {
+                "mode": "REPEATED",
+                "name": "parameters",
+                "type": "STRING"
+              },
+              {
+                "mode": "NULLABLE",
+                "name": "description",
+                "type": "STRING"
+              },
+              {
+                "mode": "NULLABLE",
+                "name": "scriptClass",
+                "type": "STRING"
+              }
+            ],
+            "mode": "REPEATED",
+            "name": "versionScripts",
+            "type": "RECORD"
           }
         ],
         "mode": "NULLABLE",
