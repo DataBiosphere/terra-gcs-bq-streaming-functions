@@ -4,9 +4,9 @@
 name: Deploy TestRunner Results Streamer Function
 
 on:
-  push
-##    branches:
-#      - main
+  push:
+    branches:
+      - main
 
 jobs:
   deploy-testrunner-streamer-from-source:
