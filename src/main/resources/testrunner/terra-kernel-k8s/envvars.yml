@@ -1,5 +1,5 @@
 GCLOUD_PROJECT: terra-kernel-k8s
 GOOGLE_BUCKET: terra-kernel-k8s-testrunner-results
-BQ_DATASET: testrunner_results_dataset
+BQ_DATASET: simple_stream_dataset
 BQ_TABLE: SUMMARY_testRun
 SUMMARY_testRun: FULL_testRunOutput
