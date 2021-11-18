@@ -690,6 +690,16 @@
         "mode": "REPEATED",
         "name": "userJourneyResults",
         "type": "RECORD"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "testScriptName",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "testScriptDescription",
+        "type": "STRING"
       }
     ],
     "mode": "REPEATED",
