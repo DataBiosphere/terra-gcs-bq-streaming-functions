@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Configure secrets, SA, Project ID
+      - name: Configure secrets and project
         id: config-step
         run: |
           DEPLOYER_SA_KEY=$(echo -n ${{ secrets[format('{0}_TESTRUNNER_CF_DEPLOYER_SA', env.DEPLOY_ENV)] }} | base64 -d)
@@ -41,7 +41,6 @@ jobs:
           echo ::set-output name=bigquery-data-owner-sa-email::$STREAMER_SA_EMAIL
           echo ::set-output name=bigquery-data-owner-sa-key::$STREAMER_SA_KEY
 
-      # Deploy TestRunner results BigQuery dataset
       - name: Deploy TestRunner results BigQuery dataset
         id: deploy-testrunner-results-dataset
         uses: ./.github/actions/create-bq-schemas
