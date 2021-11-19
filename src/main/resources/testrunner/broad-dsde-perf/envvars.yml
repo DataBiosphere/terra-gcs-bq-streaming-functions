@@ -2,3 +2,4 @@ GCLOUD_PROJECT: broad-dsde-perf
 GOOGLE_BUCKET: broad-dsde-perf-testrunner-results
 BQ_DATASET: testrunner_results_dataset
 BQ_TABLE: SUMMARY_testRun
+SUMMARY_testRun: FULL_testRunOutput

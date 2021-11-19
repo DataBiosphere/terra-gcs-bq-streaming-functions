@@ -22,6 +22,7 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
   protected String projectId;
   protected String dataSet;
   protected String table;
+  protected String fromJson;
 
   public TestRunnerStreamingProcessor(FileUploadedMessage fileUploadedMessage) {
     super(fileUploadedMessage);
@@ -51,7 +52,7 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
           continue;
         }
 
-        if (!Files.getNameWithoutExtension(archiveEntry.getName()).equals(table)) {
+        if (!Files.getNameWithoutExtension(archiveEntry.getName()).equals(fromJson)) {
           logger.log(
               Level.WARNING,
               String.format(
@@ -79,6 +80,7 @@ public class TestRunnerStreamingProcessor extends MessageProcessor {
     projectId = System.getenv("GCLOUD_PROJECT");
     dataSet = System.getenv("BQ_DATASET");
     table = System.getenv("BQ_TABLE");
+    fromJson = System.getenv(table);
   }
 
   public InputStream getStorageObjectDataAsInputStream(
